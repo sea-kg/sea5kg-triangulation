@@ -36,47 +36,6 @@ bool triangulator::addTriangle(
 		return true;
 
 	// ShowMessage("bShouldChange_p3_2");
-	for(int i = 0; i < m_areas[nCurrArea].count(); i++)
-	{
-		triangulation::point ar_p1 = m_areas[nCurrArea].getPoint(i);
-		triangulation::point ar_p2 = m_areas[nCurrArea].getPoint((i+1) % m_areas[nCurrArea].count());
-		triangulation::point ar_p3 = m_areas[nCurrArea].getPoint((i+2) % m_areas[nCurrArea].count());
-						
-		triangulation::line L1(ar_p1, ar_p2);
-		triangulation::line L2(ar_p2, ar_p3);
-			
-		if(
-			(	L1.hasPoint(p1) 
-				|| L1.p1.length(p1) < 0.1
-				|| L1.p2.length(p1) < 0.1) 
-				&& 
-				(	L2.hasPoint(p2)
-				|| L2.p1.length(p2) < 0.1
-				|| L2.p2.length(p2) < 0.1) 
-		)
-		{
-			p3 = ar_p2;
-			if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, 1, m_lines))
-				return true;
-		};
-
-		if(
-			(	L2.hasPoint(p1) 
-				|| L2.p1.length(p1) < 0.1
-				|| L2.p2.length(p1) < 0.1) 
-				&& 
-				(	L1.hasPoint(p2)
-				|| L1.p1.length(p2) < 0.1
-				|| L1.p2.length(p2) < 0.1) 
-		)
-		{
-			p3 = ar_p2;
-			if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, 1, m_lines))
-				return true;
-		};
-	};
-
-
 
 	if(!hasCurrentArea(p3))
 	{	
@@ -93,16 +52,19 @@ bool triangulator::addTriangle(
 			{
 				bool br = m_areas[nCurrArea].findNearPointSide(result[i3], p_buff, a/2);	
 				
-				p3 = p_buff;
-				if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
+				
+				if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
+				{
+				  p3 = p_buff;
 					return true;
+				};
 
-				if( findNearPoint(p3, p_buff, a) )
+				/*if( findNearPoint(p3, p_buff, a) )
 				{
 					p3 = p_buff;
 					if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
 						return true;                	
-				};
+				};*/
 			};			
 		};
 				
@@ -119,16 +81,21 @@ bool triangulator::addTriangle(
   			
   			if(br && p_buff.length(p1) > k && p_buff.length(p2) > k ) // && hasCurrentArea(p_buff))
   			{
-  				p3 = p_buff;				
-  				if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
-  					return true;
-
-  				if( findNearPoint(p3, p_buff, a) )
+  				
+  				if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
   				{
-  					p3 = p_buff;
-  					if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
-  						return true;                	
-  				}								
+  				  p3 = p_buff;
+  					return true;
+  				}
+
+  				/*if( findNearPoint(p3, p_buff, a) )
+  				{  					
+  					if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
+  					{
+  					  p3 = p_buff;
+  						return true;
+  					}
+  				}*/								
   			};
   		};
 		};
@@ -136,23 +103,63 @@ bool triangulator::addTriangle(
 
 			
 	triangulation::triangle tr;	
-	if(hasIntersection(p1,p2,p3, tr))
+	triangulation::point p_intersection;
+	if(hasIntersection(p1,p2,p3, tr, p_intersection))
 	{
-		p3 = tr.p1;
-		if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, 1, m_lines))
+		
+		if(addTriangleAsIs(p1,p2,tr.p1, bShouldChange_p3, 1, m_lines))
+		{
+		  p3 = tr.p1;
 			return true;
-
-		p3 = tr.p2;
-		if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, 1, m_lines))
-			return true;
-
-		p3 = tr.p3;
-		if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, 1, m_lines))
-			return true;
-
-	};
+		};
 
 		
+		if(addTriangleAsIs(p1,p2,tr.p2, bShouldChange_p3, 1, m_lines))
+		{
+		  p3 = tr.p2;
+			return true;
+		};
+
+		
+		if(addTriangleAsIs(p1,p2,tr.p3, bShouldChange_p3, 1, m_lines))
+		{
+		  p3 = tr.p3;
+			return true;
+		}
+
+/*		p3 = p_intersection;
+		if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, 1, m_lines))
+			return true;*/
+	};
+
+	for(int i = 0; i < m_areas[nCurrArea].count(); i++)
+	{
+		triangulation::point ar_p1 = m_areas[nCurrArea].getPoint(i);
+		triangulation::point ar_p2 = m_areas[nCurrArea].getPoint((i+1) % m_areas[nCurrArea].count());
+		triangulation::point ar_p3 = m_areas[nCurrArea].getPoint((i+2) % m_areas[nCurrArea].count());
+						
+		triangulation::line L1(ar_p1, ar_p2);
+		triangulation::line L2(ar_p2, ar_p3);
+		triangulation::point p_buff;
+			
+		if( (L1.hasPoint(p1) && L2.hasPoint(p2))
+		    || (L2.hasPoint(p1) && L1.hasPoint(p2))
+		    || (ar_p1.length(p1) < 1 || ar_p2.length(p2) < 1)
+		    || (ar_p1.length(p2) < 1 || ar_p2.length(p1) < 1)
+		)
+		{			
+		  if(triangulation::line(p1,ar_p2).length() < a + a/2 && triangulation::line(p2,ar_p2).length() < a + a/2)
+		  {
+  			if(addTriangleAsIs(p1,p2,ar_p2, bShouldChange_p3, 1, m_lines))
+  			{
+  			  p3 = ar_p2;
+  				return true;
+  			};
+  		};
+		};
+	};
+
+	
 	return false;
 };
 //---------------------------------------------------------------------------
@@ -186,8 +193,9 @@ bool triangulator::addTriangleAsIs(
 	};
 
 	triangulation::triangle tr;
-	
-	if(!findTriangle(p1,p2,p3) && !hasIntersection(p1,p2,p3, tr))
+	triangulation::point p_intersection;
+
+	if(!findTriangle(p1,p2,p3) && !hasIntersection(p1,p2,p3, tr, p_intersection))
 	{		
 		double p = (a + a + a) / 2;
 		double min_square = sqrt(p * (p - a) * (p - a) * (p - a));
@@ -219,7 +227,7 @@ bool triangulator::hasCurrentArea(triangulation::point p)
 			
 //---------------------------------------------------------------------------
 
-bool triangulator::hasIntersection(const triangulation::point &p1, const triangulation::point &p2, const triangulation::point &p3, triangulation::triangle &result)
+bool triangulator::hasIntersection(const triangulation::point &p1, const triangulation::point &p2, const triangulation::point &p3, triangulation::triangle &result, triangulation::point &p_result)
 {
 	triangulation::line L[3];
 
@@ -242,6 +250,7 @@ bool triangulator::hasIntersection(const triangulation::point &p1, const triangu
 			for (int i2 = 0; i2 < 3; i2++)
 				if( TR_L[i1].hasIntersection(L[i2], p) && !tr.hasTop(p) )
 				{
+				  p_result = p;
 					result = tr;
 					return true;
 				};
@@ -249,6 +258,7 @@ bool triangulator::hasIntersection(const triangulation::point &p1, const triangu
 	  if(tr.hasPoint(p1) || tr.hasPoint(p2) || tr.hasPoint(p3))
 	  {
 			result = tr;
+			p_result = triangulation::point();
 			return true;	  
 	  };
 
