@@ -11,3 +11,17 @@
 *.lai
 *.la
 *.a
+
+# Compiled C++ Builder Object files
+*.ilc
+*.ild
+*.ilf
+*.ils
+*.exe
+*.local
+*.#00
+*.obj
+*.tds
+*.map
+*.pch
+
