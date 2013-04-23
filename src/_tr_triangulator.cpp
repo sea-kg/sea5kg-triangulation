@@ -21,19 +21,29 @@ bool triangulator::addTriangle(
 	std::vector<triangulation::line> &m_lines
 )
 {
+  bool bShouldChange_p3;
+  
+  double p = (a + a + a) / 2;
+	double min_square = sqrt(p * (p - a) * (p - a) * (p - a));
+	min_square = min_square / 10;
+
 	if(hasCurrentArea(p3))
 	{
 		triangulation::point p_buff;
 		bool br = m_areas[nCurrArea].findNearPointSide(p3, p_buff, a/2);
 		
-		if(br) // && hasCurrentArea(p_buff))
-			p3 = p_buff;
+		if(br && triangulation::triangle(p1,p2,p_buff).getSquare() >= min_square) // && hasCurrentArea(p_buff))
+		{
+		  p3 = p_buff;
+		};
 	};
-
-    bool bShouldChange_p3;
 	
 	if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
-		return true;
+		return true;	  
+
+
+/*	if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
+		return true;*/
 
 	// ShowMessage("bShouldChange_p3_2");
 
@@ -51,20 +61,9 @@ bool triangulator::addTriangle(
 			for(int i3 = 0; i3 < result.size(); i3++)
 			{
 				bool br = m_areas[nCurrArea].findNearPointSide(result[i3], p_buff, a/2);	
-				
-				
+								
 				if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
-				{
-				  p3 = p_buff;
 					return true;
-				};
-
-				/*if( findNearPoint(p3, p_buff, a) )
-				{
-					p3 = p_buff;
-					if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
-						return true;                	
-				};*/
 			};			
 		};
 				
@@ -80,22 +79,9 @@ bool triangulator::addTriangle(
   			bool br = m_areas[nCurrArea].findNearPointSide(result[i3], p_buff, a/2);	
   			
   			if(br && p_buff.length(p1) > k && p_buff.length(p2) > k ) // && hasCurrentArea(p_buff))
-  			{
-  				
+  			{  				
   				if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
-  				{
-  				  p3 = p_buff;
   					return true;
-  				}
-
-  				/*if( findNearPoint(p3, p_buff, a) )
-  				{  					
-  					if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
-  					{
-  					  p3 = p_buff;
-  						return true;
-  					}
-  				}*/								
   			};
   		};
 		};
@@ -108,24 +94,13 @@ bool triangulator::addTriangle(
 	{
 		
 		if(addTriangleAsIs(p1,p2,tr.p1, bShouldChange_p3, 1, m_lines))
-		{
-		  p3 = tr.p1;
 			return true;
-		};
-
 		
 		if(addTriangleAsIs(p1,p2,tr.p2, bShouldChange_p3, 1, m_lines))
-		{
-		  p3 = tr.p2;
 			return true;
-		};
-
 		
 		if(addTriangleAsIs(p1,p2,tr.p3, bShouldChange_p3, 1, m_lines))
-		{
-		  p3 = tr.p3;
 			return true;
-		}
 
 /*		p3 = p_intersection;
 		if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, 1, m_lines))
@@ -199,7 +174,7 @@ bool triangulator::addTriangleAsIs(
 	{		
 		double p = (a + a + a) / 2;
 		double min_square = sqrt(p * (p - a) * (p - a) * (p - a));
-		min_square /= min_square /3;
+		min_square = min_square / 10;
 
 		if(triangulation::triangle(p1,p2,p3).getSquare() > min_square)		
 		{
