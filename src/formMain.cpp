@@ -8,7 +8,7 @@
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma resource "src/*.dfm"
+#pragma resource "src\\*.dfm"
 TfrmMain *frmMain;
 
 struct stState
@@ -200,6 +200,10 @@ void __fastcall TfrmMain::actTriangulateExecute(TObject *Sender)
 {
   m_pPaiter->triangulate();
   m_pPaiter->refresh();
+  lbxTriangles->Clear();
+
+  for(unsigned int i=0; i < m_pPaiter->getTriangles().size(); i++)
+	lbxTriangles->Items->Add(m_pPaiter->getTriangles()[i].toString());
 }
 //---------------------------------------------------------------------------
 
@@ -230,6 +234,51 @@ void __fastcall TfrmMain::Save1Click(TObject *Sender)
 	{
 		Image1->Picture->SaveToFile(SaveDialog2->FileName);
 	};
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::lbxTrianglesClick(TObject *Sender)
+{
+  for(int i = 0; i <= lbxTriangles->Count; i++)
+  {
+	if(lbxTriangles->Selected[i])
+	{
+		triangulation::triangle tr;
+		tr.fromString(lbxTriangles->Items->Strings[i]);
+
+		TColor nPenColor = Image1->Canvas->Pen->Color;
+		TColor nBrushColor = Image1->Canvas->Brush->Color;
+		int nWidth = Image1->Canvas->Pen->Width;
+
+		Image1->Canvas->Pen->Color = clRed;
+		Image1->Canvas->Pen->Width = 2;
+		Image1->Canvas->Brush->Color = clBlue;
+
+		TPoint points[3];
+		points[0] = Point(tr.p1.X,tr.p1.Y);
+		points[1] = Point(tr.p2.X,tr.p2.Y);
+		points[2] = Point(tr.p3.X,tr.p3.Y);
+		Image1->Canvas->Polygon(points, 2);
+
+		Image1->Canvas->Pen->Color = nPenColor;
+		Image1->Canvas->Brush->Color = nBrushColor;
+		Image1->Canvas->Pen->Width = nWidth;
+
+		tr.p1.paint(Image1);
+		tr.p2.paint(Image1);
+		tr.p3.paint(Image1);
+
+		return;
+    };
+  };
+
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::actRefreshExecute(TObject *Sender)
+{
+	m_pPaiter->refresh();
 }
 //---------------------------------------------------------------------------
 

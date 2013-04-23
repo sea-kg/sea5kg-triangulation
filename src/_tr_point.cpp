@@ -102,6 +102,11 @@ bool point::operator != (const triangulation::point &p)
 
 //---------------------------------------------------------------------------
 
+UnicodeString point::toString()
+{
+	return "(" + IntToStr(int(X)) + "," + IntToStr(int(Y)) + ")";
+};
+
 }; // triangulation
 
 //---------------------------------------------------------------------------

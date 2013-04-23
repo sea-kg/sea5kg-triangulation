@@ -60,6 +60,10 @@ __published:	// IDE-managed Components
 	TMenuItem *Picture1;
 	TMenuItem *Save1;
 	TSaveDialog *SaveDialog2;
+	TListBox *lbxTriangles;
+	TSplitter *Splitter2;
+	TBitBtn *BitBtn6;
+	TAction *actRefresh;
 	void __fastcall Close1Click(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall Image1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
@@ -82,6 +86,8 @@ __published:	// IDE-managed Components
 	void __fastcall actLoadAreasUpdate(TObject *Sender);
 	void __fastcall actLoadAreasExecute(TObject *Sender);
 	void __fastcall Save1Click(TObject *Sender);
+	void __fastcall lbxTrianglesClick(TObject *Sender);
+	void __fastcall actRefreshExecute(TObject *Sender);
 
 private:	// User declarations
 	void refresh();

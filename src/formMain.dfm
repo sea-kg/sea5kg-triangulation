@@ -2376,6 +2376,17 @@ object frmMain: TfrmMain
     Color = clGray
     ParentColor = False
   end
+  object Splitter2: TSplitter
+    Left = 684
+    Top = 49
+    Width = 13
+    Height = 455
+    Align = alRight
+    Color = clAppWorkSpace
+    ParentColor = False
+    ExplicitLeft = 856
+    ExplicitTop = 55
+  end
   object Panel2: TPanel
     Left = 697
     Top = 49
@@ -2384,6 +2395,19 @@ object frmMain: TfrmMain
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
+    object lbxTriangles: TListBox
+      Left = 0
+      Top = 0
+      Width = 172
+      Height = 455
+      Align = alClient
+      Color = clBtnFace
+      ItemHeight = 13
+      TabOrder = 0
+      OnClick = lbxTrianglesClick
+      ExplicitTop = 49
+      ExplicitWidth = 697
+    end
   end
   object memLog: TMemo
     Left = 0
@@ -2399,10 +2423,11 @@ object frmMain: TfrmMain
   object ScrollBox1: TScrollBox
     Left = 0
     Top = 49
-    Width = 697
+    Width = 684
     Height = 455
     Align = alClient
     TabOrder = 2
+    ExplicitWidth = 697
     object Image1: TImage
       Left = 3
       Top = 4
@@ -2523,6 +2548,15 @@ object frmMain: TfrmMain
         63A0CA7E43E1CA7D43E1CA7D43E1CA7B43E1C77A43E1C77843E1C57643E1C375
         43E1C37343E1C37143E1C36832DCFCFCFC03FF00FF00FF00FF00}
       TabOrder = 4
+    end
+    object BitBtn6: TBitBtn
+      Left = 560
+      Top = 11
+      Width = 105
+      Height = 25
+      Action = actRefresh
+      Caption = 'Refresh'
+      TabOrder = 5
     end
   end
   object MainMenu1: TMainMenu
@@ -3021,6 +3055,11 @@ object frmMain: TfrmMain
       ImageIndex = 7
       OnExecute = actLoadAreasExecute
       OnUpdate = actLoadAreasUpdate
+    end
+    object actRefresh: TAction
+      Caption = 'Refresh'
+      ImageIndex = 0
+      OnExecute = actRefreshExecute
     end
   end
   object SaveDialog1: TSaveDialog

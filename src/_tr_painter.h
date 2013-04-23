@@ -16,8 +16,6 @@ class painter
 
 		void refresh();
 		void triangulate();
-		void triangulate2();
-		void triangulate3();
 
 		// new
 		void addToBufferArea(int X, int Y);
@@ -28,6 +26,7 @@ class painter
 
 		void SaveAreas(UnicodeString filename);
 		void LoadAreas(UnicodeString filename);
+		std::vector<triangulation::triangle> &getTriangles();
 
 	private:
 
@@ -43,30 +42,6 @@ class painter
 			triangulation::point &p5_buff,
 			double r
 		);
-
-		/*triangulation::point findNearPoint(std::vector<triangulation::triangle> &vTriangles, triangulation::point p, double r);
-		triangulation::point paint(std::vector<triangulation::triangle> &vTriangles);
-		bool addToTriangles(std::vector<triangulation::triangle> &vTriangles, triangulation::point &p1, triangulation::point &p2, triangulation::point &p3, double r);
-		bool findTriangle(std::vector<triangulation::triangle> &vTriangles, triangulation::point &p1, triangulation::point &p2, triangulation::point &p3);
-		bool hasIntersection(std::vector<triangulation::triangle> &vTriangles, triangulation::point &p1, triangulation::point &p2, triangulation::point &p3);
-
-		bool findNearPointWithAreaSide(const triangulation::point &p, triangulation::point &res, double len);
-
-		triangulation::point getMiddlePoint(const triangulation::area &area);
-		double getSquare(const triangulation::area &area);
-
-		void painter::recurs(
-			std::vector<triangulation::triangle> &vTriangles,
-			triangulation::area &area,
-			triangulation::point p1,
-			triangulation::point p2,
-			double h,
-			double a
-		);
-
-		void triangulate_area2(const triangulation::area &area);
-		void triangulate_area3(triangulation::area &area);
-		*/
 
 		TImage * m_img;
 		triangulation::logger *m_pLogger;

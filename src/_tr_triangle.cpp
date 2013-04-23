@@ -188,6 +188,43 @@ bool triangle::operator == (const triangulation::triangle &tr)
 
 //---------------------------------------------------------------------------
 
+UnicodeString triangle::toString()
+{
+	return "{" + p1.toString() + "," + p2.toString() + "," + p3.toString() + "}";
+};
+
+UnicodeString GetPart(UnicodeString str, UnicodeString from, UnicodeString to)
+{
+  str.Delete(1,str.Pos(from)-from.Length() + 1);
+  str = str.SubString(1,str.Pos(to)-1);
+  return str;
+}
+
+void setPoint(UnicodeString str, triangulation::point &p)
+{
+	p.X = StrToInt(str.SubString(1, str.Pos(",")-1));
+	str.Delete(1, str.Pos(","));
+	p.Y = StrToInt(str);
+};
+
+void triangle::fromString(UnicodeString str)
+{
+	str = GetPart(str, "{", "}");
+	UnicodeString str_p1 = GetPart(str, "(", ")");
+	str.Delete(1, str.Pos(")"));
+	UnicodeString str_p2 = GetPart(str, "(", ")");
+	str.Delete(1, str.Pos(")"));
+	UnicodeString str_p3 = GetPart(str, "(", ")");
+
+	setPoint(str_p1, p1);
+	setPoint(str_p2, p2);
+	setPoint(str_p3, p3);
+
+	// return "{ " + p1.toString() + "," + p2.toString() + "," + p3.toString() + "}";
+};
+
+//---------------------------------------------------------------------------
+
 void triangle::operator = (const triangulation::triangle &tr)
 {
 	p1 = tr.p1;

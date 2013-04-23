@@ -23,6 +23,8 @@ class triangle
 		bool hasIntersection(const triangulation::line &l);
 		bool hasPoint(const triangulation::point &p);
 		bool hasTop(const triangulation::point &p);
+		UnicodeString toString();
+		void triangle::fromString(UnicodeString str);
 		bool operator == (const triangulation::triangle &tr);
 		void operator = (const triangulation::triangle &tr);
 

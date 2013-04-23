@@ -12,7 +12,7 @@ bool _sort_here (double x1, double x2) { return (x1 < x2); };
 
 bool area::hasPoint(const triangulation::point &p) const
 {
-
+	double k = 1;
 	triangulation::line line_x( triangulation::point(-1000, p.Y), triangulation::point(1000, p.Y) );
 	triangulation::line line_y( triangulation::point(p.X, -1000), triangulation::point(p.X,1000) );
 
@@ -31,13 +31,10 @@ bool area::hasPoint(const triangulation::point &p) const
 		triangulation::point p_res;
 		if(line_side.hasIntersection(line_x, p_res))
 		  points_x.push_back(p_res.X);
-		else if(line_x.hasIntersection(line_side, p_res))
-		  points_x.push_back(p_res.X);
 
 		if(line_side.hasIntersection(line_y, p_res))
 		  points_y.push_back(p_res.Y);
-		else if(line_y.hasIntersection(line_side, p_res))
-		  points_y.push_back(p_res.Y);
+
 	}
 
 	points_x.push_back(1000);
@@ -49,25 +46,21 @@ bool area::hasPoint(const triangulation::point &p) const
 	bool bX = false;
 	for(int i = 0; i < points_x.size() -1; i++)
 	{
-		double x1 = points_x[i];
-		double x2 = points_x[i+1];
-		if((i+1) % 2 == 0)
+		if( (i+1) % 2 == 0 && (points_x[i] - k <= p.X && p.X <= points_x[i+1] + k))
 		{
-			if(x1 <= p.X && p.X <= x2)
-				bX = true;
-        };
+			bX = true;
+			break;
+        	};
 	};
 
 	bool bY = false;
 	for(int i = 0; i < points_y.size() -1; i++)
 	{
-		double y1 = points_y[i];
-		double y2 = points_y[i+1];
-		if((i+1) % 2 == 0)
+		if((i+1) % 2 == 0 && (points_y[i] - k <= p.Y && p.Y <= points_y[i+1] + k))
 		{
-			if(y1 <= p.Y && p.Y <= y2)
-				bY = true;
-        };
+			bY = true;
+			break;
+	        };
 	};
 
 	return bX && bY;

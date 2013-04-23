@@ -26,7 +26,7 @@ class point
 		void operator = (const triangulation::point &p);
 		bool operator == (const triangulation::point &p);
 		bool operator != (const triangulation::point &p);
-
+		UnicodeString toString();
 		double X,Y;
 	private:
 		int m_nCounter;
