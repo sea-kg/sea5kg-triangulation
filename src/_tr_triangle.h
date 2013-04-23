@@ -21,6 +21,7 @@ class triangle
 		bool findNearPoint(triangulation::point p, triangulation::point &res, double r);
 		void paint(TImage *img);
 		bool hasIntersection(const triangulation::line &l);
+		bool hasPoint(const triangulation::point &p);
 		bool hasTop(const triangulation::point &p);
 		bool operator == (const triangulation::triangle &tr);
 		void operator = (const triangulation::triangle &tr);

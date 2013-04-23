@@ -4,6 +4,7 @@
 
 #include "_tr_area.h"
 #include <algorithm>
+#include <math.h>
 
 namespace triangulation {
 

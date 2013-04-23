@@ -15,7 +15,13 @@ namespace triangulation {
 	{
 		public:
 			triangulator(triangulation::logger *pLogger);
-			bool addTriangle(triangulation::point &p1, triangulation::point &p2, triangulation::point &p3, double a);
+			bool addTriangle( 
+					triangulation::point p1, 
+					triangulation::point p2, 
+					triangulation::point p3, 
+					double a, 
+					std::vector<triangulation::line> &m_lines
+			);
 			void addArea(triangulation::area ar);
 			std::vector<triangulation::area> &getAreas();
 			std::vector<triangulation::triangle> &getTriangles();
@@ -32,12 +38,33 @@ namespace triangulation {
 			bool findTriangle(triangulation::point p1, triangulation::point p2, triangulation::point p3);
 			bool findNearPoint(triangulation::point p, triangulation::point &result, double r);
 
-			bool addTriangleAsIs(triangulation::point &p1, triangulation::point &p2, triangulation::point &p3, bool &bShouldChange_p3, double a);
+			bool addTriangleAsIs(
+				triangulation::point p1, 
+				triangulation::point p2, 
+				triangulation::point p3, 
+				bool &bShouldChange_p3, 
+				double a,
+				std::vector<triangulation::line> &m_lines
+			);
 			bool hasCurrentArea(triangulation::point p1);
 			bool hasIntersection(const triangulation::point &p1, const triangulation::point &p2, const triangulation::point &p3, triangulation::triangle &result);
 	};
 
-	bool recours_netting(triangulation::point &p1, triangulation::point &p2, double h, double a, triangulation::triangulator *tr);
+
+	class netting
+	{
+		public:
+			netting(const triangulation::point &p1, const triangulation::point &p2, double h, double a, triangulation::triangulator *tr);
+			void processing();
+			void netting::calcPoints(const triangulation::line &L, triangulation::point &p4, triangulation::point &p5);
+		private:
+		  std::vector<triangulation::line> m_lines;
+		  double m_h; 
+		  double m_a; 
+		  triangulation::triangulator *m_tr;
+	};
+
+//	bool recours_netting(triangulation::point &p1, triangulation::point &p2, double h, double a, triangulation::triangulator *tr);
 }
 
 #endif

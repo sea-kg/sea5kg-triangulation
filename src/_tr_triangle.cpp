@@ -4,6 +4,11 @@
 
 #include "_tr_triangle.h"
 
+#include <vector>
+#include <algorithm>
+#include <math.h>
+
+
 namespace triangulation {
 
 triangle::triangle()
@@ -95,6 +100,77 @@ bool triangle::hasIntersection(const triangulation::line &l)
 		|| l31.hasIntersection(l0, p) || l0.hasIntersection(l31, p);
 };
 
+//---------------------------------------------------------------------------
+
+bool _sort_here (double x1, double x2) { return (x1 < x2); };
+
+bool triangle::hasPoint(const triangulation::point &p)
+{
+	triangulation::line line_x( triangulation::point(-1000, p.Y), triangulation::point(1000, p.Y) );
+	triangulation::line line_y( triangulation::point(p.X, -1000), triangulation::point(p.X,1000) );
+
+	std::vector<double> points_x;
+	std::vector<double> points_y;
+	points_x.push_back(-1000);
+	points_y.push_back(-1000);
+
+
+	triangulation::point p_res;
+	if(triangulation::line(p1,p2).hasIntersection(line_x, p_res))
+	  points_x.push_back(p_res.X);
+	if(triangulation::line(p2,p3).hasIntersection(line_x, p_res))
+	  points_x.push_back(p_res.X);
+	if(triangulation::line(p3,p1).hasIntersection(line_x, p_res))
+	  points_x.push_back(p_res.X);
+
+	if(triangulation::line(p1,p2).hasIntersection(line_y, p_res))
+		points_y.push_back(p_res.Y);
+	if(triangulation::line(p2,p3).hasIntersection(line_y, p_res))
+		points_y.push_back(p_res.Y);
+	if(triangulation::line(p3,p1).hasIntersection(line_y, p_res))
+		points_y.push_back(p_res.Y);
+
+	points_x.push_back(1000);
+	points_y.push_back(1000);
+
+	std::sort (points_x.begin(), points_x.end(), _sort_here);
+	std::sort (points_y.begin(), points_y.end(), _sort_here);
+
+	bool bX = false;
+	for(int i = 0; i < points_x.size() -1; i++)
+	{
+		double x1 = points_x[i];
+		double x2 = points_x[i+1];
+		if((i+1) % 2 == 0)
+		{
+			if(x1 <= p.X && p.X <= x2)
+				bX = true;
+        };
+	};
+
+	bool bY = false;
+	for(int i = 0; i < points_y.size() -1; i++)
+	{
+		double y1 = points_y[i];
+		double y2 = points_y[i+1];
+		if((i+1) % 2 == 0)
+		{
+			if(y1 <= p.Y && p.Y <= y2)
+				bY = true;
+        };
+	};
+
+	if( bX && bY 
+			&& triangulation::line(p1,p2).getPerpendicularToLine(p, p_res) > 2 
+			&& triangulation::line(p2,p3).getPerpendicularToLine(p, p_res) > 2
+			&& triangulation::line(p3,p1).getPerpendicularToLine(p, p_res) > 2
+	)
+	{
+		return true;
+	};
+	
+	return false; 
+};
 //---------------------------------------------------------------------------
 
 bool triangle::hasTop(const triangulation::point &p)
