@@ -43,11 +43,24 @@ bool triangulator::addTriangle(
 		
 		if(br && triangulation::triangle(p1,p2,p_buff).getSquare() >= min_square) // && hasCurrentArea(p_buff))
 		{
-		  p3 = p_buff;			
+		  p3 = p_buff;
+        };
+	}
+	else
+	{
+		triangulation::point p_buff;
+		for(unsigned int i2 = 0; i2 < m_areas.size(); i2++)
+		{
+			if(m_areas[i2].findNearPointSide(p3, p_buff, a/2))
+			{
+				if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
+					return true;
+			}
 		};
 	};
 
 	if(bDebbug) m_pLogger->info("1) p3 = " + p3.toString());
+
 	if(addTriangleAsIs(p1,p2,p3, bShouldChange_p3, a, m_lines))
 		return true;	  
 
@@ -60,41 +73,46 @@ bool triangulator::addTriangle(
 	if(!hasCurrentArea(p3))
 	{	
 		double k = 0.1;
-		
-		std::vector<triangulation::point> result;
-		result.push_back(p3);
 
-		if( m_areas[nCurrArea].hasIntersections(triangulation::line(p1,p3), result) )
-		{			
-		  
-			triangulation::point p_buff;
-			for(int i3 = 0; i3 < result.size(); i3++)
-			{
-				bool br = m_areas[nCurrArea].findNearPointSide(result[i3], p_buff, a/2);	
-				if(bDebbug) m_pLogger->info("2) p3 = " + p_buff.toString());
-				if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
-					return true;
-			};			
-		};
-				
-		result.clear();
-		result.push_back(p3);
-
-		if( m_areas[nCurrArea].hasIntersections(triangulation::line(p2,p3), result) )
+		for(unsigned int i2 = 0; i2 < m_areas.size(); i2++ )
 		{
-			
-			triangulation::point p_buff;
-			for(int i3 = 0; i3 < result.size(); i3++)
+			std::vector<triangulation::point> result;
+
+			result.clear();
+			result.push_back(p3);
+
+			if( m_areas[i2].hasIntersections(triangulation::line(p1,p3), result) )
 			{
-  				bool br = m_areas[nCurrArea].findNearPointSide(result[i3], p_buff, a/2);	
-  			
-  			// if(br && p_buff.length(p1) > k && p_buff.length(p2) > k ) // && hasCurrentArea(p_buff))
-  				{  	
-					if(bDebbug) m_pLogger->info("p3 = " + p_buff.toString());
-  					if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
-  						return true;
-	  			};
-  			};
+
+				triangulation::point p_buff;
+				for(int i3 = 0; i3 < result.size(); i3++)
+				{
+					bool br = m_areas[i2].findNearPointSide(result[i3], p_buff, a/2);
+					if(bDebbug) m_pLogger->info("2) p3 = " + p_buff.toString());
+					if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
+						return true;
+				};
+			};
+
+			result.clear();
+			result.push_back(p3);
+
+			if( m_areas[i2].hasIntersections(triangulation::line(p2,p3), result) )
+			{
+
+				triangulation::point p_buff;
+				for(int i3 = 0; i3 < result.size(); i3++)
+				{
+					bool br = m_areas[i2].findNearPointSide(result[i3], p_buff, a/2);
+
+				// if(br && p_buff.length(p1) > k && p_buff.length(p2) > k ) // && hasCurrentArea(p_buff))
+					{
+						if(bDebbug) m_pLogger->info("p3 = " + p_buff.toString());
+						if(addTriangleAsIs(p1,p2,p_buff, bShouldChange_p3, a, m_lines))
+							return true;
+					};
+				};
+			};
 		};
 	};
 
@@ -181,6 +199,9 @@ bool triangulator::addTriangleAsIs(
 		return false;
 	};
 
+	if(!hasCurrentArea(p1,p2) || !hasCurrentArea(p2,p3) || !hasCurrentArea(p3,p1))
+		return false;
+
 	triangulation::triangle tr;
 	triangulation::point p_intersection;
 
@@ -209,12 +230,29 @@ bool triangulator::hasCurrentArea(triangulation::point p)
 	for(int i = 0; i < m_areas.size(); i++)
 	{
 		if( i != nCurrArea && m_areas[i].hasPoint(p) )
-			return false;
+		{
+			triangulation::point p_buff;
+			if(m_areas[i].getPerpendicularToLine(p, p_buff) > 2)
+				return false;
+		};
 	}
 		
 	return m_areas[nCurrArea].hasPoint(p);
 };
-			
+
+//---------------------------------------------------------------------------
+
+bool triangulator::hasCurrentArea(triangulation::point p1, triangulation::point p2)
+{
+	triangulation::line L(p1,p2);
+	for(int i = 0; i < m_areas.size(); i++)
+	{
+		if( i != nCurrArea && m_areas[i].hasLine(L) )
+			return false;
+	}
+	return m_areas[nCurrArea].hasLine(L);
+};
+
 //---------------------------------------------------------------------------
 
 bool triangulator::hasIntersection(const triangulation::point &p1, const triangulation::point &p2, const triangulation::point &p3, triangulation::triangle &result, triangulation::point &p_result)

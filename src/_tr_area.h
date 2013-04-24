@@ -23,6 +23,8 @@ class area
 		void setCountTriangles(int nCountTriangles)  { m_nCountTriangles = nCountTriangles; };
 		unsigned int getCountTriangles() const { return m_nCountTriangles; };
 		bool hasPoint(const triangulation::point &p1) const;
+		const double getPerpendicularToLine(const triangulation::point &p3, triangulation::point &res);
+		bool hasLine(const triangulation::line &l) const;
 		bool hasIntersections(triangulation::line l, std::vector<triangulation::point> &result);
 		bool hasIntersections(triangulation::area &l, std::vector<triangulation::point> &result);
 		void paint(TImage *img);

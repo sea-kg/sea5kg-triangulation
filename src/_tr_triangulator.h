@@ -47,6 +47,7 @@ namespace triangulation {
 				std::vector<triangulation::line> &m_lines
 			);
 			bool hasCurrentArea(triangulation::point p1);
+			bool hasCurrentArea(triangulation::point p1, triangulation::point p2);
 			bool hasIntersection(
 				const triangulation::point &p1, 
 				const triangulation::point &p2, 

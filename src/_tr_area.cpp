@@ -12,7 +12,7 @@ bool _sort_here (double x1, double x2) { return (x1 < x2); };
 
 bool area::hasPoint(const triangulation::point &p) const
 {
-	double k = 1;
+	double k = 2;
 	triangulation::line line_x( triangulation::point(-1000, p.Y), triangulation::point(1000, p.Y) );
 	triangulation::line line_y( triangulation::point(p.X, -1000), triangulation::point(p.X,1000) );
 
@@ -64,6 +64,16 @@ bool area::hasPoint(const triangulation::point &p) const
 	};
 
 	return bX && bY;
+};
+
+//---------------------------------------------------------------------------
+
+bool area::hasLine(const triangulation::line &L) const
+{
+	if( !hasPoint(L.p1) || !hasPoint(L.p2))
+		return false;
+
+	return hasPoint(L.getMiddlePoint());
 };
 //---------------------------------------------------------------------------
 
@@ -169,22 +179,13 @@ triangulation::point area::getMiddlePoint()
 	pMiddlePoint = pMiddlePoint / count();
 	return pMiddlePoint;
 };
+
 //---------------------------------------------------------------------------
 
-bool area::findNearPointSide(const triangulation::point &p, triangulation::point &result, double len)
+const double area::getPerpendicularToLine(const triangulation::point &p, triangulation::point &result)
 {
-	for(int i = 0; i < count(); i++)
-	{
-		triangulation::point p1 = getPoint(i);
-		if(p1.length(p) < len)
-		{
-			result = p1;
-			return true;
-		};
-	};
-
-	triangulation::point res2;
-	double nLen2 = len;
+    triangulation::point res2;
+	double nLen2 = 1000;
 
 	for(int i = 0; i < count(); i++)
 	{
@@ -192,8 +193,56 @@ bool area::findNearPointSide(const triangulation::point &p, triangulation::point
 		triangulation::point p2 = getPoint((i+1) % count());
 		triangulation::line L(p1, p2);
 		triangulation::point res;
+		triangulation::point p_buff;
 		double nLen = L.getPerpendicularToLine(p, res);
-		if( nLen < nLen2 && L.hasPoint(res))
+		if( nLen < nLen2 && (L.hasPoint(res) || L.getPerpendicularToLine(res, p_buff) < 1))
+		{
+			res2 = res;
+			nLen2 = nLen;
+		};
+	};
+
+	result = res2;
+	return nLen2;
+};
+
+//---------------------------------------------------------------------------
+
+bool area::findNearPointSide(const triangulation::point &p, triangulation::point &result, double len)
+{
+	triangulation::point res2;
+	double nLen2 = len;
+
+	for(int i = 0; i < count(); i++)
+	{
+		triangulation::point p1 = getPoint(i);
+		if(nLen2 > p1.length(p))
+		{
+			res2 = p1;
+			nLen2 = p1.length(p);
+		};
+	};
+
+	if(nLen2 < len)
+	{
+		result = res2;
+		return true;
+	};
+
+	nLen2 = len;
+
+	//triangulation::point res2;
+	//double nLen2 = len;
+
+	for(int i = 0; i < count(); i++)
+	{
+		triangulation::point p1 = getPoint(i);
+		triangulation::point p2 = getPoint((i+1) % count());
+		triangulation::line L(p1, p2);
+		triangulation::point res;
+		triangulation::point p_buff;
+		double nLen = L.getPerpendicularToLine(p, res);
+		if( nLen < nLen2 && (L.hasPoint(res) || L.getPerpendicularToLine(res, p_buff) < 1))
 		{
 			res2 = res;
 			nLen2 = nLen;

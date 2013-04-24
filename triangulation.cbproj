@@ -35,10 +35,10 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <ILINK_LibraryPath>src\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <AllPackageLibs>rtl.lib;vcl.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <_TCHARMapping>wchar_t</_TCHARMapping>
-        <ILINK_LibraryPath>$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>src\;$(IncludePath)</IncludePath>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <Multithreaded>true</Multithreaded>
@@ -56,7 +56,7 @@
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <IncludePath>$(BDSINCLUDE)\windows\vcl;$(IncludePath);src;</IncludePath>
+        <IncludePath>$(BDSINCLUDE)\windows\vcl;src;$(IncludePath)</IncludePath>
         <PackageImports>S1VCLX;IndyIPClient;stxXptPkg;H4CatCtl;DBXSqliteDriver;S1Grids;AcrobatReader;H4DocPageCtl;fmx;IndySystem;TeeDB;S1Images;vclib;inetdbbde;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;MetropolisUILiveTile;vcldb;vcldsnap;DBXDb2Driver;HiDATreeViewPkg;DBXOracleDriver;CustomIPTransport;vclribbon;H4IdxCtl;dsnap;IndyIPServer;fmxase;vcl;IndyCore;S1DbCtl;IndyIPCommon;CloudService;DBXMSSQLDriver;FmxTeeUI;frxDB17;CodeSiteExpressPkg;S1RegCtl;h4docctl;inetdbxpress;webdsnap;adortl;fs17;frx17;bindcompfmx;vcldbx;rtl;dbrtl;DbxClientDriver;H4Grids;bindcomp;inetdb;Tee;stxTreeViewPkg;DBXOdbcDriver;xmlrtl;ibxpress;IndyProtocols;DBXMySQLDriver;O408_r;soaprtl;vclactnband;bindengine;bindcompdbx;FMXTee;TeeUI;bindcompvcl;vclie;vcltouch;bcbsmp;websnap;G114_R140;VclSmp;DBXInformixDriver;Intraweb;H4FieldCtl;DataSnapConnectors;GFDSTDXE3;dsnapcon;DBXFirebirdDriver;inet;fsDB17;fmxobj;SynEdit_RXE3;WinMediaPlayer;h4defctl;vclx;frxe17;DBXSybaseASADriver;fmxdae;bdertl;dbexpress;DataSnapIndy10ServerTransport;bcbie;O408br;$(PackageImports)</PackageImports>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -97,11 +97,43 @@
         <TASM_Debugging>None</TASM_Debugging>
     </PropertyGroup>
     <ItemGroup>
-        <CppCompile Include="src/formMain.cpp">
+        <CppCompile Include="formMain.cpp">
             <Form>frmMain</Form>
             <FormType>dfm</FormType>
             <DependentOn>formMain.h</DependentOn>
             <BuildOrder>2</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_area.cpp">
+            <DependentOn>_tr_area.h</DependentOn>
+            <BuildOrder>10</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_line.cpp">
+            <DependentOn>_tr_line.h</DependentOn>
+            <BuildOrder>8</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_logger.cpp">
+            <DependentOn>_tr_logger.h</DependentOn>
+            <BuildOrder>5</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_painter.cpp">
+            <DependentOn>_tr_painter.h</DependentOn>
+            <BuildOrder>4</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_point.cpp">
+            <DependentOn>_tr_point.h</DependentOn>
+            <BuildOrder>6</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_triangle.cpp">
+            <DependentOn>_tr_triangle.h</DependentOn>
+            <BuildOrder>9</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_triangulation.cpp">
+            <DependentOn>_tr_triangulation.h</DependentOn>
+            <BuildOrder>7</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="src\_tr_triangulator.cpp">
+            <DependentOn>_tr_triangulator.h</DependentOn>
+            <BuildOrder>10</BuildOrder>
         </CppCompile>
         <CppCompile Include="triangulation.cpp">
             <BuildOrder>0</BuildOrder>
@@ -109,39 +141,7 @@
         <PCHCompile Include="triangulationPCH1.h">
             <BuildOrder>1</BuildOrder>
         </PCHCompile>
-        <CppCompile Include="src/_tr_area.cpp">
-            <DependentOn>_tr_area.h</DependentOn>
-            <BuildOrder>10</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="src/_tr_line.cpp">
-            <DependentOn>_tr_line.h</DependentOn>
-            <BuildOrder>8</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="src/_tr_logger.cpp">
-            <DependentOn>_tr_logger.h</DependentOn>
-            <BuildOrder>5</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="src/_tr_painter.cpp">
-            <DependentOn>_tr_painter.h</DependentOn>
-            <BuildOrder>4</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="src/_tr_point.cpp">
-            <DependentOn>_tr_point.h</DependentOn>
-            <BuildOrder>6</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="src/_tr_triangle.cpp">
-            <DependentOn>_tr_triangle.h</DependentOn>
-            <BuildOrder>9</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="src/_tr_triangulation.cpp">
-            <DependentOn>_tr_triangulation.h</DependentOn>
-            <BuildOrder>7</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="src/_tr_triangulator.cpp">
-            <DependentOn>_tr_triangulator.h</DependentOn>
-            <BuildOrder>10</BuildOrder>
-        </CppCompile>
-        <FormResources Include="src/formMain.dfm"/>
+        <FormResources Include="formMain.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
