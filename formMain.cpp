@@ -165,8 +165,8 @@ void __fastcall TfrmMain::actSaveAreasExecute(TObject *Sender)
 	int maxX = Image1->Width;
 	int maxY = Image1->Height;
 
-	for(unsigned int x = 0; x < maxX; x = x + 5)
-		for(unsigned int y = 0; y < maxY; y = y + 5)
+	for(unsigned int x = 0; x < maxX; x = x + 1)
+		for(unsigned int y = 0; y < maxY; y = y + 1)
 		{
 			triangulation::point p(x, y);
 			for(unsigned int i = 0; i < m_pPaiter->getAreas().size(); i++)
@@ -267,7 +267,7 @@ void __fastcall TfrmMain::lbxTrianglesClick(TObject *Sender)
 {
   for(int i = 0; i <= lbxTriangles->Count; i++)
   {
-	if(lbxTriangles->Selected[i])
+	if(lbxTriangles->Selected[i] == true)
 	{
 		triangulation::triangle tr;
 		tr.fromString(lbxTriangles->Items->Strings[i]);
