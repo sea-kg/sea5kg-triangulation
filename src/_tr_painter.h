@@ -27,6 +27,7 @@ class painter
 		void SaveAreas(UnicodeString filename);
 		void LoadAreas(UnicodeString filename);
 		std::vector<triangulation::triangle> &getTriangles();
+		std::vector<triangulation::area> &getAreas();
 
 	private:
 

@@ -99,6 +99,12 @@ void painter::clear_buffer()
 
 //---------------------------------------------------------------------------
 
+std::vector<triangulation::area> &painter::getAreas()
+{
+	return m_pTriangulator->getAreas();	
+};
+//---------------------------------------------------------------------------
+
 bool painter::hasAreas()
 {
 	return m_pTriangulator->getAreas().size() > 0;

@@ -43,7 +43,19 @@ void __fastcall TfrmMain::FormCreate(TObject *Sender)
 void __fastcall TfrmMain::Image1MouseMove(TObject *Sender, TShiftState Shift, int X,
 		  int Y)
 {
-	StatusBar1->Panels->Items[0]->Text = "X = " + IntToStr(X) + "; Y= " + IntToStr(Y);
+  // std::vector<triangulation::area> &painter::getAreas()
+  UnicodeString str = "";
+	triangulation::point p(X, Y);
+	for(unsigned int i = 0; i < m_pPaiter->getAreas().size(); i++)
+	{
+		if(m_pPaiter->getAreas()[i].hasPoint(p))
+		{
+			str += "{" + IntToStr((int)i) + "}";
+			p.paint(Image1);
+		};
+	};            
+
+	StatusBar1->Panels->Items[0]->Text = "X = " + IntToStr(X) + "; Y= " + IntToStr(Y) + "; areas: " + str;
 }
 //---------------------------------------------------------------------------
 
@@ -149,6 +161,20 @@ void __fastcall TfrmMain::actSaveAreasExecute(TObject *Sender)
 		Caption = strCaption + "[" + SaveDialog1->FileName + "]";
 	};
 
+	                
+	int maxX = Image1->Width;
+	int maxY = Image1->Height;
+
+	for(unsigned int x = 0; x < maxX; x = x + 5)
+		for(unsigned int y = 0; y < maxY; y = y + 5)
+		{
+			triangulation::point p(x, y);
+			for(unsigned int i = 0; i < m_pPaiter->getAreas().size(); i++)
+			{
+				if(m_pPaiter->getAreas()[i].hasPoint(p))
+					p.paint(Image1);
+			};            	
+		};
 
   /*//
   triangulation::point p1(50,120);

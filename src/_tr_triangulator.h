@@ -42,7 +42,6 @@ namespace triangulation {
 				triangulation::point p1, 
 				triangulation::point p2, 
 				triangulation::point p3, 
-				bool &bShouldChange_p3, 
 				double a,
 				std::vector<triangulation::line> &m_lines
 			);
