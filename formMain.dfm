@@ -2405,8 +2405,6 @@ object frmMain: TfrmMain
       ItemHeight = 13
       TabOrder = 0
       OnClick = lbxTrianglesClick
-      ExplicitTop = 49
-      ExplicitWidth = 697
     end
   end
   object memLog: TMemo
@@ -2427,7 +2425,6 @@ object frmMain: TfrmMain
     Height = 455
     Align = alClient
     TabOrder = 2
-    ExplicitWidth = 697
     object Image1: TImage
       Left = 3
       Top = 4
@@ -2590,6 +2587,24 @@ object frmMain: TfrmMain
       object Save1: TMenuItem
         Caption = 'Save as PNG'
         OnClick = Save1Click
+      end
+    end
+    object est1: TMenuItem
+      Caption = 'Test'
+      object AreaHasIntersection1: TMenuItem
+        Caption = 'area has intersection'
+        OnClick = AreaHasIntersection1Click
+      end
+      object linehasintersectionwithdifferentline1: TMenuItem
+        Caption = 'line has intersection with different line'
+      end
+      object perpendicular1: TMenuItem
+        Caption = 'get perpendicular to line'
+        OnClick = perpendicular1Click
+      end
+      object triangleisequals1: TMenuItem
+        Caption = 'triangle is equals'
+        OnClick = triangleisequals1Click
       end
     end
   end
@@ -3069,7 +3084,7 @@ object frmMain: TfrmMain
     Top = 104
   end
   object OpenDialog1: TOpenDialog
-    Filter = '*.areas'
+    Filter = '*.areas|*.areas'
     Left = 272
     Top = 224
   end

@@ -51,7 +51,7 @@ void __fastcall TfrmMain::Image1MouseMove(TObject *Sender, TShiftState Shift, in
 		if(m_pPaiter->getAreas()[i].hasPoint(p))
 		{
 			str += "{" + IntToStr((int)i) + "}";
-			p.paint(Image1);
+			// p.paint(Image1);
 		};
 	};            
 
@@ -160,57 +160,6 @@ void __fastcall TfrmMain::actSaveAreasExecute(TObject *Sender)
 		m_pPaiter->SaveAreas(SaveDialog1->FileName);
 		Caption = strCaption + "[" + SaveDialog1->FileName + "]";
 	};
-
-	                
-	int maxX = Image1->Width;
-	int maxY = Image1->Height;
-
-	for(unsigned int x = 0; x < maxX; x = x + 1)
-		for(unsigned int y = 0; y < maxY; y = y + 1)
-		{
-			triangulation::point p(x, y);
-			for(unsigned int i = 0; i < m_pPaiter->getAreas().size(); i++)
-			{
-				if(m_pPaiter->getAreas()[i].hasPoint(p))
-					p.paint(Image1);
-			};            	
-		};
-
-  /*//
-  triangulation::point p1(50,120);
-  triangulation::point p2(150,150);
-
-  triangulation::point p3_1(120,50);
-  triangulation::point p3_2(50,200);
-
-  triangulation::line L1(p1,p2);
-
-  Image1->Canvas->Pen->Color = clBlack;
-  Image1->Canvas->Pen->Width = 2;
-
-  L1.paint(Image1);
-
-  triangulation::point p4_1, p4_2;
-
-  double len1 = L1.getPerpendicularToLine(p3_1, p4_1);
-  double len2 = L1.getPerpendicularToLine(p3_2, p4_2);
-
-  triangulation::line L2_1(p3_1,p4_1);
-  triangulation::line L2_1_(p4_1,p3_1);
-
-  triangulation::line L2_2(p3_2,p4_2);
-
-  if(L1.hasPoint(p4_1))
-  {
-	ShowMessage("it has point");
-  }
-
-  Image1->Canvas->Pen->Color = clRed;
-  L2_1.paint(Image1);
-
-  Image1->Canvas->Pen->Color = clBlue;
-  L2_2.paint(Image1);
-  */
 }
 //---------------------------------------------------------------------------
 
@@ -258,7 +207,28 @@ void __fastcall TfrmMain::Save1Click(TObject *Sender)
 {
 	if(SaveDialog2->Execute())
 	{
-		Image1->Picture->SaveToFile(SaveDialog2->FileName);
+		int maxX, minX, maxY, minY;
+		if(m_pPaiter->getMinMaxXY(maxX,minX,maxY,minY))
+		{
+			maxX += 20;
+			minX -= 20;
+			maxY += 20;
+			minY -= 20;
+
+			TRect r_src(minX, minY, maxX, maxY);
+			TRect r_dst(0, 0, maxX - minX, maxY - minY);
+
+			TImage *pImg = new TImage(NULL);
+			pImg->Picture->Bitmap->Height = maxY - minY;
+			pImg->Picture->Bitmap->Width = maxX - minX;
+			TPngImage *pngImg = new TPngImage();
+			pngImg->Assign(pImg->Picture->Bitmap);
+			pngImg->SetSize(maxX - minX, maxY - minY);
+            pngImg->Canvas->CopyRect(r_dst, Image1->Canvas, r_src);
+            pngImg->SaveToFile(SaveDialog2->FileName);
+			delete pngImg;
+			delete pImg;
+		};
 	};
 }
 //---------------------------------------------------------------------------
@@ -276,7 +246,7 @@ void __fastcall TfrmMain::lbxTrianglesClick(TObject *Sender)
 		TColor nBrushColor = Image1->Canvas->Brush->Color;
 		int nWidth = Image1->Canvas->Pen->Width;
 
-		Image1->Canvas->Pen->Color = clRed;
+		Image1->Canvas->Pen->Color = clYellow;
 		Image1->Canvas->Pen->Width = 2;
 		Image1->Canvas->Brush->Color = clBlue;
 
@@ -305,6 +275,96 @@ void __fastcall TfrmMain::lbxTrianglesClick(TObject *Sender)
 void __fastcall TfrmMain::actRefreshExecute(TObject *Sender)
 {
 	m_pPaiter->refresh();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TfrmMain::triangleisequals1Click(TObject *Sender)
+{
+	triangulation::point p1(50,120);
+	triangulation::point p2(150,150);
+	triangulation::point p3(120,50);
+
+	triangulation::triangle tr[6] = {
+		triangulation::triangle(p1,p2,p3),
+		triangulation::triangle(p1,p3,p2),
+		triangulation::triangle(p2,p1,p3),
+		triangulation::triangle(p2,p3,p1),
+		triangulation::triangle(p3,p2,p1),
+		triangulation::triangle(p3,p1,p2)
+	};
+
+	UnicodeString str;
+
+	for(int x = 0; x < 6; x++)
+	{
+		for(int y = 0; y < 6; y++)
+		{
+			str += "{" + IntToStr(x) + "," + IntToStr(y) + ",";
+			str += tr[x].isEqual(tr[y]) ? "true" : "false";
+			str += "}";
+		}
+		str += "\r\n";
+	}
+
+	ShowMessage(str);
+	return;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::AreaHasIntersection1Click(TObject *Sender)
+{
+	int maxX = Image1->Width;
+	int maxY = Image1->Height;
+
+	for(unsigned int x = 0; x < maxX; x = x + 1)
+		for(unsigned int y = 0; y < maxY; y = y + 1)
+		{
+			triangulation::point p(x, y);
+			for(unsigned int i = 0; i < m_pPaiter->getAreas().size(); i++)
+			{
+				if(m_pPaiter->getAreas()[i].hasPoint(p))
+					p.paint(Image1);
+			};
+		};
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::perpendicular1Click(TObject *Sender)
+{
+  triangulation::point p1(50,120);
+  triangulation::point p2(150,150);
+
+  triangulation::point p3_1(120,50);
+  triangulation::point p3_2(50,200);
+
+  triangulation::line L1(p1,p2);
+
+  Image1->Canvas->Pen->Color = clBlack;
+  Image1->Canvas->Pen->Width = 2;
+
+  L1.paint(Image1);
+
+  triangulation::point p4_1, p4_2;
+
+  double len1 = L1.getPerpendicularToLine(p3_1, p4_1);
+  double len2 = L1.getPerpendicularToLine(p3_2, p4_2);
+
+  triangulation::line L2_1(p3_1,p4_1);
+  triangulation::line L2_1_(p4_1,p3_1);
+
+  triangulation::line L2_2(p3_2,p4_2);
+
+  if(L1.hasPoint(p4_1))
+  {
+	ShowMessage("it has point");
+  }
+
+  Image1->Canvas->Pen->Color = clRed;
+  L2_1.paint(Image1);
+
+  Image1->Canvas->Pen->Color = clBlue;
+  L2_2.paint(Image1);
 }
 //---------------------------------------------------------------------------
 

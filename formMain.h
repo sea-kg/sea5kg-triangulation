@@ -18,6 +18,9 @@
 #include "_tr_logger.h"
 #include "_tr_painter.h"
 #include <Vcl.Dialogs.hpp>
+#include <Vcl.Graphics.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
+
 
 //---------------------------------------------------------------------------
 class TfrmMain : public TForm
@@ -64,6 +67,11 @@ __published:	// IDE-managed Components
 	TSplitter *Splitter2;
 	TBitBtn *BitBtn6;
 	TAction *actRefresh;
+	TMenuItem *est1;
+	TMenuItem *AreaHasIntersection1;
+	TMenuItem *linehasintersectionwithdifferentline1;
+	TMenuItem *perpendicular1;
+	TMenuItem *triangleisequals1;
 	void __fastcall Close1Click(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall Image1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
@@ -88,6 +96,9 @@ __published:	// IDE-managed Components
 	void __fastcall Save1Click(TObject *Sender);
 	void __fastcall lbxTrianglesClick(TObject *Sender);
 	void __fastcall actRefreshExecute(TObject *Sender);
+	void __fastcall triangleisequals1Click(TObject *Sender);
+	void __fastcall AreaHasIntersection1Click(TObject *Sender);
+	void __fastcall perpendicular1Click(TObject *Sender);
 
 private:	// User declarations
 	void refresh();

@@ -24,4 +24,5 @@
 *.tds
 *.map
 *.pch
+__history/*
 
