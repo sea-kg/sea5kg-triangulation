@@ -30,14 +30,18 @@ bool area::hasPoint(const triangulation::point &p) const
 
 		triangulation::point p_res;
 
-		if(line_x.hasIntersection(line_side, p_res) && line_x.hasPoint(p_res) && line_side.hasPoint(p_res) )
-			points_x.push_back(p_res.X) ;
+		//if(line_x.hasIntersection(line_side, p_res)) // && line_x.hasPoint(p_res) && line_side.hasPoint(p_res) )
+		//	points_x.push_back(p_res.X) ;
 
 		if(line_side.hasIntersection(line_x, p_res))
-		  points_x.push_back(p_res.X);
+			points_x.push_back(p_res.X);
 
-		if(line_y.hasIntersection(line_side, p_res) && line_y.hasPoint(p_res) && line_side.hasPoint(p_res) )
+		//if(line_y.hasIntersection(line_side, p_res)) // && line_y.hasPoint(p_res) && line_side.hasPoint(p_res) )
+		//	points_y.push_back(p_res.Y);
+
+		if(line_side.hasIntersection(line_y, p_res)) // && line_y.hasPoint(p_res) && line_side.hasPoint(p_res) )
 			points_y.push_back(p_res.Y);
+
 
 	}
 
@@ -55,7 +59,7 @@ bool area::hasPoint(const triangulation::point &p) const
 
 		if( 
 			((i+1) % 2 == 0) 
-			&& (X_left <= p.X) 
+			&& (p.X >= X_left) 
 			&& (p.X <= X_right)
 		)
 		{
@@ -72,7 +76,7 @@ bool area::hasPoint(const triangulation::point &p) const
 
 		if(	
 			((i+1) % 2 == 0) 
-			&& (Y_left <= p.Y)
+			&& (p.Y >= Y_left)
 			&& (p.Y <= Y_right)
 		)
 		{

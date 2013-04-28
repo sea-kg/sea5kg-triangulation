@@ -27,6 +27,7 @@ class triangle
 		void triangle::fromString(UnicodeString str);
 		bool operator == (const triangulation::triangle &tr);
 		void operator = (const triangulation::triangle &tr);
+		bool isEqual(const triangulation::triangle &tr);
 
 	private:
 };

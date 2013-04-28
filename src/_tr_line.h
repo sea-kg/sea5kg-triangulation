@@ -39,13 +39,7 @@ class line
 
 		triangulation::point p1, p2;
 		bool hasIntersection(triangulation::line &l, triangulation::point &result);
-		double length() const 
-		{
-			double p12_X = (p1.X - p2.X);
-			double p12_Y = (p1.Y - p2.Y);
-			return sqrt( p12_X * p12_X + p12_Y * p12_Y);
-		}
-
+		double length() const;
 		triangulation::point getMiddlePoint() const
 		{
 			triangulation::point p;
@@ -66,7 +60,8 @@ class line
 		};
 
 		private:
-          bool hasIntersection2(triangulation::line &l, triangulation::point &result);
+			bool hasIntersection2(triangulation::line &l, triangulation::point &result);
+			bool hasIntersection3(triangulation::line &l, triangulation::point &result);
 
 };
 

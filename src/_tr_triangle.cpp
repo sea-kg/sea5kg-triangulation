@@ -32,7 +32,9 @@ double triangle::getSquare()
 	double b = triangulation::line(p2, p3).length();
 	double c = triangulation::line(p3, p1).length();
 	double p = (a + b + c) / 2;
-	return sqrt(p * (p - a) * (p - b) * (p - c));
+	double res = p * (p - a) * (p - b) * (p - c);
+	if(res > 0.1) res = sqrt(res);
+	return res;
 };
 
 //---------------------------------------------------------------------------
@@ -175,15 +177,23 @@ bool triangle::hasPoint(const triangulation::point &p)
 
 bool triangle::hasTop(const triangulation::point &p)
 {
-	double k = 1;
-	return (p1.length(p) < k) || (p2.length(p) < k) || (p3.length(p) < k);
+	double k = 2;
+	return ((p1.length(p) < k) || (p2.length(p) < k) || (p3.length(p) < k))
+		|| p1 == p || p2 == p || p3 == p;
+};
+
+//---------------------------------------------------------------------------
+
+bool triangle::isEqual(const triangulation::triangle &tr)
+{
+	return hasTop(tr.p1) && hasTop(tr.p2) && hasTop(tr.p3);
 };
 
 //---------------------------------------------------------------------------
 
 bool triangle::operator == (const triangulation::triangle &tr)
 {
-	return hasTop(tr.p1) && hasTop(tr.p2) && hasTop(tr.p3);
+	return isEqual(tr);
 };
 
 //---------------------------------------------------------------------------

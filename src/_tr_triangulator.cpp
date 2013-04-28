@@ -42,39 +42,51 @@ bool triangulator::addTriangle(
 		m_pLogger->info("yes! : " + p3.toString());
 	};
  
-  if(p1.toString() == "(195,371)" && p2.toString() == "(233,415)")
-  	m_pLogger->info(" start here!!!!");
+	if(p1.toString() == "(195,371)" && p2.toString() == "(233,415)")
+  		m_pLogger->info(" start here!!!!");
 
+  	{
+		triangulation::point p_buff;
+		if(m_areas[nCurrArea].findNearPointSide(p3, p_buff, a/2))
+		{
+			if(addTriangleAsIs(p1,p2,p_buff, a, m_lines))
+				return true;
+		};
+	}
 
+	if(addTriangleAsIs(p1,p2,p3, a, m_lines))
+		return true;
+
+	/*
 	if(hasCurrentArea(p3))
 	{
-	  m_pLogger->info("hasCurrentArea == true p3 = " + p3.toString());
+	  // m_pLogger->info("hasCurrentArea == true p3 = " + p3.toString());
 
 		triangulation::point p_buff;
 		bool br = m_areas[nCurrArea].findNearPointSide(p3, p_buff, a/2);
-		m_pLogger->info("hasCurrentArea == true try add(p1,p2,p3): " + triangulation::triangle(p1,p2,p3).toString());
+		// m_pLogger->info("hasCurrentArea == true try add(p1,p2,p3): " + triangulation::triangle(p1,p2,p3).toString());
 		
 
 		if(br && triangulation::triangle(p1,p2,p_buff).getSquare() >= min_square) // && hasCurrentArea(p_buff))
 		{
-		  m_pLogger->info("hasCurrentArea == true try add: " + triangulation::triangle(p1,p2,p3).toString());
-		  m_pLogger->info("hasCurrentArea == true try add: " + triangulation::triangle(p1,p2,p_buff).toString());
+		  // m_pLogger->info("hasCurrentArea == true try add: " + triangulation::triangle(p1,p2,p3).toString());
+		  // m_pLogger->info("hasCurrentArea == true try add: " + triangulation::triangle(p1,p2,p_buff).toString());
 
-		  m_pLogger->info("hasCurrentArea not added");
+		  // m_pLogger->info("hasCurrentArea not added");
 		  //p3 = p_buff;
 		  if(addTriangleAsIs(p1,p2,p_buff, a, m_lines))
-    		return true;
-    };
-    m_pLogger->info("hasCurrentArea == true try add(p1,p2,p_buff): " + triangulation::triangle(p1,p2,p_buff).toString());
+			return true;
+    		};
+    		// m_pLogger->info("hasCurrentArea == true try add(p1,p2,p_buff): " + triangulation::triangle(p1,p2,p_buff).toString());
 
-    if(addTriangleAsIs(p1,p2,p3, a, m_lines))
-    		return true;
+    		if(addTriangleAsIs(p1,p2,p3, a, m_lines))
+    			return true;
 
-    m_pLogger->info("hasCurrentArea not added");
+ 	// m_pLogger->info("hasCurrentArea not added");
  	}
 	else
 	{
-	  m_pLogger->info("hasCurrentArea == false p3 = " + p3.toString());
+		// m_pLogger->info("hasCurrentArea == false p3 = " + p3.toString());
 		triangulation::point p_buff;
 		for(unsigned int i2 = 0; i2 < m_areas.size(); i2++)
 		{
@@ -90,7 +102,7 @@ bool triangulator::addTriangle(
 
 	if(addTriangleAsIs(p1,p2,p3, a, m_lines))
 		return true;	  
- 	
+ 	*/
 	
 /*	if(addTriangleAsIs(p1,p2,p3, a, m_lines))
 		return true;*/
@@ -201,15 +213,19 @@ bool triangulator::addTriangleAsIs(
 	std::vector<triangulation::line> &m_lines
 	)
 {
-  triangulation::point p_buff;
-  triangulation::point p_null;
-  triangulation::point p1_arr[2] = { p_buff, p1 };
-  triangulation::point p2_arr[2] = { p_buff, p2 };
-  triangulation::point p3_arr[2] = { p_buff, p3 };
+	triangulation::point p_buff;
+	triangulation::point p_null;
+	triangulation::point p1_arr[2] = { p_buff, p1 };
+	triangulation::point p2_arr[2] = { p_buff, p2 };
+	triangulation::point p3_arr[2] = { p_buff, p3 };
 
-  p1_arr[1] = p1;
-  p2_arr[1] = p2;
-  p3_arr[1] = p3;
+	p1_arr[1] = p1;
+	p2_arr[1] = p2;
+	p3_arr[1] = p3;
+
+	double p = (a + a + a) / 2;
+	double min_square = sqrt(p * (p - a) * (p - a) * (p - a));
+	min_square = min_square / 3;
 
 //  triangulation::point p1_alternate = p1;
 //  triangulation::point p2_alternate = p2;
@@ -222,54 +238,53 @@ bool triangulator::addTriangleAsIs(
 	if( findNearPoint(p2, p_buff, a/2) && p_buff.length(p1) > k && p_buff.length(p3) > k)
 		p2_arr[0] = p_buff;
 	
-  if( findNearPoint(p3, p_buff, a/2) && p_buff.length(p2) > k && p_buff.length(p1) > k)
+	if( findNearPoint(p3, p_buff, a/2) && p_buff.length(p2) > k && p_buff.length(p1) > k)
 		p3_arr[0] = p_buff;
 		
-  // possiable triangles 
+	// possiable triangles 
 	std::vector<triangulation::triangle> triangles;
 
 	for(int i1 = 0; i1 < 2; i1++ )
 		for(int i2 = 0; i2 < 2; i2++ )
 			for(int i3 = 0; i3 < 2; i3++ )
 			{	  
-    		if(p1_arr[i1] != p_null && p2_arr[i2] != p_null && p3_arr[i3] != p_null)
-    			triangles.push_back(triangulation::triangle(p1_arr[i1], p2_arr[i2], p3_arr[i3]));
+				if(p1_arr[i1] != p_null && p2_arr[i2] != p_null && p3_arr[i3] != p_null)
+				triangles.push_back(triangulation::triangle(p1_arr[i1], p2_arr[i2], p3_arr[i3]));
 			};
 
 
 	for(unsigned int i = 0; i < triangles.size(); i++)
 	{
-	  triangulation::triangle tr = triangles[i];
+		triangulation::triangle tr = triangles[i];
 
-  	if(	!hasCurrentArea(tr.p1) || !hasCurrentArea(tr.p2) || !hasCurrentArea(tr.p3) )
-  		continue;
+		if( !hasCurrentArea(tr.p1) || !hasCurrentArea(tr.p2) || !hasCurrentArea(tr.p3) )
+			continue;
 
-  	if(!hasCurrentArea(tr.p1,tr.p2) || !hasCurrentArea(tr.p2,tr.p3) || !hasCurrentArea(tr.p3,tr.p1))
-  		continue;
+		if( !hasCurrentArea(tr.p1,tr.p2) || !hasCurrentArea(tr.p2,tr.p3) || !hasCurrentArea(tr.p3,tr.p1) )
+			continue;
 
-  	triangulation::triangle tr_buff;
-  	triangulation::point p_intersection;
+		triangulation::triangle tr_buff;
+		triangulation::point p_intersection;
 
-  	if(!findTriangle(tr.p1,tr.p2,tr.p3) && !hasIntersection(tr.p1,tr.p2,tr.p3, tr_buff, p_intersection))
-  	{		
-  		double p = (a + a + a) / 2;
-  		double min_square = sqrt(p * (p - a) * (p - a) * (p - a));
-  		min_square = min_square / 10;
+		if(tr.p1 == tr.p2 || tr.p1 == tr.p3 || tr.p2 == tr.p3 )
+			continue;
 
-  		//if(tr.getSquare() > min_square)		
-  		{
-  			m_triangles.push_back(tr);
-  			m_lines.push_back(triangulation::line(tr.p1,tr.p3));
+		if(!findTriangle(tr.p1,tr.p2,tr.p3) && !hasIntersection(tr.p1,tr.p2,tr.p3, tr_buff, p_intersection))
+		{		
+			if(tr.getSquare() > min_square)		
+  			{
+  				m_triangles.push_back(tr);
+	  			m_lines.push_back(triangulation::line(tr.p1,tr.p3));
 
-  			// m_pLogger->info(triangulation::triangle(p1,p2,p3).toString());
-  			if(tr.p2.toString() == "(195,371)" && tr.p3.toString() == "(233,415)")
-  			   m_pLogger->info(" add line here!!!!");
+  				// m_pLogger->info(triangulation::triangle(p1,p2,p3).toString());
+  				if(tr.p2.toString() == "(195,371)" && tr.p3.toString() == "(233,415)")
+  				   m_pLogger->info(" add line here!!!!");
 
-  			m_lines.push_back(triangulation::line(tr.p2,tr.p3));
-  			return true;
-      };
-  	}
-  };
+	  			m_lines.push_back(triangulation::line(tr.p2,tr.p3));
+  				return true;
+			};
+		}
+  	};
 	return false;
 };
 
@@ -427,7 +442,7 @@ bool triangulator::findTriangle(triangulation::point p1, triangulation::point p2
 	triangulation::triangle tr(p1,p2,p3);
 	for(int i = 0; i < m_triangles.size(); i++)
 	{
-		if(m_triangles[i] == tr)
+		if(m_triangles[i].isEqual(tr))
 			return true;
 	};
 	return false;

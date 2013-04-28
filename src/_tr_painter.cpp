@@ -190,4 +190,48 @@ std::vector<triangulation::triangle> &painter::getTriangles()
 
 //---------------------------------------------------------------------------
 
+bool painter::getMinMaxXY(int &maxX, int &minX, int &maxY, int &minY)
+{
+	double _maxX, _minX, _maxY, _minY;
+
+	bool bFirst = true;
+
+	for(unsigned int i = 0; i < getAreas().size(); i++)
+	{
+		for(int i1 = 0; i1 < getAreas()[i].count(); i1++)
+		{
+			triangulation::point p = getAreas()[i].getPoint(i1);
+
+			if(bFirst)
+			{
+				_maxX = p.X;
+				_minX = p.X;
+				_maxY = p.Y;
+				_minY = p.Y;
+				bFirst = false;
+			};
+
+			if(_maxX < p.X) _maxX = p.X;
+			if(_minX > p.X) _minX = p.X;
+			if(_maxY < p.Y) _maxY = p.Y;
+			if(_minY > p.Y) _minY = p.Y;
+
+		};
+	};
+
+	if((_maxX > _minX) && (_maxY > _minY))
+	{
+	   maxX = _maxX;
+	   minX = _minX;
+	   maxY = _maxY;
+	   minY = _minY;
+	   return true;
+	};
+	return false;
+};
+
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+
 #pragma package(smart_init)

@@ -29,6 +29,7 @@ class painter
 		std::vector<triangulation::triangle> &getTriangles();
 		std::vector<triangulation::area> &getAreas();
 
+		bool getMinMaxXY(int &maxX, int &minX, int &maxY, int &minY);
 	private:
 
 		// new
