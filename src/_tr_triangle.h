@@ -5,6 +5,7 @@
 
 #include "_tr_point.h"
 #include "_tr_line.h"
+#include "_tr_area.h"
 //---------------------------------------------------------------------------
 
 namespace triangulation {

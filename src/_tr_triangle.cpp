@@ -108,6 +108,14 @@ bool _sort_here (double x1, double x2) { return (x1 < x2); };
 
 bool triangle::hasPoint(const triangulation::point &p)
 {
+	triangulation::area ar;		
+	ar.addPoint(p1.X, p1.Y);
+	ar.addPoint(p2.X, p2.Y);
+	ar.addPoint(p3.X, p3.Y);
+	return ar.hasPoint(p);
+
+
+
 	triangulation::line line_x( triangulation::point(-1000, p.Y), triangulation::point(1000, p.Y) );
 	triangulation::line line_y( triangulation::point(p.X, -1000), triangulation::point(p.X,1000) );
 
@@ -117,19 +125,23 @@ bool triangle::hasPoint(const triangulation::point &p)
 	points_y.push_back(-1000);
 
 
+	triangulation::line line12(p1,p2);
+	triangulation::line line23(p2,p3);
+	triangulation::line line31(p3,p2);
+
 	triangulation::point p_res;
-	if(triangulation::line(p1,p2).hasIntersection(line_x, p_res))
+	if(line12.hasIntersection(line_x, p_res))
 	  points_x.push_back(p_res.X);
-	if(triangulation::line(p2,p3).hasIntersection(line_x, p_res))
+	if(line23.hasIntersection(line_x, p_res))
 	  points_x.push_back(p_res.X);
-	if(triangulation::line(p3,p1).hasIntersection(line_x, p_res))
+	if(line31.hasIntersection(line_x, p_res))
 	  points_x.push_back(p_res.X);
 
-	if(triangulation::line(p1,p2).hasIntersection(line_y, p_res))
+	if(line12.hasIntersection(line_y, p_res))
 		points_y.push_back(p_res.Y);
-	if(triangulation::line(p2,p3).hasIntersection(line_y, p_res))
+	if(line23.hasIntersection(line_y, p_res))
 		points_y.push_back(p_res.Y);
-	if(triangulation::line(p3,p1).hasIntersection(line_y, p_res))
+	if(line31.hasIntersection(line_y, p_res))
 		points_y.push_back(p_res.Y);
 
 	points_x.push_back(1000);
@@ -163,9 +175,9 @@ bool triangle::hasPoint(const triangulation::point &p)
 	};
 
 	if( bX && bY 
-			&& triangulation::line(p1,p2).getPerpendicularToLine(p, p_res) > 2 
-			&& triangulation::line(p2,p3).getPerpendicularToLine(p, p_res) > 2
-			&& triangulation::line(p3,p1).getPerpendicularToLine(p, p_res) > 2
+			&& line12.getPerpendicularToLine(p, p_res) > 2 
+			&& line23.getPerpendicularToLine(p, p_res) > 2
+			&& line31.getPerpendicularToLine(p, p_res) > 2
 	)
 	{
 		return true;
@@ -177,7 +189,7 @@ bool triangle::hasPoint(const triangulation::point &p)
 
 bool triangle::hasTop(const triangulation::point &p)
 {
-	double k = 2;
+	double k = 1;
 	return ((p1.length(p) < k) || (p2.length(p) < k) || (p3.length(p) < k))
 		|| p1 == p || p2 == p || p3 == p;
 };

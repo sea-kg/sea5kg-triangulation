@@ -7,6 +7,7 @@
 #include "_tr_triangle.h"
 #include "_tr_area.h"
 #include <vector>
+#include <list>
 
 //---------------------------------------------------------------------------
 namespace triangulation {
@@ -37,6 +38,7 @@ namespace triangulation {
 			//
 			bool findTriangle(triangulation::point p1, triangulation::point p2, triangulation::point p3);
 			bool findNearPoint(triangulation::point p, triangulation::point &result, double r);
+                        bool findNearPointSide(triangulation::point p, triangulation::point &result, double r);
 
 			bool addTriangleAsIs(
 				triangulation::point p1, 
@@ -54,6 +56,8 @@ namespace triangulation {
 				triangulation::triangle &result,
 				triangulation::point &p_result
 			);
+
+			void fillArray(const triangulation::point &p, std::vector<triangulation::point> &p_arr, double r);
 	};
 
 
