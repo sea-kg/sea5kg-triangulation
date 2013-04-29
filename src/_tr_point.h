@@ -19,12 +19,12 @@ class point
 
 		void paint(TImage *img);
 
-		double length(const triangulation::point &p);
+		double length(const triangulation::point &p) const;
 
 		void operator += (const triangulation::point &p);
 		const triangulation::point operator / (const int n);
 		void operator = (const triangulation::point &p);
-		bool operator == (const triangulation::point &p);
+		bool operator == (const triangulation::point &p) const;
 		bool operator != (const triangulation::point &p);
 		UnicodeString toString();
 		double X,Y;

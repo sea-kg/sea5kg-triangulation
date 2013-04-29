@@ -15,6 +15,42 @@ triangulator::triangulator(triangulation::logger *pLogger)
 
 //---------------------------------------------------------------------------
 
+void triangulator::fillArray(const triangulation::point &p, std::vector<triangulation::point> &p_arr, double r)
+{
+	triangulation::point p_temp;
+	triangulation::point p_buff;
+
+	std::vector<triangulation::point> p_vect;
+
+	p_vect.push_back(p);
+
+	p_temp = p;
+
+	if(findNearPoint(p_temp, p_buff, r)) p_vect.push_back(p_buff);
+	else p_vect.push_back(p_temp);
+	
+	/*p_temp = p_vect[p_vect.size()-1];
+	if(findNearPointSide(p_temp, p_buff, r)) p_vect.push_back(p_buff);
+	else p_vect.push_back(p_temp);*/
+
+	p_temp = p;
+	if(findNearPointSide(p_temp, p_buff, r)) p_vect.push_back(p_buff);
+	else p_vect.push_back(p_temp);
+
+	p_temp = p_vect[p_vect.size()-1];
+        if(findNearPoint(p_temp, p_buff, r)) p_vect.push_back(p_buff);
+	else p_vect.push_back(p_temp);
+
+	p_arr.clear();
+	for(unsigned int i = 0; i < p_vect.size(); i++)
+	{
+		unsigned int id = p_vect.size() - i - 1;
+		p_arr.push_back(p_vect[id]);
+	};
+};
+
+//---------------------------------------------------------------------------
+
 bool triangulator::addTriangle(
 	triangulation::point p1,
 	triangulation::point p2,
@@ -27,8 +63,38 @@ bool triangulator::addTriangle(
 	double min_square = sqrt(p * (p - a) * (p - a) * (p - a));
 	min_square = min_square / 10;
 
-	if(addTriangleAsIs(p1,p2,p3, a, m_lines))
-		return true;
+	
+
+ 	triangulation::point p_null;
+
+	std::vector<triangulation::point> p1_arr;
+	std::vector<triangulation::point> p2_arr;
+	std::vector<triangulation::point> p3_arr;
+
+	fillArray(p1, p1_arr, a/2);
+	fillArray(p2, p2_arr, a/2);
+	fillArray(p3, p3_arr, a/2);
+
+	// possiable triangles 
+	std::vector<triangulation::triangle> triangles;
+
+	for(int i = 0; i < p1_arr.size(); i++ )
+	{
+		if(p1_arr[i] != p_null && p2_arr[i] != p_null && p3_arr[i] != p_null)
+			triangles.push_back(triangulation::triangle(p1_arr[i], p2_arr[i], p3_arr[i]));
+	};
+
+	for(unsigned int i = 0; i < triangles.size(); i++)
+	{
+		triangulation::triangle tr = triangles[i];
+
+		if(addTriangleAsIs(tr.p1,tr.p2,tr.p3, a, m_lines))
+			return true;
+	};
+
+/*	if(addTriangleAsIs(p1,p2,p3, a, m_lines))
+		return true;*/
+
 
 	// return false;
 /*
@@ -174,25 +240,26 @@ bool triangulator::addTriangle(
 	};
 
 */
-			
-	triangulation::triangle tr;	
-	triangulation::point p_intersection;
-	if(hasIntersection(p1,p2,p3, tr, p_intersection))
-	{
-		if(addTriangleAsIs(p1,p2,tr.p1, 1, m_lines))
-			return true;
+
+	{	
+		triangulation::triangle tr;	
+		triangulation::triangle tr_(p1,p2,p3);	
+		triangulation::point p_intersection;
+		if(hasIntersectionWithOtherTriangles(tr_, tr, p_intersection))
+		{
+			if(addTriangleAsIs(tr_.p1,tr_.p2,tr.p1, 1, m_lines))
+				return true;
 		
-		if(addTriangleAsIs(p1,p2,tr.p2, 1, m_lines))
-			return true;
+			if(addTriangleAsIs(tr_.p1,tr_.p2,tr.p2, 1, m_lines))
+				return true;
 		
-		if(addTriangleAsIs(p1,p2,tr.p3, 1, m_lines))
-			return true;
+			if(addTriangleAsIs(tr_.p1,tr_.p2,tr.p3, 1, m_lines))
+				return true;
 
-
-		//p3 = p_intersection;
-		//if(addTriangleAsIs(p1,p2,p3, 1, m_lines))
-		//	return true;
-
+			//p3 = p_intersection;
+			//if(addTriangleAsIs(p1,p2,p3, 1, m_lines))
+			//	return true;
+		};
 	};
 
 	for(int i = 0; i < m_areas[nCurrArea].count(); i++)
@@ -224,42 +291,6 @@ bool triangulator::addTriangle(
 
 //---------------------------------------------------------------------------
 
-void triangulator::fillArray(const triangulation::point &p, std::vector<triangulation::point> &p_arr, double r)
-{
-	triangulation::point p_temp;
-	triangulation::point p_buff;
-
-	std::vector<triangulation::point> p_vect;
-
-	p_vect.push_back(p);
-
-	p_temp = p;
-
-	if(findNearPoint(p_temp, p_buff, r)) p_vect.push_back(p_buff);
-	else p_vect.push_back(p_temp);
-	
-	/*p_temp = p_vect[p_vect.size()-1];
-	if(findNearPointSide(p_temp, p_buff, r)) p_vect.push_back(p_buff);
-	else p_vect.push_back(p_temp);*/
-
-	p_temp = p;
-	if(findNearPointSide(p_temp, p_buff, r)) p_vect.push_back(p_buff);
-	else p_vect.push_back(p_temp);
-
-	p_temp = p_vect[p_vect.size()-1];
-        if(findNearPoint(p_temp, p_buff, r)) p_vect.push_back(p_buff);
-	else p_vect.push_back(p_temp);
-
-	p_arr.clear();
-	for(unsigned int i = 0; i < p_vect.size(); i++)
-	{
-		unsigned int id = p_vect.size() - i - 1;
-		p_arr.push_back(p_vect[id]);
-	};
-};
-
-//---------------------------------------------------------------------------
-
 bool triangulator::addTriangleAsIs(
 	triangulation::point p1, 
 	triangulation::point p2, 
@@ -268,124 +299,46 @@ bool triangulator::addTriangleAsIs(
 	std::vector<triangulation::line> &m_lines
 	)
 {
-	triangulation::point p_buff;
-	triangulation::point p_null;
-
-	std::vector<triangulation::point> p1_arr;
-	std::vector<triangulation::point> p2_arr;
-	std::vector<triangulation::point> p3_arr;
-
-/*	const int nSize = 4;
-	triangulation::point p1_arr[nSize]; // = { p_buff, p_buff, p_buff, p1 };
-	triangulation::point p2_arr[nSize]; // = { p_buff, p_buff, p_buff, p2 };
-	triangulation::point p3_arr[nSize]; // = { p_buff, p_buff, p_buff, p3 };*/
-
-	fillArray(p1, p1_arr, a/2);
-	fillArray(p2, p2_arr, a/2);
-	fillArray(p3, p3_arr, a/2);
-	
-
-	/*p1_arr[3] = p1;
-	p2_arr[3] = p2;
-	p3_arr[3] = p3;*/
-
 	double p = (a + a + a) / 2;
 	double min_square = sqrt(p * (p - a) * (p - a) * (p - a));
 	min_square = min_square / 3;
 
-//  triangulation::point p1_alternate = p1;
-//  triangulation::point p2_alternate = p2;
-//  triangulation::point p3_alternate = p3;
-
-	double k = 0.1;
-/*	
-	findNearPoint(p1_arr[nSize-1], p1_arr[nSize-2], a/2); // && p_buff.length(p2_arr[1]) > k && p_buff.length(p3_arr[1]) > k)	
-	findNearPoint(p2_arr[nSize-1], p2_arr[nSize-2], a/2); // && p_buff.length(p1_arr[1]) > k && p_buff.length(p3_arr[1]) > k)	
-	findNearPoint(p3_arr[nSize-1], p3_arr[nSize-2], a/2); // && p_buff.length(p1_arr[1]) > k && p_buff.length(p2_arr[1]) > k)
-
-	if(!findNearPointSide(p1_arr[nSize-1], p1_arr[nSize-3], a/2))
-		p1_arr[nSize-3] = p1_arr[nSize-1];
-	
-	if(!findNearPointSide(p2_arr[nSize-1], p2_arr[nSize-3], a/2))
-		p2_arr[nSize-3] = p2_arr[nSize-1];
-		
-	if(!findNearPointSide(p3_arr[nSize-1], p3_arr[nSize-3], a/2))
-		p3_arr[nSize-3] = p3_arr[nSize-1];
-
-	if(!findNearPoint(p1_arr[nSize-3], p1_arr[nSize-4], a/2))
-		p1_arr[nSize-4] = p1_arr[nSize-3];
-		
-	if(!findNearPoint(p2_arr[nSize-3], p2_arr[nSize-4], a/2))
-		p2_arr[nSize-4] = p2_arr[nSize-3];
-		
-	if(!findNearPoint(p3_arr[nSize-3], p3_arr[nSize-4], a/2))
-		p3_arr[nSize-4] = p3_arr[nSize-3];
-*/
-
-/*
-	if( findNearPoint(p1_arr[1], p_buff, a/2) && p_buff.length(p2_arr[1]) > k && p_buff.length(p3_arr[1]) > k)
-		p1_arr[0] = p_buff;
-
-	if( findNearPoint(p2_arr[1], p_buff, a/2) && p_buff.length(p1_arr[1]) > k && p_buff.length(p3_arr[1]) > k)
-		p2_arr[0] = p_buff;
-	
-	if( findNearPoint(p3_arr[1], p_buff, a/2) && p_buff.length(p1_arr[1]) > k && p_buff.length(p2_arr[1]) > k)
-		p3_arr[0] = p_buff;
-
-		
-	// possiable triangles 
-	std::vector<triangulation::triangle> triangles;
-
-	for(int i1 = 0; i1 < nSize; i1++ )
-		for(int i2 = 0; i2 < nSize; i2++ )
-			for(int i3 = 0; i3 < nSize; i3++ )
-			{	  
-				if(p1_arr[i1] != p_null && p2_arr[i2] != p_null && p3_arr[i3] != p_null)
-				triangles.push_back(triangulation::triangle(p1_arr[i1], p2_arr[i2], p3_arr[i3]));
-			};
-*/
-
-	// possiable triangles 
-	std::vector<triangulation::triangle> triangles;
-
-	for(int i = 0; i < p1_arr.size(); i++ )
-	{
-		if(p1_arr[i] != p_null && p2_arr[i] != p_null && p3_arr[i] != p_null)
-			triangles.push_back(triangulation::triangle(p1_arr[i], p2_arr[i], p3_arr[i]));
-	};
-
-	for(unsigned int i = 0; i < triangles.size(); i++)
-	{
-		triangulation::triangle tr = triangles[i];
+//	for(unsigned int i = 0; i < triangles.size(); i++)
+//	{
+		triangulation::triangle tr(p1,p2,p3);
 
 		if( !hasCurrentArea(tr.p1) || !hasCurrentArea(tr.p2) || !hasCurrentArea(tr.p3) )
-			continue;
+			return false;
 
 		if( !hasCurrentArea(tr.p1,tr.p2) || !hasCurrentArea(tr.p2,tr.p3) || !hasCurrentArea(tr.p3,tr.p1) )
-			continue;
+			return false;
 
 		triangulation::triangle tr_buff;
 		triangulation::point p_intersection;
 
 		if(tr.p1.length(tr.p2) < 3 || tr.p1.length(tr.p3) < 3 || tr.p2.length(tr.p3) < 3 )
-			continue;
+			return false;
 
-		if(!findTriangle(tr.p1,tr.p2,tr.p3) && !hasIntersection(tr.p1,tr.p2,tr.p3, tr_buff, p_intersection))
+		if(
+				!findTriangle(tr.p1,tr.p2,tr.p3) 
+				&& !hasIntersectionWithOtherTriangles(tr, tr_buff, p_intersection)
+		)
 		{		
 			if(tr.getSquare() > min_square)		
-  			{
-  				m_triangles.push_back(tr);
-	  			m_lines.push_back(triangulation::line(tr.p1,tr.p3));
+			{
+				m_triangles.push_back(tr);
+	  		m_lines.push_back(triangulation::line(tr.p1,tr.p3));
+	  		m_lines.push_back(triangulation::line(tr.p2,tr.p3));
 
-  				// m_pLogger->info(triangulation::triangle(p1,p2,p3).toString());
-  				if(tr.p2.toString() == "(195,371)" && tr.p3.toString() == "(233,415)")
-  				   m_pLogger->info(" add line here!!!!");
+  			// m_pLogger->info(triangulation::triangle(p1,p2,p3).toString());
+  			//if(tr.p2.toString() == "(195,371)" && tr.p3.toString() == "(233,415)")
+  			//   m_pLogger->info(" add line here!!!!");
 
-	  			m_lines.push_back(triangulation::line(tr.p2,tr.p3));
-  				return true;
+	  		//m_lines.push_back(triangulation::line(tr.p2,tr.p3));
+  			return true;
 			};
 		}
-  	};
+//  	};
 	return false;
 };
 
@@ -433,21 +386,19 @@ bool hasPoint_(triangulation::triangle tr, const triangulation::point &p, triang
 };
 
 
-bool triangulator::hasIntersection(const triangulation::point &p1, const triangulation::point &p2, const triangulation::point &p3, triangulation::triangle &result, triangulation::point &p_result)
+bool triangulator::hasIntersectionWithOtherTriangles(const triangulation::triangle &tr_, triangulation::triangle &result, triangulation::point &p_result)
 {
 	triangulation::line L[3];
-        triangulation::triangle tr_(p1,p2,p3);
-
-	L[0] = triangulation::line(p1,p2);
-	L[1] = triangulation::line(p2,p3);
-	L[2] = triangulation::line(p3,p1);
+	L[0] = triangulation::line(tr_.p1,tr_.p2);
+	L[1] = triangulation::line(tr_.p2,tr_.p3);
+	L[2] = triangulation::line(tr_.p3,tr_.p1);
 
 	for(int i = 0; i < m_triangles.size(); i++)
 	{
 		triangulation::triangle tr = m_triangles[i];
 		triangulation::line TR_L[3];
 
-		if( hasPoint_(tr, p1, result, p_result, tr) )
+/*		if( hasPoint_(tr, p1, result, p_result, tr) )
 			return true;	
 
 		if( hasPoint_(tr, p2, result, p_result, tr) )
@@ -464,7 +415,7 @@ bool triangulator::hasIntersection(const triangulation::point &p1, const triangu
 
 		if( hasPoint_(tr_, tr.p3, result, p_result, tr) )
 			return true;	
-
+*/
 		TR_L[0] = triangulation::line(m_triangles[i].p1, m_triangles[i].p2);
 		TR_L[1] = triangulation::line(m_triangles[i].p2, m_triangles[i].p3);
 		TR_L[2] = triangulation::line(m_triangles[i].p3, m_triangles[i].p1);
@@ -494,7 +445,7 @@ bool triangulator::hasIntersection(const triangulation::point &p1, const triangu
 
 		for (int i1 = 0; i1 < 3; i1++)
 			for (int i2 = 0; i2 < 3; i2++)
-				if( TR_L[i1].hasIntersection(L[i2], p) && !tr.hasTop(p) )
+				if( TR_L[i1].hasIntersection(L[i2], p) && TR_L[i1].hasPoint(p) && L[i2].hasPoint(p) && !tr.hasTop(p) && !tr_.hasTop(p))
 				{
 					p_result = p;
 					result = tr;
@@ -708,6 +659,34 @@ void netting::calcPoints(const triangulation::line &L, triangulation::point &p4,
 
 void netting::processing()
 {
+  // clever add triangle as is
+	while(m_lines.size() > 0)
+	{
+		triangulation::line L = m_lines[0];
+		m_lines.erase(m_lines.begin());
+
+		triangulation::point p4, p5;
+		calcPoints(L, p4, p5);
+
+
+  	bool bAdd4 = m_tr->addTriangleAsIs(L.p1,L.p2,p4, m_a, m_lines);
+  	bool bAdd5 = m_tr->addTriangleAsIs(L.p1,L.p2,p5, m_a, m_lines);	  	
+	};
+
+	/*
+	std::vector<triangulation::triangle> triangles = m_tr->getTriangles();
+
+	
+	// clever add triangle
+
+	for(unsigned int i = 0; i < triangles.size(); i++)
+	{
+		triangulation::triangle tr = triangles[i];
+		m_lines.push_back(triangulation::line(tr.p1,tr.p2));
+		m_lines.push_back(triangulation::line(tr.p2,tr.p3));
+		m_lines.push_back(triangulation::line(tr.p3,tr.p1));
+	};
+
 	while(m_lines.size() > 0)
 	{
 		triangulation::line L = m_lines[0];
@@ -717,10 +696,9 @@ void netting::processing()
 		calcPoints(L, p4, p5);
 
   	bool bAdd4 = m_tr->addTriangle(L.p1,L.p2,p4, m_a, m_lines);
-  	bool bAdd5 = m_tr->addTriangle(L.p1,L.p2,p5, m_a, m_lines);	
-  	
-  	
+  	bool bAdd5 = m_tr->addTriangle(L.p1,L.p2,p5, m_a, m_lines);	  	
 	};
+	*/
 };
 
 /*

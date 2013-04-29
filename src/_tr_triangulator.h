@@ -23,6 +23,15 @@ namespace triangulation {
 					double a, 
 					std::vector<triangulation::line> &m_lines
 			);
+
+			bool addTriangleAsIs(
+				triangulation::point p1, 
+				triangulation::point p2, 
+				triangulation::point p3, 
+				double a,
+				std::vector<triangulation::line> &m_lines
+			);
+
 			void addArea(triangulation::area ar);
 			std::vector<triangulation::area> &getAreas();
 			std::vector<triangulation::triangle> &getTriangles();
@@ -40,19 +49,10 @@ namespace triangulation {
 			bool findNearPoint(triangulation::point p, triangulation::point &result, double r);
                         bool findNearPointSide(triangulation::point p, triangulation::point &result, double r);
 
-			bool addTriangleAsIs(
-				triangulation::point p1, 
-				triangulation::point p2, 
-				triangulation::point p3, 
-				double a,
-				std::vector<triangulation::line> &m_lines
-			);
 			bool hasCurrentArea(triangulation::point p1);
 			bool hasCurrentArea(triangulation::point p1, triangulation::point p2);
-			bool hasIntersection(
-				const triangulation::point &p1, 
-				const triangulation::point &p2, 
-				const triangulation::point &p3, 
+			bool hasIntersectionWithOtherTriangles(
+				const triangulation::triangle &tr,  
 				triangulation::triangle &result,
 				triangulation::point &p_result
 			);

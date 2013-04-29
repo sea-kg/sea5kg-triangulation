@@ -23,7 +23,7 @@ class triangle
 		void paint(TImage *img);
 		bool hasIntersection(const triangulation::line &l);
 		bool hasPoint(const triangulation::point &p);
-		bool hasTop(const triangulation::point &p);
+		bool hasTop(const triangulation::point &p) const;
 		UnicodeString toString();
 		void triangle::fromString(UnicodeString str);
 		bool operator == (const triangulation::triangle &tr);

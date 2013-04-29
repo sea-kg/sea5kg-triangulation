@@ -71,7 +71,7 @@ const triangulation::point point::operator / (const int n)
 
 //---------------------------------------------------------------------------
 
-double point::length(const triangulation::point &p)
+double point::length(const triangulation::point &p) const
 {
 	double p12_X = (X - p.X);
 	double p12_Y = (Y - p.Y);
@@ -88,7 +88,7 @@ void point::operator = (const triangulation::point &p)
 
 //---------------------------------------------------------------------------
 
-bool point::operator == (const triangulation::point &p)
+bool point::operator == (const triangulation::point &p) const
 {
 	return (p.X == X) && (p.Y == Y);
 };

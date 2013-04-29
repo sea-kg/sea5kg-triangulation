@@ -187,7 +187,7 @@ bool triangle::hasPoint(const triangulation::point &p)
 };
 //---------------------------------------------------------------------------
 
-bool triangle::hasTop(const triangulation::point &p)
+bool triangle::hasTop(const triangulation::point &p) const
 {
 	double k = 1;
 	return ((p1.length(p) < k) || (p2.length(p) < k) || (p3.length(p) < k))
