@@ -332,11 +332,71 @@ void __fastcall TfrmMain::AreaHasIntersection1Click(TObject *Sender)
 
 void __fastcall TfrmMain::perpendicular1Click(TObject *Sender)
 {
-  triangulation::point p1(50,120);
-  triangulation::point p2(150,150);
+	std::vector<triangulation::point> points;
+	
+	points.push_back(triangulation::point(50,120));
+	points.push_back(triangulation::point(150,150));
+	points.push_back(triangulation::point(120,50));
+	points.push_back(triangulation::point(50,200));
 
-  triangulation::point p3_1(120,50);
-  triangulation::point p3_2(50,200);
+
+	randomize();
+	for(int i = 0; i < 10; i++)
+		points.push_back(triangulation::point(random(500) + 200,random(500) + 200));
+
+	TColor nColor = Image1->Canvas->Pen->Color;
+	int nWidth = Image1->Canvas->Pen->Width;
+
+	for(int i = 2; i < points.size(); i++)
+	{
+		triangulation::point p1 = points[i];
+		triangulation::point p2 = points[i-1];
+		triangulation::point p3 = points[i-2];
+		
+                triangulation::line L1(p1,p2);
+                
+
+		Image1->Canvas->Pen->Color = clBlack;
+		Image1->Canvas->Pen->Width = 2;
+		L1.paint(Image1);
+
+		triangulation::point p4;
+                double len1 = L1.getPerpendicularToLine(p3, p4);
+
+                triangulation::line L2(p3,p4);
+
+		Image1->Canvas->Pen->Color = clRed;
+		Image1->Canvas->Pen->Width = 2;
+		L2.paint(Image1);
+
+		if(!L1.hasPoint(p4))
+		{
+			triangulation::line L3;
+			if(p4.length(p1) < p4.length(p2))
+				L3 = triangulation::line(p1,p4);
+			else
+				L3 = triangulation::line(p2,p4);
+			
+			Image1->Canvas->Pen->Color = clBlue;
+			Image1->Canvas->Pen->Width = 2;
+			L3.paint(Image1);
+			ShowMessage("line1 has not point");
+		}
+		else
+			ShowMessage("line1 has point");			
+
+	}
+
+	Image1->Canvas->Pen->Color = nColor;
+	Image1->Canvas->Pen->Width = nWidth;
+
+
+	/*
+  triangulation::point p1();
+  triangulation::point p2();
+
+  triangulation::point p3_1();
+  triangulation::point p3_2();
 
   triangulation::line L1(p1,p2);
 
@@ -355,16 +415,15 @@ void __fastcall TfrmMain::perpendicular1Click(TObject *Sender)
 
   triangulation::line L2_2(p3_2,p4_2);
 
-  if(L1.hasPoint(p4_1))
-  {
-	ShowMessage("it has point");
-  }
+//  if(L1.hasPoint(p4_1))
+//  {
+//	ShowMessage("it has point");
+//  }
 
-  Image1->Canvas->Pen->Color = clRed;
-  L2_1.paint(Image1);
 
   Image1->Canvas->Pen->Color = clBlue;
   L2_2.paint(Image1);
+  */
 }
 //---------------------------------------------------------------------------
 

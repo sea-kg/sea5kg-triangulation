@@ -238,7 +238,8 @@ bool area::findNearPointSide(const triangulation::point &p, triangulation::point
 	for(int i = 0; i < count(); i++)
 	{
 		triangulation::point p1 = getPoint(i);
-		if(nLen2 > p1.length(p))
+		double nLen = p1.length(p);
+		if(nLen2 >= nLen)
 		{
 			res2 = p1;
 			nLen2 = p1.length(p);
@@ -264,7 +265,8 @@ bool area::findNearPointSide(const triangulation::point &p, triangulation::point
 		triangulation::point res;
 		triangulation::point p_buff;
 		double nLen = L.getPerpendicularToLine(p, res);
-		if( nLen < nLen2 && (L.hasPoint(res) || L.getPerpendicularToLine(res, p_buff) < 1))
+		double nLen_ = L.getPerpendicularToLine(res, p_buff);
+		if( nLen < nLen2 && (L.hasPoint(res) && res.length(p_buff) < 1))
 		{
 			res2 = res;
 			nLen2 = nLen;

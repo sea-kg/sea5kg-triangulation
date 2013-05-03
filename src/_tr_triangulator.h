@@ -36,13 +36,30 @@ namespace triangulation {
 			std::vector<triangulation::area> &getAreas();
 			std::vector<triangulation::triangle> &getTriangles();
 			void triangulate();
+
+			void triangulate_add_triangles();
+			void triangulate_resizing();
+			void triangulate_remove_triangles();
+
 			void clear_triangles();
 			void clear_areas();
 		private:
+			
 			std::vector<triangulation::area> m_areas;
 			std::vector<triangulation::triangle> m_triangles;
-			int nCurrArea;
+			int m_nCurrArea;
+			int m_nDivisor;
+			double m_nInfelicity;
+	
 			triangulation::logger *m_pLogger;
+			void step_first();
+			void findPoints(
+				const triangulation::point &p1, 
+				const std::vector<triangulation::point> &points, 
+				double a, 
+				std::vector<triangulation::triangle> &triangles
+			);
+
 
 			//
 			bool findTriangle(triangulation::point p1, triangulation::point p2, triangulation::point p3);
