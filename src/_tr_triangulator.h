@@ -53,6 +53,8 @@ namespace triangulation {
 	
 			triangulation::logger *m_pLogger;
 			void step_first();
+  		void step_first_alien();
+
 			void findPoints(
 				const triangulation::point &p1, 
 				const std::vector<triangulation::point> &points, 
