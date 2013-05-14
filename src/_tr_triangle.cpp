@@ -254,9 +254,46 @@ void triangle::operator = (const triangulation::triangle &tr)
 	p3 = tr.p3;
 };
 
+//---------------------------------------------------------------------------
+
+triangle_pointer::triangle_pointer()
+ : p1(new triangulation::point()), 
+   p2(new triangulation::point()),
+   p3(new triangulation::point())
+{
+
 };
 
 //---------------------------------------------------------------------------
 
+triangulation::triangle triangle_pointer::getTriangle()
+{
+  triangulation::triangle(get_p1(), get_p2(), get_p3());
+};
+
+//---------------------------------------------------------------------------
+
+triangulation::point triangle_pointer::get_p1()
+{
+  return triangulation::point(p1->X, p1->Y);
+};
+
+//---------------------------------------------------------------------------
+
+triangulation::point triangle_pointer::get_p2()
+{
+  return triangulation::point(p2->X, p2->Y);
+};
+
+//---------------------------------------------------------------------------
+
+triangulation::point triangle_pointer::get_p3()
+{
+  return triangulation::point(p3->X, p3->Y);
+};
+
+//---------------------------------------------------------------------------
+
+};
 
 #pragma package(smart_init)

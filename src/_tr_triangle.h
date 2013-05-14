@@ -34,5 +34,23 @@ class triangle
 };
 //---------------------------------------------------------------------------
 
+class triangle_pointer
+{
+	public:
+		triangle_pointer();
+
+		triangulation::point* p1;
+    triangulation::point* p2;
+    triangulation::point* p3;
+
+		triangulation::triangle getTriangle();
+    triangulation::point get_p1();
+    triangulation::point get_p2();
+    triangulation::point get_p3();
+
+	private:
+};
+//---------------------------------------------------------------------------
+
 }; // namespace triangulation
 #endif
