@@ -268,7 +268,7 @@ triangle_pointer::triangle_pointer()
 
 triangulation::triangle triangle_pointer::getTriangle()
 {
-  triangulation::triangle(get_p1(), get_p2(), get_p3());
+  return triangulation::triangle(get_p1(), get_p2(), get_p3());
 };
 
 //---------------------------------------------------------------------------

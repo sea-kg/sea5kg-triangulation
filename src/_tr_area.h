@@ -31,7 +31,7 @@ class area
 		double getSquare();
 		triangulation::point getMiddlePoint();
 		bool findNearPointSide(const triangulation::point &p, triangulation::point &res, double len);
-    bool getMinMaxXY(int &minX, int &maxX, int &minY, int &maxY);
+    bool getMinMaxXY(double &minX, double &maxX, double &minY, double &maxY);
 	private:
 		std::vector<triangulation::point> m_vPoints;
 		unsigned int m_nCountTriangles;

@@ -282,13 +282,13 @@ bool area::findNearPointSide(const triangulation::point &p, triangulation::point
 	return false;
 };
 
-bool area::getMinMaxXY(int &minX, int &maxX, int &minY, int &maxY)
+bool area::getMinMaxXY(double &minX, double &maxX, double &minY, double &maxY)
 {
 	double _maxX, _minX, _maxY, _minY;
 
 	bool bFirst = true;
 
-  for(int i1 = 0; i1 < count(); i1++)
+	for(int i1 = 0; i1 < count(); i1++)
 	{
 		triangulation::point p = getPoint(i1);
 

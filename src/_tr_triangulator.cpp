@@ -742,30 +742,40 @@ void triangulator::step_first()
 	};
 };
 
-bool findNearPoint_sp(std::vector<triangulation::point *> &pPoints, triangulation::point *p, triangulation::point *pResult, double a)
+class Triangles_sp
 {
-  triangulation::point pP(p->X, p->Y);
-  triangulation::point *pResult_ = NULL;
-	double curr_len = -1;
-	for(int i = 0; i < pPoints.size(); i++)
-	{
-    double len = pPoints[i]->length(pP);
+	AddPoint();
 
-    if(curr_len < 0 && len < a/4)
-    {
-      curr_len = len;
-      pResult_ = pPoints[i];
-    }       
-    else if( len < a/4 && curr_len < len)
-    {
-      curr_len = len;
-      pResult_ = pPoints[i];
-    }    
+};
+
+
+bool findNearPoint_sp(std::vector<triangulation::point *> &pPoints, triangulation::point *p, triangulation::point **pResult, double a)
+{
+	triangulation::point pP(p->X, p->Y);
+	double curr_len = -1;	
+	int iFound = -1;
+	for(unsigned int i = 0; i < pPoints.size(); i++)
+	{
+		double len = pPoints[i]->length(pP);
+
+		if(len < a)
+		{
+			if(iFound == -1)
+			{
+				curr_len = len;
+				iFound = i; 
+			}
+			else if(curr_len > len)
+			{
+				curr_len = len;
+				iFound = i;
+			}
+		}    
 	};
 
-  if(curr_len < 0) return false;
+	if(iFound == -1) return false;
 
-	pResult = pResult_;
+	*pResult = pPoints[iFound];
 	return true;
 };
 
@@ -787,129 +797,292 @@ void triangulator::step_first_alien()
 		m_pLogger->info("a = " + FloatToStr(a) + " px");
 		m_pLogger->info("h = " + FloatToStr(h) + " px");
 		m_pLogger->info("r = " + FloatToStr(r) + " px");
-
 		
 		std::vector<triangulation::point *> pPoints;
+		std::vector<triangulation::triangle_pointer *> pTriangules;
 		double nStartX = 0, nEndX = 0;
-    double minX,maxX,minY,maxY;
+		double minX,maxX,minY,maxY;
 
-    {
-      int minX_,maxX_,minY_,maxY_;
-      m_areas[m_nCurrArea].getMinMaxXY(minX_, maxX_, minY_, maxY_);
-    }
+		m_areas[m_nCurrArea].getMinMaxXY(minX, maxX, minY, maxY);
 
+		m_pLogger->info("minX = " + FloatToStr(minX) + " px");
+		m_pLogger->info("maxX = " + FloatToStr(maxX) + " px");
+		m_pLogger->info("minY = " + FloatToStr(minY) + " px");
+		m_pLogger->info("maxY = " + FloatToStr(maxY) + " px");
+
+		double a2 = a/2;
+		double a4 = a/4;
+		double a10 = a/10;
+		minX -= a;
+		maxX += a;
+
+		int iS = 0;
 		for(double iY = minY - h; iY < maxY + h; iY = iY + h)
 		{
-
-			if( nStartX != minX )
-      {
-			  nStartX = minX - a;
-        nEndX = maxX + (a)/2;
-      }
+			iS = iS + 1;
+			if( iS % 2 == 0)
+			{		
+				nStartX = minX;
+				nEndX = maxX;
+			}
 			else
-      {
-			  nStartX = minX + (-a)/2;
-        nEndX = maxX + a;
-      }
+			{
+				nStartX = minX - a2;
+				nEndX = maxX + a2;
+			}
 
 			for(double iX = nStartX; iX < nEndX; iX = iX + a)
 			{
-  			triangulation::point p1_(iX, iY);
-        triangulation::point p2_(iX + a, iY);
-        
+  				triangulation::point p1_(iX, iY);
+				triangulation::point p2_(iX + a, iY);
+				triangulation::point p3_;
+				triangulation::point p4_;
+				triangulation::line li_(p1_,p2_);
 
-				triangulation::point *p1 = new triangulation::point(iX, iY);
-        triangulation::point *p2 = new triangulation::point(iX + a, iY);
+				triangulation::point *p1 = new triangulation::point(p1_.X, p1_.Y);
+				triangulation::point *p2 = new triangulation::point(p2_.X, p2_.Y);
 				
-        triangulation::point *pFound;
+				calcPoints(li_,p3_,p4_,h);
+				
+				triangulation::point *p3 = new triangulation::point(p3_.X, p3_.Y);
+				triangulation::point *p4 = new triangulation::point(p4_.X, p4_.Y);
 
-        if( findNearPoint_sp(pPoints, p1, pFound, a))
-          p1 = pFound;
+				triangulation::point *pFound;
 
-        if( findNearPoint_sp(pPoints, p2, pFound, a))
-          p2 = pFound;
-      }
-    }
-  };
+				/*
+				pPoints.push_back(p1);
+				pPoints.push_back(p2);
+				pPoints.push_back(p3);
+				pPoints.push_back(p4);
+				*/
+				m_pLogger->info(" find Near Point ");
 
-       /*
+				if( findNearPoint_sp(pPoints, p1, &pFound, a4))
+					*p1 = *pFound;
+				else
+					pPoints.push_back(p1);
 
-				if(hasCurrentArea(p))
-				{
-					//points.push_back(p);
+				if( findNearPoint_sp(pPoints, p2, &pFound, a4))
+					*p2 = *pFound;
+				else
+					pPoints.push_back(p2);
 
-					if(findNearPointSide(p, p_buff, a/m_nDivisor))
-						points.push_back(p_buff);
-					else
-						points.push_back(p);
-				}
-				else if(findNearPointSide(p, p_buff, a/m_nDivisor))
-				{            	
-					//m_pLogger->info("added p = " + p5.toString());
-					points.push_back(p_buff);	
-				}
-        */
+				if( findNearPoint_sp(pPoints, p3, &pFound, a4))
+					*p3 = *pFound;
+				else
+					pPoints.push_back(p3);
 
-/*
-				triangulation::line same_line[5];
-				triangulation::point p4, p5;
-				same_line[0] = triangulation::line(p, p_before);
-                                calcPoints(same_line[0], p4, p5, h);
-                                same_line[1] = triangulation::line(p, p4);
-                                same_line[2] = triangulation::line(p_before, p4);
-                                same_line[3] = triangulation::line(p, p5);
-                                same_line[4] = triangulation::line(p_before, p5);
-                                
+				if( findNearPoint_sp(pPoints, p4, &pFound, a4))
+					*p4 = *pFound;
+				else
+					pPoints.push_back(p4);
 
-				for(int iL = 0; iL < 5; iL++)
-				{
-					std::vector<triangulation::point> points_intersection;
-					if( m_areas[m_nCurrArea].hasIntersections(same_line[iL], points_intersection) )
-					{
-						m_pLogger->info("p4 = " + p4.toString());
-						m_pLogger->info("p5 = " + p5.toString());
-						points.push_back(points_intersection[0]);
-					};
-				};
-*/
-/*				for(unsigned int iPs = 0; iPs < points_intersection.size(); iPs++)
-				{
-					points.push_back(points_intersection[iPs]);
+				m_pLogger->info(" create triangle ");
 
-//					if(hasCurrentArea(p_buff))
-					//points.push_back(p_buff);
-					// points.push_back(p_buff);
-				};*/
-				//p_before = p;
-//			};
-	//	};
-		
-    /*
-		for(unsigned int iP = 0; iP < points.size(); iP++)
+				triangulation::triangle_pointer *pTrinagle1 = new triangulation::triangle_pointer();
+				*(pTrinagle1->p1) = *p1;
+				*(pTrinagle1->p2) = *p2;
+				*(pTrinagle1->p3) = *p3;
+
+				triangulation::triangle_pointer *pTrinagle2 = new triangulation::triangle_pointer();
+				*(pTrinagle2->p1) = *p1;
+				*(pTrinagle2->p2) = *p2;
+				*(pTrinagle2->p3) = *p4;
+
+				m_pLogger->info(" push ");
+
+				pTriangules.push_back(pTrinagle1);
+				pTriangules.push_back(pTrinagle2);					
+			}
+		}
+
+		m_pLogger->info(" remove triangle which not inside in current area ");
+
+
+		// remove triangle which has not inside in current area
+		std::vector<triangulation::triangle_pointer *> pTriangules_copy = pTriangules;
+		pTriangules.clear();
+		for(int iT = 0; iT < pTriangules_copy.size(); iT++)
 		{
-			std::vector<triangulation::triangle> triangles;
-			std::vector<triangulation::line> lines;
-			triangulation::point p1 = points[iP];
-			findPoints(p1, points, a, triangles);
-			int sch = 0;
-			for(unsigned int iT = 0; iT < triangles.size(); iT++)
-			{
-				triangulation::triangle tr = triangles[iT];
-				triangulation::triangle tr_;
-				triangulation::point p_intersection;
+			triangulation::triangle tr = pTriangules_copy[iT]->getTriangle();
 
-				if(addTriangleAsIs(tr.p1,tr.p2,tr.p3, a, lines))
+			if(hasCurrentArea(tr.p1) || hasCurrentArea(tr.p2) || hasCurrentArea(tr.p3))
+			    pTriangules.push_back(pTriangules_copy[iT]);
+		}
+
+
+		m_pLogger->info(" find point near with area of side ");
+
+		// find point near with area of side 
+		for(int iT = 0; iT < pTriangules.size(); iT++)
+		{
+			triangulation::triangle_pointer *tr = pTriangules[iT];
+			triangulation::point p1(tr->p1->X, tr->p1->Y);
+			triangulation::point p2(tr->p2->X, tr->p2->Y);
+			triangulation::point p3(tr->p3->X, tr->p3->Y);
+
+			triangulation::point p_buff;
+
+			if(findNearPointSide(p1, p_buff, a2))
+			{
+				tr->p1->X = p_buff.X;
+				tr->p1->Y = p_buff.Y;
+			}
+
+			if(findNearPointSide(p2, p_buff, a2))
+			{
+				tr->p2->X = p_buff.X;
+				tr->p2->Y = p_buff.Y;
+			}
+
+			if(findNearPointSide(p3, p_buff, a2))
+			{
+				tr->p3->X = p_buff.X;
+				tr->p3->Y = p_buff.Y;
+			}
+		};
+		
+		// remove triangles which has point in inside current area
+		pTriangules_copy.clear();
+		pTriangules_copy = pTriangules;
+		pTriangules.clear();
+		for(int iT = 0; iT < pTriangules_copy.size(); iT++)
+		{
+			triangulation::triangle tr = pTriangules_copy[iT]->getTriangle();
+			triangulation::point p12 = triangulation::line(tr.p1, tr.p2).getMiddlePoint();
+			triangulation::point p23 = triangulation::line(tr.p2, tr.p3).getMiddlePoint();
+			triangulation::point p31 = triangulation::line(tr.p3, tr.p1).getMiddlePoint();
+
+			if( hasCurrentArea(tr.p1) && 
+				hasCurrentArea(tr.p2) && 
+				hasCurrentArea(tr.p3)
+			)
+			{
+				if( !hasCurrentArea(p12) )
 				{
-					sch++;
-				}
-      */
-                               /*if(!findTriangle(tr.p1,tr.p2,tr.p3) && !hasIntersectionWithOtherTriangles(tr, tr_, p_intersection))
-				   m_triangles.push_back(tr);*/
-			//};
-      
-//			if(triangles.size() != 0 && triangles.size() - sch == )
-//		};
-//	};
+					triangulation::triangle_pointer *tr_ = 	new triangulation::triangle_pointer();
+
+					triangulation::point *new_p = new triangulation::point();
+					triangulation::point p_buff;
+
+					if(findNearPointSide(p12, p_buff, a2))
+						p12 = p_buff;
+
+					//triangulation::point p1_12 = triangulation::line(tr.p1, p1_12).getMiddlePoint();
+					//triangulation::point p2_12 = triangulation::line(tr.p2, p2_12).getMiddlePoint();
+
+					if( hasCurrentArea(p12) ) // && hasCurrentArea(p1_12) && hasCurrentArea(p2_12))
+					{
+						new_p->X = p12.X;
+						new_p->Y = p12.Y;
+
+						tr_->p1 = new_p;
+						*(tr_->p2) = *(pTriangules_copy[iT]->p2);
+						*(tr_->p3) = *(pTriangules_copy[iT]->p3);
+										
+						*(pTriangules_copy[iT]->p2) = *(tr_->p1);
+
+						pTriangules.push_back(tr_);
+					}
+				}					
+
+				if( !hasCurrentArea(p23) )
+				{
+					triangulation::triangle_pointer *tr_ = 	new triangulation::triangle_pointer();
+
+					triangulation::point *new_p = new triangulation::point();
+					triangulation::point p_buff;
+
+					if(findNearPointSide(p23, p_buff, a2))
+						p23 = p_buff;
+					
+					// triangulation::point p2_23 = triangulation::line(tr.p2, p2_23).getMiddlePoint();
+					// triangulation::point p3_23 = triangulation::line(tr.p3, p3_23).getMiddlePoint();
+
+					if( hasCurrentArea(p23) ) // && hasCurrentArea(p2_23) && hasCurrentArea(p3_23))
+					{
+
+						new_p->X = p23.X;
+						new_p->Y = p23.Y;
+
+						*(tr_->p1) = *(pTriangules_copy[iT]->p1);
+						tr_->p2 = new_p;
+						*(tr_->p3) = *(pTriangules_copy[iT]->p3);
+									
+						*(pTriangules_copy[iT]->p3) = *(tr_->p2);
+
+						pTriangules.push_back(tr_);
+					}
+				}					
+
+				if( !hasCurrentArea(p31) )
+				{
+					triangulation::triangle_pointer *tr_ = 	new triangulation::triangle_pointer();
+
+					triangulation::point *new_p = new triangulation::point();
+					triangulation::point p_buff;
+
+					if(findNearPointSide(p31, p_buff, a2))
+						p31 = p_buff;
+
+					// triangulation::point p3_31 = triangulation::line(tr.p3, p3_31).getMiddlePoint();
+					// triangulation::point p1_31 = triangulation::line(tr.p1, p1_31).getMiddlePoint();
+											
+					if( hasCurrentArea(p31) ) // && hasCurrentArea(p3_31) && hasCurrentArea(p1_31))
+					{
+						new_p->X = p31.X;
+						new_p->Y = p31.Y;
+
+						*(tr_->p1) = *(pTriangules_copy[iT]->p1);
+						*(tr_->p2) = *(pTriangules_copy[iT]->p2);
+						tr_->p3 = new_p;
+											
+						*(pTriangules_copy[iT]->p1) = *(tr_->p3);
+
+						pTriangules.push_back(tr_);	
+					}
+				}					
+
+
+
+				pTriangules.push_back(pTriangules_copy[iT]);
+				
+			}
+		    
+		}
+		
+		// remove triangles which as line		
+		pTriangules_copy.clear();
+		pTriangules_copy = pTriangules;
+		pTriangules.clear();
+		for(int iT = 0; iT < pTriangules_copy.size(); iT++)
+		{
+			triangulation::triangle tr = pTriangules_copy[iT]->getTriangle();
+			triangulation::line L12(tr.p1, tr.p2);
+			triangulation::line L23(tr.p2, tr.p3);
+			triangulation::line L31(tr.p3, tr.p1);
+			triangulation::point p_temp;
+
+			if( L12.getPerpendicularToLine(tr.p3, p_temp) > a10 && 
+				L23.getPerpendicularToLine(tr.p1, p_temp) > a10 && 
+				L31.getPerpendicularToLine(tr.p2, p_temp) > a10)
+				pTriangules.push_back(pTriangules_copy[iT]);						    
+		}
+		
+
+		m_pLogger->info(" print ");
+		
+		for(int iT = 0; iT < pTriangules.size(); iT++)
+		{
+			triangulation::triangle_pointer *tr = pTriangules[iT];
+			triangulation::point p1(tr->p1->X, tr->p1->Y);
+			triangulation::point p2(tr->p2->X, tr->p2->Y);
+			triangulation::point p3(tr->p3->X, tr->p3->Y);
+
+			triangulation::triangle tr1(p1,p2,p3);
+			m_triangles.push_back(tr1);			
+		}
+	};
 };
 
 
@@ -917,8 +1090,8 @@ void triangulator::triangulate()
 {
 	clear_triangles();
 
-	step_first();
-
+//	step_first();
+	step_first_alien();
 /*
 	for(int i = 0; i < m_areas.size(); i++)
 	{
