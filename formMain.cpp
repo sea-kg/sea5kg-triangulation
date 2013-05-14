@@ -43,8 +43,8 @@ void __fastcall TfrmMain::FormCreate(TObject *Sender)
 void __fastcall TfrmMain::Image1MouseMove(TObject *Sender, TShiftState Shift, int X,
 		  int Y)
 {
-  // std::vector<triangulation::area> &painter::getAreas()
-  UnicodeString str = "";
+  	// std::vector<triangulation::area> &painter::getAreas()
+	UnicodeString str = "";
 	triangulation::point p(X, Y);
 	for(unsigned int i = 0; i < m_pPaiter->getAreas().size(); i++)
 	{
@@ -68,7 +68,20 @@ void __fastcall TfrmMain::Image1MouseDown(TObject *Sender, TMouseButton Button, 
 	{
 		m_pPaiter->addToBufferArea(X,Y);
 		m_pPaiter->refresh();
-	};
+	}
+	else if(Button == mbLeft)
+	{
+		triangulation::point p(X,Y);
+		for(unsigned int i=0; i < m_pPaiter->getTriangles().size(); i++)
+		{
+			if(m_pPaiter->getTriangles()[i].hasPoint(p))
+			{
+				lbxTriangles->Selected[i] = true;
+				lbxTrianglesClick(Sender);
+				return;
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::FormDestroy(TObject *Sender)
