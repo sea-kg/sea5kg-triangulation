@@ -39,40 +39,57 @@ int main(int argc, char* args[]) {
         Sea5kgTriangulationArea ar(sAreaId);
         ar.setCountTriangles(nNumberOfTriangles);
         nlohmann::json jsonPoints = el.value()["points"];
-        CoordXY prev;
-        CoordXY next;
-        CoordXY first;
-        int nCount = 0;
         for (auto& pt : jsonPoints.items()) {
             int nX = pt.value()["x"];
             int nY = pt.value()["y"];
             ar.addPoint(nX, nY);
-            CoordXY next(nX,nY);
-            if (nCount == 0) {
-                prev = next;
-                first = next;
-            } else {
-                window.addObject(new RenderLine(prev, next));
-                prev = next;
-            }
-            nCount++;
         }
-        window.addObject(new RenderLine(prev, first));
-
         pTriangulator->addArea(ar);
     }
 
-    int nCenterX = nWindowWidth/2;
-    int nCenterY = nWindowHeight/2;
-    CoordXY coordCenter(nCenterX, nCenterY);
-    
-    
-    // object
-    // window.addObject(new RenderTriangle(
-    //     CoordXY(320, 200),
-    //     CoordXY(300, 240),
-    //     CoordXY(340, 240)
-    // ));
+    pTriangulator->triangulate();
+
+
+    // add to renderer
+    const std::vector<Sea5kgTriangulationArea> &vAreas = pTriangulator->getAreas();
+    for (int i = 0; i < vAreas.size(); i++) {
+        Sea5kgTriangulationArea ar = vAreas[i];
+        int nSize = ar.count();
+        CoordXY prev;
+        CoordXY first;
+        for (int x = 0; x < ar.count(); x++) {
+            CoordXY next(ar.getPoint(x).getX(),ar.getPoint(x).getY());
+            if (x == 0) {
+                prev = next;
+                first = next;
+            } else {
+                RenderLine *pLine = new RenderLine(prev, next);
+                pLine->setColor(255,255,255,255);
+                window.addObject(pLine);
+                prev = next;
+            }
+            RenderRect *pRect = new RenderRect(CoordXY(next.x() - 4, next.y() - 4), 8, 8);
+            pRect->setColor(255,255,255,255);
+            window.addObject(pRect);
+        }
+        RenderLine *pLine = new RenderLine(prev, first);
+        pLine->setColor(255,255,255,255);
+        window.addObject(pLine);
+    }
+
+    const std::vector<Sea5kgTriangulationTriangle> &vTriangles = pTriangulator->getTriangles();
+    for (int i = 0; i < vTriangles.size(); i++) {
+        Sea5kgTriangulationTriangle tr = vTriangles[i];
+        auto *pTriangle = new RenderTriangle(
+            CoordXY(tr.p1.getX(), tr.p1.getY()),
+            CoordXY(tr.p2.getX(), tr.p2.getY()),
+            CoordXY(tr.p3.getX(), tr.p3.getY())
+        );
+        pTriangle->setColor(0,255,255,190);
+
+        window.addObject(pTriangle);
+    }
+
     window.sortObjectsByPositionZ();
 
     bool gameRunning = true;
@@ -89,18 +106,6 @@ int main(int argc, char* args[]) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 gameRunning = false;
-            } else if (event.type == SDL_KEYDOWN) {
-                switch (event.key.keysym.sym) {
-                    case SDLK_LEFT:  stateObjects.incrementCoordLeftTopX(5); break;
-                    case SDLK_RIGHT: stateObjects.incrementCoordLeftTopX(-5); break;
-                    case SDLK_UP:    stateObjects.incrementCoordLeftTopY(5); break;
-                    case SDLK_DOWN:  stateObjects.incrementCoordLeftTopY(-5); break;
-                    case SDLK_w: stateObjects.incrementCoordLeftTopY(5); break;
-                    case SDLK_s: stateObjects.incrementCoordLeftTopY(-5); break;
-                    case SDLK_a:  stateObjects.incrementCoordLeftTopX(5); break;
-                    case SDLK_d: stateObjects.incrementCoordLeftTopX(-5); break;
-                }
-                std::cout << "SDL_KEYDOWN" << std::endl;
             }
         }
 

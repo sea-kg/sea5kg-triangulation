@@ -27,11 +27,11 @@ int Sea5kgTriangulationPoint::getCounterValue() {
     return m_nCounter;
 };
 
-const double &Sea5kgTriangulationPoint::getX() {
+const double &Sea5kgTriangulationPoint::getX() const {
     return X;
 }
 
-const double &Sea5kgTriangulationPoint::getY() {
+const double &Sea5kgTriangulationPoint::getY() const {
     return Y;
 }
 
@@ -119,8 +119,7 @@ bool Sea5kgTriangulationLine::hasPoint(const Sea5kgTriangulationPoint &p3)
 
 //---------------------------------------------------------------------------
 
-double Sea5kgTriangulationLine::length() const 
-{
+double Sea5kgTriangulationLine::length() const  {
     double p12_X = (p1.X - p2.X);
     double p12_Y = (p1.Y - p2.Y);
     return sqrt( p12_X * p12_X + p12_Y * p12_Y);

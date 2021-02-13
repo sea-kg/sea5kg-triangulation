@@ -27,8 +27,6 @@ list (APPEND WSJCPP_SOURCES "src/render/render_window.h")
 list (APPEND WSJCPP_SOURCES "src/render/render_window.cpp")
 list (APPEND WSJCPP_SOURCES "src/sea5kg_triangulation.cpp")
 list (APPEND WSJCPP_SOURCES "src/sea5kg_triangulation.h")
-list (APPEND WSJCPP_SOURCES "src/_tr_painter.cpp")
-list (APPEND WSJCPP_SOURCES "src/_tr_painter.h")
 
 ############################
 # SDL2

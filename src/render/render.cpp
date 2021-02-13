@@ -72,6 +72,37 @@ void RenderLine::updateAbsoluteCoords(const CoordXY &p1, const CoordXY &p2) {
 }
 
 // ---------------------------------------------------------------------
+// RenderRect
+
+RenderRect::RenderRect(const CoordXY &p1, int w, int h, int nPositionZ)
+: RenderObject(nPositionZ) {
+    m_coord1 = p1;
+    m_nW = w;
+    m_nH = h;
+}
+
+void RenderRect::modify(const GameState& state) {
+    // nothing
+}
+
+void RenderRect::draw(SDL_Renderer* renderer) {
+    SDL_Rect srcrect;
+    srcrect.x = m_coord1.x();
+    srcrect.y = m_coord1.y();
+    srcrect.w = m_nW;
+    srcrect.h = m_nH;
+    SDL_SetRenderDrawColor(renderer, m_nR, m_nG, m_nB, m_nA);
+    SDL_RenderFillRect(renderer, &srcrect);
+}
+        
+void RenderRect::setColor(int nR, int nG, int nB, int nA) {
+    m_nR = nR;
+    m_nG = nG;
+    m_nB = nB;
+    m_nA = nA;
+}
+
+// ---------------------------------------------------------------------
 // RenderTriangle
 
 RenderTriangle::RenderTriangle(
@@ -80,7 +111,20 @@ RenderTriangle::RenderTriangle(
     const CoordXY &p3,
     int nPositionZ
 ) : RenderObject(nPositionZ), m_line1(p1,p2), m_line2(p2,p3), m_line3(p3,p1) {
-    // nothing
+    int nMiddleX = (p1.x() + p2.x() + p3.x())/3;
+    int nMiddleY = (p1.y() + p2.y() + p3.y())/3;
+    m_middlePoint = CoordXY(nMiddleX, nMiddleY);
+}
+
+void RenderTriangle::setColor(int nR, int nG, int nB, int nA) {
+    m_line1.setColor(nR,nG,nB,nA);
+    m_line2.setColor(nR,nG,nB,nA);
+    m_line3.setColor(nR,nG,nB,nA);
+
+    m_nR = nR;
+    m_nG = nG;
+    m_nB = nB;
+    m_nA = nA;
 }
 
 void RenderTriangle::modify(const GameState& state) {
@@ -93,4 +137,12 @@ void RenderTriangle::draw(SDL_Renderer* renderer) {
     m_line1.draw(renderer);
     m_line2.draw(renderer);
     m_line3.draw(renderer);
+
+    SDL_Rect srcrect;
+    srcrect.x = m_middlePoint.x()-2;
+    srcrect.y = m_middlePoint.y()-2;
+    srcrect.w = 4;
+    srcrect.h = 4;
+    SDL_SetRenderDrawColor(renderer, m_nR, m_nG, m_nB, m_nA);
+    SDL_RenderFillRect(renderer, &srcrect);
 }

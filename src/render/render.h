@@ -42,6 +42,26 @@ class RenderLine : public RenderObject {
         int m_nA;
 };
 
+class RenderRect : public RenderObject {
+
+    public:
+        RenderRect(const CoordXY &p1, int w, int h, int nPositionZ = 0);
+        virtual void modify(const GameState& state) override;
+        virtual void draw(SDL_Renderer* renderer) override;
+        
+        void setColor(int nR, int nG, int nB, int nA);
+
+    private:
+        CoordXY m_coord1;
+        int m_nW;
+        int m_nH;
+
+        int m_nR;
+        int m_nG;
+        int m_nB;
+        int m_nA;
+};
+
 class RenderTriangle : public RenderObject {
 
     public:
@@ -51,6 +71,7 @@ class RenderTriangle : public RenderObject {
             const CoordXY &p3,
             int nPositionZ = 0
         );
+        void setColor(int nR, int nG, int nB, int nA);
         virtual void modify(const GameState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
 
@@ -58,4 +79,10 @@ class RenderTriangle : public RenderObject {
         RenderLine m_line1;
         RenderLine m_line2;
         RenderLine m_line3;
+        CoordXY m_middlePoint;
+
+        int m_nR;
+        int m_nG;
+        int m_nB;
+        int m_nA;
 };
