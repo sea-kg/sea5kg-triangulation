@@ -184,7 +184,7 @@ void painter::triangulate()
 
 //---------------------------------------------------------------------------
 
-std::vector<triangulation::triangle> &painter::getTriangles()
+std::vector<Sea5kgTriangulationTriangle> &painter::getTriangles()
 {
     return m_pTriangulator->getTriangles();
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "_tr_triangle.h"
+#include "sea5kg_triangulation.h"
 #include "_tr_area.h"
 #include <vector>
 #include <list>
@@ -30,7 +30,7 @@ namespace triangulation {
 
             void addArea(triangulation::area ar);
             std::vector<triangulation::area> &getAreas();
-            std::vector<triangulation::triangle> &getTriangles();
+            std::vector<Sea5kgTriangulationTriangle> &getTriangles();
             void triangulate();
 
             void triangulate_add_triangles();
@@ -42,20 +42,20 @@ namespace triangulation {
         private:
             
             std::vector<triangulation::area> m_areas;
-            std::vector<triangulation::triangle> m_triangles;
+            std::vector<Sea5kgTriangulationTriangle> m_triangles;
             int m_nCurrArea;
             int m_nDivisor;
             double m_nInfelicity;
     
             // triangulation::logger *m_pLogger;
             void step_first();
-          void step_first_alien();
+            void step_first_alien();
 
             void findPoints(
                 const Sea5kgTriangulationPoint &p1, 
                 const std::vector<Sea5kgTriangulationPoint> &points, 
                 double a, 
-                std::vector<triangulation::triangle> &triangles
+                std::vector<Sea5kgTriangulationTriangle> &triangles
             );
 
 
@@ -67,8 +67,8 @@ namespace triangulation {
             bool hasCurrentArea(Sea5kgTriangulationPoint p1);
             bool hasCurrentArea(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2);
             bool hasIntersectionWithOtherTriangles(
-                const triangulation::triangle &tr,  
-                triangulation::triangle &result,
+                const Sea5kgTriangulationTriangle &tr,  
+                Sea5kgTriangulationTriangle &result,
                 Sea5kgTriangulationPoint &p_result
             );
 

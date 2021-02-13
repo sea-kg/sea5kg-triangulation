@@ -23,7 +23,7 @@ class painter
 
         // void SaveAreas(UnicodeString filename);
         // void LoadAreas(UnicodeString filename);
-        std::vector<triangulation::triangle> &getTriangles();
+        std::vector<Sea5kgTriangulationTriangle> &getTriangles();
         std::vector<triangulation::area> &getAreas();
 
         bool getMinMaxXY(int &maxX, int &minX, int &maxY, int &minY);
@@ -34,7 +34,7 @@ class painter
 
         // old
         bool addNewTriangle(
-            std::vector<triangulation::triangle> &vTriangles,
+            std::vector<Sea5kgTriangulationTriangle> &vTriangles,
             Sea5kgTriangulationPoint &p1_buff,
             const Sea5kgTriangulationPoint &p2,
             Sea5kgTriangulationPoint &p4_buff,

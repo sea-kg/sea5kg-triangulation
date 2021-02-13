@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <string>
+#include <vector>
 
 class Sea5kgTriangulationPoint {
     public:
@@ -45,4 +46,43 @@ class Sea5kgTriangulationLine {
         private:
             bool hasIntersection2(Sea5kgTriangulationLine &l, Sea5kgTriangulationPoint &result);
             bool hasIntersection3(Sea5kgTriangulationLine &l, Sea5kgTriangulationPoint &result);
+};
+
+class Sea5kgTriangulationTriangle {
+    public:
+        Sea5kgTriangulationTriangle();
+        Sea5kgTriangulationTriangle(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2, Sea5kgTriangulationPoint p3);
+
+        // TODO hide
+        Sea5kgTriangulationPoint p1, p2, p3;
+
+        double getSquare();
+        bool findNearPoint(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &res, double r);
+        // void paint(TImage *img);
+        bool hasIntersection(const Sea5kgTriangulationLine &l);
+        bool hasPoint(const Sea5kgTriangulationPoint &p);
+        bool hasTop(const Sea5kgTriangulationPoint &p) const;
+        std::string toString();
+        // void triangle::fromString(UnicodeString str);
+        bool operator == (const Sea5kgTriangulationTriangle &tr);
+        void operator = (const Sea5kgTriangulationTriangle &tr);
+        bool isEqual(const Sea5kgTriangulationTriangle &tr);
+
+    private:
+};
+
+class Sea5kgTriangulationTrianglePointer {
+    public:
+        Sea5kgTriangulationTrianglePointer();
+
+        Sea5kgTriangulationPoint* p1;
+        Sea5kgTriangulationPoint* p2;
+        Sea5kgTriangulationPoint* p3;
+
+        Sea5kgTriangulationTriangle getTriangle();
+        Sea5kgTriangulationPoint get_p1();
+        Sea5kgTriangulationPoint get_p2();
+        Sea5kgTriangulationPoint get_p3();
+
+    private:
 };

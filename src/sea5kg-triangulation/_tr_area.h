@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <math.h>
-#include "_tr_triangle.h"
+#include "sea5kg_triangulation.h"
 
 namespace triangulation {
 

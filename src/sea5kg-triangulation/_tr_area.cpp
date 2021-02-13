@@ -188,7 +188,7 @@ double area::getSquare()
     {
         Sea5kgTriangulationPoint p1 = getPoint(i);
         Sea5kgTriangulationPoint p2 = getPoint((i+1) % count());
-        square += triangulation::triangle(p1, p2, pMiddlePoint).getSquare();
+        square += Sea5kgTriangulationTriangle(p1, p2, pMiddlePoint).getSquare();
     };
     return square;
 };
