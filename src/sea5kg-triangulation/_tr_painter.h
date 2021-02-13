@@ -7,9 +7,9 @@ class painter
 {
     public:
         // painter(TImage *img, triangulation::logger *pLogger);
-        // void addArea(triangulation::area ar);
+        // void addArea(Sea5kgTriangulationArea ar);
 
-        // void repaintArea(triangulation::area &ar);
+        // void repaintArea(Sea5kgTriangulationArea &ar);
 
         void refresh();
         void triangulate();
@@ -24,13 +24,13 @@ class painter
         // void SaveAreas(UnicodeString filename);
         // void LoadAreas(UnicodeString filename);
         std::vector<Sea5kgTriangulationTriangle> &getTriangles();
-        std::vector<triangulation::area> &getAreas();
+        std::vector<Sea5kgTriangulationArea> &getAreas();
 
         bool getMinMaxXY(int &maxX, int &minX, int &maxY, int &minY);
     private:
 
         // new
-        triangulation::area bufferArea;
+        Sea5kgTriangulationArea bufferArea;
 
         // old
         bool addNewTriangle(
@@ -43,5 +43,5 @@ class painter
         );
 
         triangulation::triangulator *m_pTriangulator;
-        // std::vector<triangulation::area> m_areas;
+        // std::vector<Sea5kgTriangulationArea> m_areas;
 };

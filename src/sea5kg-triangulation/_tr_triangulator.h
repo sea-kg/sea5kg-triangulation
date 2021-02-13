@@ -1,11 +1,10 @@
 #pragma once
 
 #include "sea5kg_triangulation.h"
-#include "_tr_area.h"
 #include <vector>
-#include <list>
 
 //---------------------------------------------------------------------------
+
 namespace triangulation {
 
     class triangulator
@@ -28,8 +27,8 @@ namespace triangulation {
                 std::vector<Sea5kgTriangulationLine> &m_lines
             );
 
-            void addArea(triangulation::area ar);
-            std::vector<triangulation::area> &getAreas();
+            void addArea(Sea5kgTriangulationArea ar);
+            std::vector<Sea5kgTriangulationArea> &getAreas();
             std::vector<Sea5kgTriangulationTriangle> &getTriangles();
             void triangulate();
 
@@ -41,7 +40,7 @@ namespace triangulation {
             void clear_areas();
         private:
             
-            std::vector<triangulation::area> m_areas;
+            std::vector<Sea5kgTriangulationArea> m_areas;
             std::vector<Sea5kgTriangulationTriangle> m_triangles;
             int m_nCurrArea;
             int m_nDivisor;

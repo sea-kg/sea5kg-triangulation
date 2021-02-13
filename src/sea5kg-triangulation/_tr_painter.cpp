@@ -24,7 +24,7 @@
 //     {
 //         UnicodeString str = "area:[";
 // 
-//         triangulation::area ar = m_pTriangulator->getAreas()[i];
+//         Sea5kgTriangulationArea ar = m_pTriangulator->getAreas()[i];
 // 
 //         str += IntToStr((int)ar.getCountTriangles()) + ",";
 // 
@@ -70,7 +70,7 @@
             TStringList *pList2 = new TStringList();
             split( pList2, str.c_str(), L",");
 
-            triangulation::area ar;
+            Sea5kgTriangulationArea ar;
             ar.setCountTriangles(StrToInt(pList2->Strings[0]));
 
             for(int si = 1; si < pList2->Count; si += 2)
@@ -100,7 +100,7 @@ void painter::clear_buffer()
 
 //---------------------------------------------------------------------------
 
-std::vector<triangulation::area> &painter::getAreas()
+std::vector<Sea5kgTriangulationArea> &painter::getAreas()
 {
     return m_pTriangulator->getAreas();    
 };

@@ -508,7 +508,7 @@ bool triangulator::hasIntersectionWithOtherTriangles(const Sea5kgTriangulationTr
 };
 //---------------------------------------------------------------------------
 
-void triangulator::addArea(triangulation::area ar)
+void triangulator::addArea(Sea5kgTriangulationArea ar)
 {
     std::vector<Sea5kgTriangulationPoint> result;
     
@@ -525,7 +525,7 @@ void triangulator::addArea(triangulation::area ar)
 };
 //---------------------------------------------------------------------------
 
-std::vector<triangulation::area> &triangulator::getAreas()
+std::vector<Sea5kgTriangulationArea> &triangulator::getAreas()
 {
     return m_areas;
 };
