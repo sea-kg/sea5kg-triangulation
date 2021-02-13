@@ -89,7 +89,7 @@ class Sea5kgTriangulationTrianglePointer {
 
 class Sea5kgTriangulationArea {
     public:
-        Sea5kgTriangulationArea();
+        Sea5kgTriangulationArea(std::string sAreaId);
         void addPoint(int X, int Y) { m_vPoints.push_back(Sea5kgTriangulationPoint(X,Y)); };
         void clear() { m_vPoints.clear(); };
         int count() const { return m_vPoints.size(); };
@@ -108,6 +108,7 @@ class Sea5kgTriangulationArea {
         bool getMinMaxXY(double &minX, double &maxX, double &minY, double &maxY);
         
     private:
+        std::string m_sAreaId;
         std::vector<Sea5kgTriangulationPoint> m_vPoints;
         unsigned int m_nCountTriangles;
 };
@@ -142,6 +143,7 @@ class Sea5kgTriangulationTriangulator {
 
         void clear_triangles();
         void clear_areas();
+
     private:
         
         std::vector<Sea5kgTriangulationArea> m_areas;
@@ -165,7 +167,7 @@ class Sea5kgTriangulationTriangulator {
         //
         bool findTriangle(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2, Sea5kgTriangulationPoint p3);
         bool findNearPoint(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &result, double r);
-                    bool findNearPointSide(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &result, double r);
+        bool findNearPointSide(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &result, double r);
 
         bool hasCurrentArea(Sea5kgTriangulationPoint p1);
         bool hasCurrentArea(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2);

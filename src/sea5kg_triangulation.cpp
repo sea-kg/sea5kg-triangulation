@@ -332,7 +332,7 @@ bool Sea5kgTriangulationTriangle::hasIntersection(const Sea5kgTriangulationLine 
 bool _sort_here_triangle (double x1, double x2) { return (x1 < x2); };
 
 bool Sea5kgTriangulationTriangle::hasPoint(const Sea5kgTriangulationPoint &p) {
-    Sea5kgTriangulationArea ar;        
+    Sea5kgTriangulationArea ar("tmp");
     ar.addPoint(p1.X, p1.Y);
     ar.addPoint(p2.X, p2.Y);
     ar.addPoint(p3.X, p3.Y);
@@ -502,8 +502,8 @@ Sea5kgTriangulationPoint Sea5kgTriangulationTrianglePointer::get_p3() {
 //---------------------------------------------------------------------------
 // Sea5kgTriangulationArea
 
-Sea5kgTriangulationArea::Sea5kgTriangulationArea() {
-    // nothing
+Sea5kgTriangulationArea::Sea5kgTriangulationArea(std::string sAreaId) {
+    m_sAreaId = sAreaId;
 }
 
 bool _sort_here_area (double x1, double x2) {

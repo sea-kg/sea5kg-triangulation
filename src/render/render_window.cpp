@@ -52,7 +52,7 @@ void RenderWindow::cleanUp() {
 void RenderWindow::clear() {
     // SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     // background color
-    SDL_SetRenderDrawColor(renderer, 0, 75, 92, 195);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 195);
     
     SDL_RenderClear(renderer);
 }

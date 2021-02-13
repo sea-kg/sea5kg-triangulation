@@ -2,8 +2,8 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.0.1")
-add_definitions(-DWSJCPP_APP_NAME="unit-tests-yourCityIsInvadedByAliens_Tomsk.git")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.0.2")
+add_definitions(-DWSJCPP_APP_NAME="unit-tests-sea5kg-triangulation")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
@@ -31,7 +31,7 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests_main.cp
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 
-# yourCityIsInvadedByAliens_Tomsk.git:v0.0.1
+# sea5kg-triangulation:v0.0.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 
 # unit-tests

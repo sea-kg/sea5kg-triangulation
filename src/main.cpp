@@ -4,6 +4,7 @@
 
 #include "render_window.h"
 #include "wsjcpp_core.h"
+#include "sea5kg_triangulation.h"
 
 
 int main(int argc, char* args[]) {
@@ -16,6 +17,8 @@ int main(int argc, char* args[]) {
     int nWindowWidth = 1280;
     int nWindowHeight = 720;
 
+    Sea5kgTriangulationTriangulator *pTriangulator = new Sea5kgTriangulationTriangulator();
+
     GameState stateObjects(nWindowWidth, nWindowHeight);
 
     RenderWindow window(
@@ -25,22 +28,45 @@ int main(int argc, char* args[]) {
     );
 
     // load map from json
-    // std::ifstream ifs("./res/data.json");
-    // nlohmann::json jf = nlohmann::json::parse(ifs);
+    std::ifstream ifs("./input.json");
+    nlohmann::json jf = nlohmann::json::parse(ifs);
 
-    /*nlohmann::json jsonBuildings = jf["buildings"];
-    for (auto it = jsonBuildings.begin(); it != jsonBuildings.end(); ++it) {
-        // std::cout << it.key() << " | " << it.value() << "\n";
-        GameBuilding *pBuilding = new GameBuilding(it.value());
-        stateObjects.addBuilding(pBuilding);
-        // window.addObject(new RenderBuilding2(pBuilding, buildingTexture));
+    nlohmann::json jsonAreas = jf["areas"];
+    for (auto& el : jsonAreas.items()) {
+        std::string sAreaId = el.value()["id"];
+        int nNumberOfTriangles = el.value()["number-of-triangels"];
+        std::cout << "Load area " << sAreaId << std::endl;
+        Sea5kgTriangulationArea ar(sAreaId);
+        ar.setCountTriangles(nNumberOfTriangles);
+        nlohmann::json jsonPoints = el.value()["points"];
+        CoordXY prev;
+        CoordXY next;
+        CoordXY first;
+        int nCount = 0;
+        for (auto& pt : jsonPoints.items()) {
+            int nX = pt.value()["x"];
+            int nY = pt.value()["y"];
+            ar.addPoint(nX, nY);
+            CoordXY next(nX,nY);
+            if (nCount == 0) {
+                prev = next;
+                first = next;
+            } else {
+                window.addObject(new RenderLine(prev, next));
+                prev = next;
+            }
+            nCount++;
+        }
+        window.addObject(new RenderLine(prev, first));
+
+        pTriangulator->addArea(ar);
     }
-    */
 
     int nCenterX = nWindowWidth/2;
     int nCenterY = nWindowHeight/2;
     CoordXY coordCenter(nCenterX, nCenterY);
-
+    
+    
     // object
     // window.addObject(new RenderTriangle(
     //     CoordXY(320, 200),

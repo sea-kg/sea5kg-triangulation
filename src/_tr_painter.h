@@ -20,8 +20,6 @@ class painter
         void clear_buffer();
         bool hasAreas();
 
-        // void SaveAreas(UnicodeString filename);
-        // void LoadAreas(UnicodeString filename);
         std::vector<Sea5kgTriangulationTriangle> &getTriangles();
         std::vector<Sea5kgTriangulationArea> &getAreas();
 
