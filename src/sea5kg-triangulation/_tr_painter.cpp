@@ -1,8 +1,4 @@
-﻿//---------------------------------------------------------------------------
-
-#pragma hdrstop
-
-#include "_tr_painter.h"
+﻿#include "_tr_painter.h"
 
 //---------------------------------------------------------------------------
 
@@ -10,7 +6,7 @@
 // :
 //     m_img(img),
 //     m_pLogger(pLogger),
-//     m_pTriangulator(new triangulation::triangulator(m_pLogger))
+//     m_pTriangulator(new Sea5kgTriangulationTriangulator(m_pLogger))
 // {
 
 // };
@@ -184,8 +180,7 @@ void painter::triangulate()
 
 //---------------------------------------------------------------------------
 
-std::vector<Sea5kgTriangulationTriangle> &painter::getTriangles()
-{
+std::vector<Sea5kgTriangulationTriangle> &painter::getTriangles() {
     return m_pTriangulator->getTriangles();
 };
 
@@ -230,9 +225,3 @@ bool painter::getMinMaxXY(int &maxX, int &minX, int &maxY, int &minY)
     };
     return false;
 };
-
-//---------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------
-
-#pragma package(smart_init)

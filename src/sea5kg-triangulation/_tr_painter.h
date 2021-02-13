@@ -1,7 +1,6 @@
 #pragma once
 
-#include "_tr_triangulation.h"
-#include "_tr_triangulator.h"
+#include "sea5kg_triangulation.h"
 
 class painter
 {
@@ -42,6 +41,6 @@ class painter
             double r
         );
 
-        triangulation::triangulator *m_pTriangulator;
+        Sea5kgTriangulationTriangulator *m_pTriangulator;
         // std::vector<Sea5kgTriangulationArea> m_areas;
 };

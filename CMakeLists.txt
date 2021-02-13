@@ -30,8 +30,6 @@ list (APPEND WSJCPP_SOURCES "src/sea5kg-triangulation/sea5kg_triangulation.cpp")
 list (APPEND WSJCPP_SOURCES "src/sea5kg-triangulation/sea5kg_triangulation.h")
 list (APPEND WSJCPP_SOURCES "src/sea5kg-triangulation/_tr_painter.cpp")
 list (APPEND WSJCPP_SOURCES "src/sea5kg-triangulation/_tr_painter.h")
-list (APPEND WSJCPP_SOURCES "src/sea5kg-triangulation/_tr_triangulator.cpp")
-list (APPEND WSJCPP_SOURCES "src/sea5kg-triangulation/_tr_triangulator.h")
 
 
 ############################
