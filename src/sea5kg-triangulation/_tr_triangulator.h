@@ -1,6 +1,5 @@
 #pragma once
 
-#include "_tr_point.h"
 #include "_tr_triangle.h"
 #include "_tr_area.h"
 #include <vector>
@@ -14,19 +13,19 @@ namespace triangulation {
         public:
             triangulator();
             bool addTriangle( 
-                    triangulation::point p1, 
-                    triangulation::point p2, 
-                    triangulation::point p3, 
+                    Sea5kgTriangulationPoint p1, 
+                    Sea5kgTriangulationPoint p2, 
+                    Sea5kgTriangulationPoint p3, 
                     double a, 
-                    std::vector<triangulation::line> &m_lines
+                    std::vector<Sea5kgTriangulationLine> &m_lines
             );
 
             bool addTriangleAsIs(
-                triangulation::point p1, 
-                triangulation::point p2, 
-                triangulation::point p3, 
+                Sea5kgTriangulationPoint p1, 
+                Sea5kgTriangulationPoint p2, 
+                Sea5kgTriangulationPoint p3, 
                 double a,
-                std::vector<triangulation::line> &m_lines
+                std::vector<Sea5kgTriangulationLine> &m_lines
             );
 
             void addArea(triangulation::area ar);
@@ -53,42 +52,42 @@ namespace triangulation {
           void step_first_alien();
 
             void findPoints(
-                const triangulation::point &p1, 
-                const std::vector<triangulation::point> &points, 
+                const Sea5kgTriangulationPoint &p1, 
+                const std::vector<Sea5kgTriangulationPoint> &points, 
                 double a, 
                 std::vector<triangulation::triangle> &triangles
             );
 
 
             //
-            bool findTriangle(triangulation::point p1, triangulation::point p2, triangulation::point p3);
-            bool findNearPoint(triangulation::point p, triangulation::point &result, double r);
-                        bool findNearPointSide(triangulation::point p, triangulation::point &result, double r);
+            bool findTriangle(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2, Sea5kgTriangulationPoint p3);
+            bool findNearPoint(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &result, double r);
+                        bool findNearPointSide(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &result, double r);
 
-            bool hasCurrentArea(triangulation::point p1);
-            bool hasCurrentArea(triangulation::point p1, triangulation::point p2);
+            bool hasCurrentArea(Sea5kgTriangulationPoint p1);
+            bool hasCurrentArea(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2);
             bool hasIntersectionWithOtherTriangles(
                 const triangulation::triangle &tr,  
                 triangulation::triangle &result,
-                triangulation::point &p_result
+                Sea5kgTriangulationPoint &p_result
             );
 
-            void fillArray(const triangulation::point &p, std::vector<triangulation::point> &p_arr, double r);
+            void fillArray(const Sea5kgTriangulationPoint &p, std::vector<Sea5kgTriangulationPoint> &p_arr, double r);
     };
 
 
     class netting
     {
         public:
-            netting(const triangulation::point &p1, const triangulation::point &p2, double h, double a, triangulation::triangulator *tr);
+            netting(const Sea5kgTriangulationPoint &p1, const Sea5kgTriangulationPoint &p2, double h, double a, triangulation::triangulator *tr);
             void processing();
-            void calcPoints(const triangulation::line &L, triangulation::point &p4, triangulation::point &p5);
+            void calcPoints(const Sea5kgTriangulationLine &L, Sea5kgTriangulationPoint &p4, Sea5kgTriangulationPoint &p5);
         private:
-          std::vector<triangulation::line> m_lines;
+          std::vector<Sea5kgTriangulationLine> m_lines;
           double m_h; 
           double m_a; 
           triangulation::triangulator *m_tr;
     };
 
-//    bool recours_netting(triangulation::point &p1, triangulation::point &p2, double h, double a, triangulation::triangulator *tr);
+//    bool recours_netting(Sea5kgTriangulationPoint &p1, Sea5kgTriangulationPoint &p2, double h, double a, triangulation::triangulator *tr);
 }

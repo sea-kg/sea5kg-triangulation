@@ -35,10 +35,10 @@ class painter
         // old
         bool addNewTriangle(
             std::vector<triangulation::triangle> &vTriangles,
-            triangulation::point &p1_buff,
-            const triangulation::point &p2,
-            triangulation::point &p4_buff,
-            triangulation::point &p5_buff,
+            Sea5kgTriangulationPoint &p1_buff,
+            const Sea5kgTriangulationPoint &p2,
+            Sea5kgTriangulationPoint &p4_buff,
+            Sea5kgTriangulationPoint &p5_buff,
             double r
         );
 

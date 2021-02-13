@@ -201,7 +201,7 @@ bool painter::getMinMaxXY(int &maxX, int &minX, int &maxY, int &minY)
     {
         for(int i1 = 0; i1 < getAreas()[i].count(); i1++)
         {
-            triangulation::point p = getAreas()[i].getPoint(i1);
+            Sea5kgTriangulationPoint p = getAreas()[i].getPoint(i1);
 
             if(bFirst)
             {

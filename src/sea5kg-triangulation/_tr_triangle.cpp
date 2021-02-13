@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <math.h>
-
+#include "_tr_area.h"
 
 namespace triangulation {
 
@@ -13,7 +13,7 @@ triangle::triangle()
 
 //---------------------------------------------------------------------------
 
-triangle::triangle(triangulation::point p1, triangulation::point p2, triangulation::point p3)
+triangle::triangle(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2, Sea5kgTriangulationPoint p3)
     : p1(p1), p2(p2), p3(p3)
 {
 
@@ -24,9 +24,9 @@ triangle::triangle(triangulation::point p1, triangulation::point p2, triangulati
 double triangle::getSquare()
 {
     // formule Gerona for square of triangle use half premeter:
-    double a = triangulation::line(p1, p2).length();
-    double b = triangulation::line(p2, p3).length();
-    double c = triangulation::line(p3, p1).length();
+    double a = Sea5kgTriangulationLine(p1, p2).length();
+    double b = Sea5kgTriangulationLine(p2, p3).length();
+    double c = Sea5kgTriangulationLine(p3, p1).length();
     double p = (a + b + c) / 2;
     double res = p * (p - a) * (p - b) * (p - c);
     if(res > 0.1) res = sqrt(res);
@@ -35,15 +35,15 @@ double triangle::getSquare()
 
 //---------------------------------------------------------------------------
 
-bool triangle::findNearPoint(triangulation::point p, triangulation::point &res, double r)
-{
+bool triangle::findNearPoint(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &res, double r) {
     res = p;
-    if(p1.length(p) <= r)
+    if (p1.calcLength(p) <= r) {
         res = p1;
-    else if(p2.length(p) <= r)
+    } else if(p2.calcLength(p) <= r) {
         res = p2;
-    else if(p3.length(p) <= r)
+    } else if(p3.calcLength(p) <= r) {
         res = p3;
+    }
     return (res != p);
 };
 
@@ -76,13 +76,13 @@ bool triangle::findNearPoint(triangulation::point p, triangulation::point &res, 
 
 //---------------------------------------------------------------------------
 
-bool triangle::hasIntersection(const triangulation::line &l)
+bool triangle::hasIntersection(const Sea5kgTriangulationLine &l)
 {
-    triangulation::point p;
-    triangulation::line l0(l.p1,l.p2);
-    triangulation::line l12(p1,p2);
-    triangulation::line l23(p2,p3);
-    triangulation::line l31(p3,p1);
+    Sea5kgTriangulationPoint p;
+    Sea5kgTriangulationLine l0(l.p1,l.p2);
+    Sea5kgTriangulationLine l12(p1,p2);
+    Sea5kgTriangulationLine l23(p2,p3);
+    Sea5kgTriangulationLine l31(p3,p1);
 
     return
            l12.hasIntersection(l0, p) || l0.hasIntersection(l12, p)
@@ -94,7 +94,7 @@ bool triangle::hasIntersection(const triangulation::line &l)
 
 bool _sort_here (double x1, double x2) { return (x1 < x2); };
 
-bool triangle::hasPoint(const triangulation::point &p)
+bool triangle::hasPoint(const Sea5kgTriangulationPoint &p)
 {
     triangulation::area ar;        
     ar.addPoint(p1.X, p1.Y);
@@ -104,8 +104,8 @@ bool triangle::hasPoint(const triangulation::point &p)
 
 
 
-    triangulation::line line_x( triangulation::point(-1000, p.Y), triangulation::point(1000, p.Y) );
-    triangulation::line line_y( triangulation::point(p.X, -1000), triangulation::point(p.X,1000) );
+    Sea5kgTriangulationLine line_x( Sea5kgTriangulationPoint(-1000, p.Y), Sea5kgTriangulationPoint(1000, p.Y) );
+    Sea5kgTriangulationLine line_y( Sea5kgTriangulationPoint(p.X, -1000), Sea5kgTriangulationPoint(p.X,1000) );
 
     std::vector<double> points_x;
     std::vector<double> points_y;
@@ -113,11 +113,11 @@ bool triangle::hasPoint(const triangulation::point &p)
     points_y.push_back(-1000);
 
 
-    triangulation::line line12(p1,p2);
-    triangulation::line line23(p2,p3);
-    triangulation::line line31(p3,p2);
+    Sea5kgTriangulationLine line12(p1,p2);
+    Sea5kgTriangulationLine line23(p2,p3);
+    Sea5kgTriangulationLine line31(p3,p2);
 
-    triangulation::point p_res;
+    Sea5kgTriangulationPoint p_res;
     if(line12.hasIntersection(line_x, p_res))
       points_x.push_back(p_res.X);
     if(line23.hasIntersection(line_x, p_res))
@@ -175,10 +175,10 @@ bool triangle::hasPoint(const triangulation::point &p)
 };
 //---------------------------------------------------------------------------
 
-bool triangle::hasTop(const triangulation::point &p) const
+bool triangle::hasTop(const Sea5kgTriangulationPoint &p) const
 {
     double k = 1;
-    return ((p1.length(p) < k) || (p2.length(p) < k) || (p3.length(p) < k))
+    return ((p1.calcLength(p) < k) || (p2.calcLength(p) < k) || (p3.calcLength(p) < k))
         || p1 == p || p2 == p || p3 == p;
 };
 
@@ -210,7 +210,7 @@ bool triangle::operator == (const triangulation::triangle &tr)
 //   return str;
 // }
 
-// void setPoint(UnicodeString str, triangulation::point &p)
+// void setPoint(UnicodeString str, Sea5kgTriangulationPoint &p)
 // {
 //     p.X = StrToInt(str.SubString(1, str.Pos(",")-1));
 //     str.Delete(1, str.Pos(","));
@@ -245,9 +245,9 @@ void triangle::operator = (const triangulation::triangle &tr)
 //---------------------------------------------------------------------------
 
 triangle_pointer::triangle_pointer()
- : p1(new triangulation::point()), 
-   p2(new triangulation::point()),
-   p3(new triangulation::point())
+ : p1(new Sea5kgTriangulationPoint()), 
+   p2(new Sea5kgTriangulationPoint()),
+   p3(new Sea5kgTriangulationPoint())
 {
 
 };
@@ -261,23 +261,23 @@ triangulation::triangle triangle_pointer::getTriangle()
 
 //---------------------------------------------------------------------------
 
-triangulation::point triangle_pointer::get_p1()
+Sea5kgTriangulationPoint triangle_pointer::get_p1()
 {
-  return triangulation::point(p1->X, p1->Y);
+  return Sea5kgTriangulationPoint(p1->X, p1->Y);
 };
 
 //---------------------------------------------------------------------------
 
-triangulation::point triangle_pointer::get_p2()
+Sea5kgTriangulationPoint triangle_pointer::get_p2()
 {
-  return triangulation::point(p2->X, p2->Y);
+  return Sea5kgTriangulationPoint(p2->X, p2->Y);
 };
 
 //---------------------------------------------------------------------------
 
-triangulation::point triangle_pointer::get_p3()
+Sea5kgTriangulationPoint triangle_pointer::get_p3()
 {
-  return triangulation::point(p3->X, p3->Y);
+  return Sea5kgTriangulationPoint(p3->X, p3->Y);
 };
 
 //---------------------------------------------------------------------------

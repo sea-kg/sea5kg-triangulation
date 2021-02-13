@@ -12,11 +12,11 @@ bool _sort_here_area (double x1, double x2) {
     return (x1 < x2);
 };
 
-bool area::hasPoint(const triangulation::point &p) const
+bool area::hasPoint(const Sea5kgTriangulationPoint &p) const
 {
     double k = 2;
-    triangulation::line line_x( triangulation::point(-1000, p.Y), triangulation::point(1000, p.Y) );
-    triangulation::line line_y( triangulation::point(p.X, -1000), triangulation::point(p.X,1000) );
+    Sea5kgTriangulationLine line_x( Sea5kgTriangulationPoint(-1000, p.Y), Sea5kgTriangulationPoint(1000, p.Y) );
+    Sea5kgTriangulationLine line_y( Sea5kgTriangulationPoint(p.X, -1000), Sea5kgTriangulationPoint(p.X,1000) );
 
     std::vector<double> points_x;
     std::vector<double> points_y;
@@ -25,12 +25,12 @@ bool area::hasPoint(const triangulation::point &p) const
 
     for(int i = 0; i < m_vPoints.size(); i++)
     {
-        triangulation::point p1 = m_vPoints[i];
-        triangulation::point p2 = m_vPoints[(i+1) % m_vPoints.size()];
+        Sea5kgTriangulationPoint p1 = m_vPoints[i];
+        Sea5kgTriangulationPoint p2 = m_vPoints[(i+1) % m_vPoints.size()];
 
-        triangulation::line line_side(p2,p1);
+        Sea5kgTriangulationLine line_side(p2,p1);
 
-        triangulation::point p_res;
+        Sea5kgTriangulationPoint p_res;
 
         //if(line_x.hasIntersection(line_side, p_res)) // && line_x.hasPoint(p_res) && line_side.hasPoint(p_res) )
         //    points_x.push_back(p_res.X) ;
@@ -92,7 +92,7 @@ bool area::hasPoint(const triangulation::point &p) const
 
 //---------------------------------------------------------------------------
 
-bool area::hasLine(const triangulation::line &L) const
+bool area::hasLine(const Sea5kgTriangulationLine &L) const
 {
     if( !hasPoint(L.p1) || !hasPoint(L.p2))
         return false;
@@ -101,14 +101,14 @@ bool area::hasLine(const triangulation::line &L) const
 };
 //---------------------------------------------------------------------------
 
-bool area::hasIntersections(triangulation::line l, std::vector<triangulation::point> &result)
+bool area::hasIntersections(Sea5kgTriangulationLine l, std::vector<Sea5kgTriangulationPoint> &result)
 {
     int nCount = 0;
     for(int i = 0; i < this->count(); i++)
     {
-        triangulation::line line_side(this->getPoint(i),this->getPoint((i+1) % this->count()));
+        Sea5kgTriangulationLine line_side(this->getPoint(i),this->getPoint((i+1) % this->count()));
 
-        triangulation::point p_res;
+        Sea5kgTriangulationPoint p_res;
         if(l.hasIntersection(line_side, p_res))
         {
             nCount++;
@@ -119,21 +119,21 @@ bool area::hasIntersections(triangulation::line l, std::vector<triangulation::po
 };
 //---------------------------------------------------------------------------
 
-bool area::hasIntersections(triangulation::area &ar, std::vector<triangulation::point> &result)
+bool area::hasIntersections(triangulation::area &ar, std::vector<Sea5kgTriangulationPoint> &result)
 {
     int nCount = 0;
     for(int ar_i = 0; ar_i < ar.count(); ar_i++)
     {
-        triangulation::point ar_p1 = ar.getPoint(ar_i);
-        triangulation::point ar_p2 = ar.getPoint((ar_i+1) % ar.count());
+        Sea5kgTriangulationPoint ar_p1 = ar.getPoint(ar_i);
+        Sea5kgTriangulationPoint ar_p2 = ar.getPoint((ar_i+1) % ar.count());
 
-        triangulation::line ar_line(ar_p1, ar_p2);
+        Sea5kgTriangulationLine ar_line(ar_p1, ar_p2);
 
 
         for(int i = 0; i < this->count(); i++)
         {
-            triangulation::line line_side(this->getPoint(i),this->getPoint((i+1) % this->count()));
-            triangulation::point p_res;
+            Sea5kgTriangulationLine line_side(this->getPoint(i),this->getPoint((i+1) % this->count()));
+            Sea5kgTriangulationPoint p_res;
             if(line_side.hasIntersection(ar_line, p_res))
             {
                 nCount++;
@@ -155,21 +155,21 @@ bool area::hasIntersections(triangulation::area &ar, std::vector<triangulation::
 
     if(count() > 0 )
     {
-        triangulation::point p = getPoint(0);
+        Sea5kgTriangulationPoint p = getPoint(0);
         img->Canvas->MoveTo(p.X,p.Y);
         img->Canvas->Ellipse(p.X-2,p.Y-2,p.X+2,p.Y+2);
     }
 
     for(int i = 1; i < count(); i++)
     {
-      triangulation::point p = getPoint(i);
+      Sea5kgTriangulationPoint p = getPoint(i);
       img->Canvas->LineTo(p.X,p.Y);
       img->Canvas->Ellipse(p.X-2,p.Y-2,p.X+2,p.Y+2);
     };
 
     if(count() > 0 )
     {
-      triangulation::point p = getPoint(0);
+      Sea5kgTriangulationPoint p = getPoint(0);
       img->Canvas->LineTo(p.X,p.Y);
     };
 
@@ -182,12 +182,12 @@ bool area::hasIntersections(triangulation::area &ar, std::vector<triangulation::
 
 double area::getSquare()
 {
-    triangulation::point pMiddlePoint = getMiddlePoint();
+    Sea5kgTriangulationPoint pMiddlePoint = getMiddlePoint();
     double square = 0;
     for(int i = 0; i < count(); i++)
     {
-        triangulation::point p1 = getPoint(i);
-        triangulation::point p2 = getPoint((i+1) % count());
+        Sea5kgTriangulationPoint p1 = getPoint(i);
+        Sea5kgTriangulationPoint p2 = getPoint((i+1) % count());
         square += triangulation::triangle(p1, p2, pMiddlePoint).getSquare();
     };
     return square;
@@ -195,9 +195,9 @@ double area::getSquare()
 
 //---------------------------------------------------------------------------
 
-triangulation::point area::getMiddlePoint()
+Sea5kgTriangulationPoint area::getMiddlePoint()
 {
-    triangulation::point pMiddlePoint;
+    Sea5kgTriangulationPoint pMiddlePoint;
     for(int i = 0; i < count(); i++)
         pMiddlePoint += getPoint(i);
     pMiddlePoint = pMiddlePoint / count();
@@ -206,18 +206,18 @@ triangulation::point area::getMiddlePoint()
 
 //---------------------------------------------------------------------------
 
-const double area::getPerpendicularToLine(const triangulation::point &p, triangulation::point &result)
+const double area::getPerpendicularToLine(const Sea5kgTriangulationPoint &p, Sea5kgTriangulationPoint &result)
 {
-    triangulation::point res2;
+    Sea5kgTriangulationPoint res2;
     double nLen2 = 1000;
 
     for(int i = 0; i < count(); i++)
     {
-        triangulation::point p1 = getPoint(i);
-        triangulation::point p2 = getPoint((i+1) % count());
-        triangulation::line L(p1, p2);
-        triangulation::point res;
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p1 = getPoint(i);
+        Sea5kgTriangulationPoint p2 = getPoint((i+1) % count());
+        Sea5kgTriangulationLine L(p1, p2);
+        Sea5kgTriangulationPoint res;
+        Sea5kgTriangulationPoint p_buff;
         double nLen = L.getPerpendicularToLine(p, res);
         if( nLen < nLen2 && (L.hasPoint(res) || L.getPerpendicularToLine(res, p_buff) < 1))
         {
@@ -232,19 +232,19 @@ const double area::getPerpendicularToLine(const triangulation::point &p, triangu
 
 //---------------------------------------------------------------------------
 
-bool area::findNearPointSide(const triangulation::point &p, triangulation::point &result, double len)
+bool area::findNearPointSide(const Sea5kgTriangulationPoint &p, Sea5kgTriangulationPoint &result, double len)
 {
-    triangulation::point res2;
+    Sea5kgTriangulationPoint res2;
     double nLen2 = len;
 
     for(int i = 0; i < count(); i++)
     {
-        triangulation::point p1 = getPoint(i);
-        double nLen = p1.length(p);
+        Sea5kgTriangulationPoint p1 = getPoint(i);
+        double nLen = p1.calcLength(p);
         if(nLen2 >= nLen)
         {
             res2 = p1;
-            nLen2 = p1.length(p);
+            nLen2 = p1.calcLength(p);
         };
     };
 
@@ -256,19 +256,18 @@ bool area::findNearPointSide(const triangulation::point &p, triangulation::point
 
     nLen2 = len;
 
-    //triangulation::point res2;
+    //Sea5kgTriangulationPoint res2;
     //double nLen2 = len;
 
-    for(int i = 0; i < count(); i++)
-    {
-        triangulation::point p1 = getPoint(i);
-        triangulation::point p2 = getPoint((i+1) % count());
-        triangulation::line L(p1, p2);
-        triangulation::point res;
-        triangulation::point p_buff;
+    for (int i = 0; i < count(); i++) {
+        Sea5kgTriangulationPoint p1 = getPoint(i);
+        Sea5kgTriangulationPoint p2 = getPoint((i+1) % count());
+        Sea5kgTriangulationLine L(p1, p2);
+        Sea5kgTriangulationPoint res;
+        Sea5kgTriangulationPoint p_buff;
         double nLen = L.getPerpendicularToLine(p, res);
         double nLen_ = L.getPerpendicularToLine(res, p_buff);
-        if( nLen < nLen2 && (L.hasPoint(res) && res.length(p_buff) < 1))
+        if( nLen < nLen2 && (L.hasPoint(res) && res.calcLength(p_buff) < 1))
         {
             res2 = res;
             nLen2 = nLen;
@@ -292,7 +291,7 @@ bool area::getMinMaxXY(double &minX, double &maxX, double &minY, double &maxY)
 
     for(int i1 = 0; i1 < count(); i1++)
     {
-        triangulation::point p = getPoint(i1);
+        Sea5kgTriangulationPoint p = getPoint(i1);
 
         if(bFirst)
         {

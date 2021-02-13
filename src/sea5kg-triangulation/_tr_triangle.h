@@ -1,9 +1,7 @@
 #pragma once
 
-#include "_tr_point.h"
-#include "_tr_line.h"
-#include "_tr_area.h"
-//---------------------------------------------------------------------------
+#include "sea5kg_triangulation.h"
+
 
 namespace triangulation {
 
@@ -11,16 +9,16 @@ class triangle
 {
     public:
         triangle();
-        triangle(triangulation::point p1, triangulation::point p2, triangulation::point p3);
+        triangle(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2, Sea5kgTriangulationPoint p3);
 
-        triangulation::point p1, p2, p3;
+        Sea5kgTriangulationPoint p1, p2, p3;
 
         double getSquare();
-        bool findNearPoint(triangulation::point p, triangulation::point &res, double r);
+        bool findNearPoint(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &res, double r);
         // void paint(TImage *img);
-        bool hasIntersection(const triangulation::line &l);
-        bool hasPoint(const triangulation::point &p);
-        bool hasTop(const triangulation::point &p) const;
+        bool hasIntersection(const Sea5kgTriangulationLine &l);
+        bool hasPoint(const Sea5kgTriangulationPoint &p);
+        bool hasTop(const Sea5kgTriangulationPoint &p) const;
         // UnicodeString toString();
         // void triangle::fromString(UnicodeString str);
         bool operator == (const triangulation::triangle &tr);
@@ -36,14 +34,14 @@ class triangle_pointer
     public:
         triangle_pointer();
 
-        triangulation::point* p1;
-    triangulation::point* p2;
-    triangulation::point* p3;
+        Sea5kgTriangulationPoint* p1;
+    Sea5kgTriangulationPoint* p2;
+    Sea5kgTriangulationPoint* p3;
 
         triangulation::triangle getTriangle();
-    triangulation::point get_p1();
-    triangulation::point get_p2();
-    triangulation::point get_p3();
+    Sea5kgTriangulationPoint get_p1();
+    Sea5kgTriangulationPoint get_p2();
+    Sea5kgTriangulationPoint get_p3();
 
     private:
 };

@@ -16,12 +16,12 @@ triangulator::triangulator()
 
 //---------------------------------------------------------------------------
 
-void triangulator::fillArray(const triangulation::point &p, std::vector<triangulation::point> &p_arr, double r)
+void triangulator::fillArray(const Sea5kgTriangulationPoint &p, std::vector<Sea5kgTriangulationPoint> &p_arr, double r)
 {
-    triangulation::point p_temp;
-    triangulation::point p_buff;
+    Sea5kgTriangulationPoint p_temp;
+    Sea5kgTriangulationPoint p_buff;
 
-    std::vector<triangulation::point> p_vect;
+    std::vector<Sea5kgTriangulationPoint> p_vect;
 
     p_vect.push_back(p);
 
@@ -53,9 +53,9 @@ void triangulator::fillArray(const triangulation::point &p, std::vector<triangul
 //---------------------------------------------------------------------------
 
 
-void calcPoints(const triangulation::line &L, triangulation::point &p4, triangulation::point &p5, double m_h)
+void calcPoints(const Sea5kgTriangulationLine &L, Sea5kgTriangulationPoint &p4, Sea5kgTriangulationPoint &p5, double m_h)
 {
-    triangulation::point p3 = L.getMiddlePoint();
+    Sea5kgTriangulationPoint p3 = L.getMiddlePoint();
 
      if(L.p1.X == L.p2.X)
      {
@@ -89,11 +89,11 @@ void calcPoints(const triangulation::line &L, triangulation::point &p4, triangul
 //---------------------------------------------------------------------------
 
 bool triangulator::addTriangle(
-    triangulation::point p1,
-    triangulation::point p2,
-    triangulation::point p3,
+    Sea5kgTriangulationPoint p1,
+    Sea5kgTriangulationPoint p2,
+    Sea5kgTriangulationPoint p3,
     double a,
-    std::vector<triangulation::line> &m_lines
+    std::vector<Sea5kgTriangulationLine> &m_lines
 )
 {
     double p = (a + a + a) / 2;
@@ -102,11 +102,11 @@ bool triangulator::addTriangle(
 
     
 
-     triangulation::point p_null;
+     Sea5kgTriangulationPoint p_null;
 
-    std::vector<triangulation::point> p1_arr;
-    std::vector<triangulation::point> p2_arr;
-    std::vector<triangulation::point> p3_arr;
+    std::vector<Sea5kgTriangulationPoint> p1_arr;
+    std::vector<Sea5kgTriangulationPoint> p2_arr;
+    std::vector<Sea5kgTriangulationPoint> p3_arr;
 
     fillArray(p1, p1_arr, a / m_nDivisor);
     fillArray(p2, p2_arr, a / m_nDivisor);
@@ -136,7 +136,7 @@ bool triangulator::addTriangle(
     // return false;
 /*
   double k = 0.1;
-    triangulation::point p_buff;    
+    Sea5kgTriangulationPoint p_buff;    
     if( findNearPoint(p1, p_buff, a/m_nDivisor) && p_buff.length(p2) > k && p_buff.length(p3) > k && triangulation::triangle(p_buff,p2,p3).getSquare() >= min_square )    
         p1 = p_buff;
 
@@ -155,7 +155,7 @@ bool triangulator::addTriangle(
           m_pLogger->info(" start here!!!!");
 
       {
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p_buff;
         if(m_areas[m_nCurrArea].findNearPointSide(p3, p_buff, a/m_nDivisor))
         {
             if(addTriangleAsIs(p1,p2,p_buff, a, m_lines))
@@ -165,7 +165,7 @@ bool triangulator::addTriangle(
 
 
     {
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p_buff;
         for(unsigned int i2 = 0; i2 < m_areas.size(); i2++)
         {
             if(i2 != m_nCurrArea && m_areas[i2].findNearPointSide(p3, p_buff, a/3))
@@ -185,7 +185,7 @@ bool triangulator::addTriangle(
     {
       // m_pLogger->info("hasCurrentArea == true p3 = " + p3.toString());
 
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p_buff;
         bool br = m_areas[m_nCurrArea].findNearPointSide(p3, p_buff, a/2);
         // m_pLogger->info("hasCurrentArea == true try add(p1,p2,p3): " + triangulation::triangle(p1,p2,p3).toString());
         
@@ -210,7 +210,7 @@ bool triangulator::addTriangle(
     else
     {
         // m_pLogger->info("hasCurrentArea == false p3 = " + p3.toString());
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p_buff;
         for(unsigned int i2 = 0; i2 < m_areas.size(); i2++)
         {
             if(m_areas[i2].findNearPointSide(p3, p_buff, a/2))
@@ -236,15 +236,15 @@ bool triangulator::addTriangle(
 
         for(unsigned int i2 = 0; i2 < m_areas.size(); i2++ )
         {
-            std::vector<triangulation::point> result;
+            std::vector<Sea5kgTriangulationPoint> result;
 
             result.clear();
             result.push_back(p3);
 
-            if( m_areas[i2].hasIntersections(triangulation::line(p1,p3), result) )
+            if( m_areas[i2].hasIntersections(Sea5kgTriangulationLine(p1,p3), result) )
             {
 
-                triangulation::point p_buff;
+                Sea5kgTriangulationPoint p_buff;
                 for(int i3 = 0; i3 < result.size(); i3++)
                 {
                     bool br = m_areas[i2].findNearPointSide(result[i3], p_buff, a/2);
@@ -257,10 +257,10 @@ bool triangulator::addTriangle(
             result.clear();
             result.push_back(p3);
 
-            if( m_areas[i2].hasIntersections(triangulation::line(p2,p3), result) )
+            if( m_areas[i2].hasIntersections(Sea5kgTriangulationLine(p2,p3), result) )
             {
 
-                triangulation::point p_buff;
+                Sea5kgTriangulationPoint p_buff;
                 for(int i3 = 0; i3 < result.size(); i3++)
                 {
                     bool br = m_areas[i2].findNearPointSide(result[i3], p_buff, a/2);
@@ -281,7 +281,7 @@ bool triangulator::addTriangle(
     {    
         triangulation::triangle tr;    
         triangulation::triangle tr_(p1,p2,p3);    
-        triangulation::point p_intersection;
+        Sea5kgTriangulationPoint p_intersection;
         if(hasIntersectionWithOtherTriangles(tr_, tr, p_intersection))
         {
             if(addTriangleAsIs(tr_.p1,tr_.p2,tr.p1, m_nInfelicity, m_lines))
@@ -301,21 +301,21 @@ bool triangulator::addTriangle(
 
     for(int i = 0; i < m_areas[m_nCurrArea].count(); i++)
     {
-        triangulation::point ar_p1 = m_areas[m_nCurrArea].getPoint(i);
-        triangulation::point ar_p2 = m_areas[m_nCurrArea].getPoint((i+1) % m_areas[m_nCurrArea].count());
-        triangulation::point ar_p3 = m_areas[m_nCurrArea].getPoint((i+2) % m_areas[m_nCurrArea].count());
+        Sea5kgTriangulationPoint ar_p1 = m_areas[m_nCurrArea].getPoint(i);
+        Sea5kgTriangulationPoint ar_p2 = m_areas[m_nCurrArea].getPoint((i+1) % m_areas[m_nCurrArea].count());
+        Sea5kgTriangulationPoint ar_p3 = m_areas[m_nCurrArea].getPoint((i+2) % m_areas[m_nCurrArea].count());
                         
-        triangulation::line L1(ar_p1, ar_p2);
-        triangulation::line L2(ar_p2, ar_p3);
-        triangulation::point p_buff;
+        Sea5kgTriangulationLine L1(ar_p1, ar_p2);
+        Sea5kgTriangulationLine L2(ar_p2, ar_p3);
+        Sea5kgTriangulationPoint p_buff;
             
         if( (L1.hasPoint(p1) && L2.hasPoint(p2))
             || (L2.hasPoint(p1) && L1.hasPoint(p2))
-            || (ar_p1.length(p1) < m_nInfelicity || ar_p2.length(p2) < m_nInfelicity)
-            || (ar_p1.length(p2) < m_nInfelicity || ar_p2.length(p1) < m_nInfelicity)
+            || (ar_p1.calcLength(p1) < m_nInfelicity || ar_p2.calcLength(p2) < m_nInfelicity)
+            || (ar_p1.calcLength(p2) < m_nInfelicity || ar_p2.calcLength(p1) < m_nInfelicity)
         )
         {            
-            if(triangulation::line(p1,ar_p2).length() < a + a/m_nDivisor && triangulation::line(p2,ar_p2).length() < a + a/m_nDivisor)
+            if(Sea5kgTriangulationLine(p1,ar_p2).length() < a + a/m_nDivisor && Sea5kgTriangulationLine(p2,ar_p2).length() < a + a/m_nDivisor)
             {
                   if(addTriangleAsIs(p1,p2,ar_p2, m_nInfelicity, m_lines))
                     return true;
@@ -329,11 +329,11 @@ bool triangulator::addTriangle(
 //---------------------------------------------------------------------------
 
 bool triangulator::addTriangleAsIs(
-    triangulation::point p1, 
-    triangulation::point p2, 
-    triangulation::point p3, 
+    Sea5kgTriangulationPoint p1, 
+    Sea5kgTriangulationPoint p2, 
+    Sea5kgTriangulationPoint p3, 
     double a,
-    std::vector<triangulation::line> &m_lines
+    std::vector<Sea5kgTriangulationLine> &m_lines
     )
 {
     double p = (a + a + a) / 2;
@@ -341,7 +341,7 @@ bool triangulator::addTriangleAsIs(
     min_square = min_square / 3;
 
     double r = a/m_nDivisor;
-    triangulation::point p_altr;    
+    Sea5kgTriangulationPoint p_altr;    
     if(findNearPoint(p1, p_altr, r))  p1 = p_altr;
     if(findNearPoint(p2, p_altr, r))  p2 = p_altr;
     if(findNearPoint(p3, p_altr, r))  p3 = p_altr;
@@ -358,9 +358,9 @@ bool triangulator::addTriangleAsIs(
             return false;
 
         triangulation::triangle tr_buff;
-        triangulation::point p_intersection;                                                                 
+        Sea5kgTriangulationPoint p_intersection;                                                                 
 
-        if(tr.p1.length(tr.p2) < m_nInfelicity || tr.p1.length(tr.p3) < m_nInfelicity || tr.p2.length(tr.p3) < m_nInfelicity )
+        if(tr.p1.calcLength(tr.p2) < m_nInfelicity || tr.p1.calcLength(tr.p3) < m_nInfelicity || tr.p2.calcLength(tr.p3) < m_nInfelicity )
             return false;
 
         if(
@@ -371,14 +371,14 @@ bool triangulator::addTriangleAsIs(
             if(tr.getSquare() > min_square)        
             {
                 m_triangles.push_back(tr);
-              m_lines.push_back(triangulation::line(tr.p1,tr.p3));
-              m_lines.push_back(triangulation::line(tr.p2,tr.p3));
+              m_lines.push_back(Sea5kgTriangulationLine(tr.p1,tr.p3));
+              m_lines.push_back(Sea5kgTriangulationLine(tr.p2,tr.p3));
 
               // m_pLogger->info(triangulation::triangle(p1,p2,p3).toString());
               //if(tr.p2.toString() == "(195,371)" && tr.p3.toString() == "(233,415)")
               //   m_pLogger->info(" add line here!!!!");
 
-              //m_lines.push_back(triangulation::line(tr.p2,tr.p3));
+              //m_lines.push_back(Sea5kgTriangulationLine(tr.p2,tr.p3));
               return true;
             };
         }
@@ -388,13 +388,13 @@ bool triangulator::addTriangleAsIs(
 
 //---------------------------------------------------------------------------
 
-bool triangulator::hasCurrentArea(triangulation::point p)
+bool triangulator::hasCurrentArea(Sea5kgTriangulationPoint p)
 {
     for(int i = 0; i < m_areas.size(); i++)
     {
         if( i != m_nCurrArea && m_areas[i].hasPoint(p) )
         {
-            triangulation::point p_buff;
+            Sea5kgTriangulationPoint p_buff;
             if(m_areas[i].getPerpendicularToLine(p, p_buff) > m_nInfelicity)
                 return false;
         };
@@ -405,9 +405,9 @@ bool triangulator::hasCurrentArea(triangulation::point p)
 
 //---------------------------------------------------------------------------
 
-bool triangulator::hasCurrentArea(triangulation::point p1, triangulation::point p2)
+bool triangulator::hasCurrentArea(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2)
 {
-    triangulation::line L(p1,p2);
+    Sea5kgTriangulationLine L(p1,p2);
     for(int i = 0; i < m_areas.size(); i++)
     {
         if( i != m_nCurrArea && m_areas[i].hasLine(L) )
@@ -418,7 +418,7 @@ bool triangulator::hasCurrentArea(triangulation::point p1, triangulation::point 
 
 //---------------------------------------------------------------------------
 
-bool hasPoint_(triangulation::triangle tr, const triangulation::point &p, triangulation::triangle &tr_result, triangulation::point &p_result, triangulation::triangle tr1)
+bool hasPoint_(triangulation::triangle tr, const Sea5kgTriangulationPoint &p, triangulation::triangle &tr_result, Sea5kgTriangulationPoint &p_result, triangulation::triangle tr1)
 {
     if( (tr.hasPoint(p) && !tr.hasTop(p)))
     {
@@ -430,17 +430,17 @@ bool hasPoint_(triangulation::triangle tr, const triangulation::point &p, triang
 };
 
 
-bool triangulator::hasIntersectionWithOtherTriangles(const triangulation::triangle &tr_, triangulation::triangle &result, triangulation::point &p_result)
+bool triangulator::hasIntersectionWithOtherTriangles(const triangulation::triangle &tr_, triangulation::triangle &result, Sea5kgTriangulationPoint &p_result)
 {
-    triangulation::line L[3];
-    L[0] = triangulation::line(tr_.p1,tr_.p2);
-    L[1] = triangulation::line(tr_.p2,tr_.p3);
-    L[2] = triangulation::line(tr_.p3,tr_.p1);
+    Sea5kgTriangulationLine L[3];
+    L[0] = Sea5kgTriangulationLine(tr_.p1,tr_.p2);
+    L[1] = Sea5kgTriangulationLine(tr_.p2,tr_.p3);
+    L[2] = Sea5kgTriangulationLine(tr_.p3,tr_.p1);
 
     for(int i = 0; i < m_triangles.size(); i++)
     {
         triangulation::triangle tr = m_triangles[i];
-        triangulation::line TR_L[3];
+        Sea5kgTriangulationLine TR_L[3];
 
 /*        if( hasPoint_(tr, p1, result, p_result, tr) )
             return true;    
@@ -460,9 +460,9 @@ bool triangulator::hasIntersectionWithOtherTriangles(const triangulation::triang
         if( hasPoint_(tr_, tr.p3, result, p_result, tr) )
             return true;    
 */
-        TR_L[0] = triangulation::line(m_triangles[i].p1, m_triangles[i].p2);
-        TR_L[1] = triangulation::line(m_triangles[i].p2, m_triangles[i].p3);
-        TR_L[2] = triangulation::line(m_triangles[i].p3, m_triangles[i].p1);
+        TR_L[0] = Sea5kgTriangulationLine(m_triangles[i].p1, m_triangles[i].p2);
+        TR_L[1] = Sea5kgTriangulationLine(m_triangles[i].p2, m_triangles[i].p3);
+        TR_L[2] = Sea5kgTriangulationLine(m_triangles[i].p3, m_triangles[i].p1);
 
 /*
         if( hasPoint_(tr, L[0].getMiddlePoint(), result, p_result, tr) )
@@ -485,7 +485,7 @@ bool triangulator::hasIntersectionWithOtherTriangles(const triangulation::triang
         if( hasPoint_(tr_, TR_L[2].getMiddlePoint(), result, p_result, tr) )
             return true;    
 */
-        triangulation::point p;
+        Sea5kgTriangulationPoint p;
 
         for (int i1 = 0; i1 < 3; i1++)
             for (int i2 = 0; i2 < 3; i2++)
@@ -499,7 +499,7 @@ bool triangulator::hasIntersectionWithOtherTriangles(const triangulation::triang
       /*if(tr.hasPoint(p1) || tr.hasPoint(p2) || tr.hasPoint(p3))
       {
             result = tr;
-            p_result = triangulation::point();
+            p_result = Sea5kgTriangulationPoint();
             return true;      
       };*/
 
@@ -510,7 +510,7 @@ bool triangulator::hasIntersectionWithOtherTriangles(const triangulation::triang
 
 void triangulator::addArea(triangulation::area ar)
 {
-    std::vector<triangulation::point> result;
+    std::vector<Sea5kgTriangulationPoint> result;
     
     for(int i = 0; i < m_areas.size(); i++)
     {
@@ -538,8 +538,8 @@ std::vector<triangulation::triangle> &triangulator::getTriangles()
 //---------------------------------------------------------------------------
 
 void triangulator::findPoints(
-    const triangulation::point &p1, 
-    const std::vector<triangulation::point> &points, 
+    const Sea5kgTriangulationPoint &p1, 
+    const std::vector<Sea5kgTriangulationPoint> &points, 
     double a, 
     std::vector<triangulation::triangle> &triangles
 )
@@ -553,12 +553,12 @@ void triangulator::findPoints(
     {
         if(iP2 == iP3) continue;
 
-        triangulation::point p2 = points[iP2];
-        triangulation::point p3 = points[iP3];
+        Sea5kgTriangulationPoint p2 = points[iP2];
+        Sea5kgTriangulationPoint p3 = points[iP3];
         
-        double nLen1 = p1.length(p2);
-        double nLen2 = p2.length(p3);
-        double nLen3 = p3.length(p1);
+        double nLen1 = p1.calcLength(p2);
+        double nLen2 = p2.calcLength(p3);
+        double nLen3 = p3.calcLength(p1);
 
         
         if(
@@ -578,8 +578,8 @@ void triangulator::findPoints(
     {
         if(iP2 == iP3) continue;
 
-        triangulation::point p2 = points[iP2];
-        triangulation::point p3 = points[iP3];
+        Sea5kgTriangulationPoint p2 = points[iP2];
+        Sea5kgTriangulationPoint p3 = points[iP3];
         
         double nLen1 = p1.length(p2);
         double nLen2 = p2.length(p3);
@@ -647,9 +647,9 @@ void triangulator::step_first()
         // m_pLogger->info("r = " + FloatToStr(r) + " px");
 
         
-        std::vector<triangulation::point> points;
+        std::vector<Sea5kgTriangulationPoint> points;
         double nStartX = 0;
-         triangulation::point p_before;
+         Sea5kgTriangulationPoint p_before;
         for(double iY = 0; iY < 1024; iY = iY + h)
         {
             if( nStartX < 0 )
@@ -657,12 +657,12 @@ void triangulator::step_first()
             else
               nStartX = (-a)/2;
 
-            p_before = triangulation::point();
+            p_before = Sea5kgTriangulationPoint();
 
             for(double iX = nStartX; iX < 1024; iX = iX + a)
             {
-                triangulation::point p(iX, iY);
-                triangulation::point p_buff;
+                Sea5kgTriangulationPoint p(iX, iY);
+                Sea5kgTriangulationPoint p_buff;
 
 
                 if(hasCurrentArea(p))
@@ -682,19 +682,19 @@ void triangulator::step_first()
 
 
 /*
-                triangulation::line same_line[5];
-                triangulation::point p4, p5;
-                same_line[0] = triangulation::line(p, p_before);
+                Sea5kgTriangulationLine same_line[5];
+                Sea5kgTriangulationPoint p4, p5;
+                same_line[0] = Sea5kgTriangulationLine(p, p_before);
                                 calcPoints(same_line[0], p4, p5, h);
-                                same_line[1] = triangulation::line(p, p4);
-                                same_line[2] = triangulation::line(p_before, p4);
-                                same_line[3] = triangulation::line(p, p5);
-                                same_line[4] = triangulation::line(p_before, p5);
+                                same_line[1] = Sea5kgTriangulationLine(p, p4);
+                                same_line[2] = Sea5kgTriangulationLine(p_before, p4);
+                                same_line[3] = Sea5kgTriangulationLine(p, p5);
+                                same_line[4] = Sea5kgTriangulationLine(p_before, p5);
                                 
 
                 for(int iL = 0; iL < 5; iL++)
                 {
-                    std::vector<triangulation::point> points_intersection;
+                    std::vector<Sea5kgTriangulationPoint> points_intersection;
                     if( m_areas[m_nCurrArea].hasIntersections(same_line[iL], points_intersection) )
                     {
                         m_pLogger->info("p4 = " + p4.toString());
@@ -718,15 +718,15 @@ void triangulator::step_first()
         for(unsigned int iP = 0; iP < points.size(); iP++)
         {
             std::vector<triangulation::triangle> triangles;
-            std::vector<triangulation::line> lines;
-            triangulation::point p1 = points[iP];
+            std::vector<Sea5kgTriangulationLine> lines;
+            Sea5kgTriangulationPoint p1 = points[iP];
             findPoints(p1, points, a, triangles);
             int sch = 0;
             for(unsigned int iT = 0; iT < triangles.size(); iT++)
             {
                 triangulation::triangle tr = triangles[iT];
                 triangulation::triangle tr_;
-                triangulation::point p_intersection;
+                Sea5kgTriangulationPoint p_intersection;
 
                 if(addTriangleAsIs(tr.p1,tr.p2,tr.p3, a, lines))
                 {
@@ -741,14 +741,14 @@ void triangulator::step_first()
     };
 };
 
-bool findNearPoint_sp(std::vector<triangulation::point *> &pPoints, triangulation::point *p, triangulation::point **pResult, double a)
+bool findNearPoint_sp(std::vector<Sea5kgTriangulationPoint *> &pPoints, Sea5kgTriangulationPoint *p, Sea5kgTriangulationPoint **pResult, double a)
 {
-    triangulation::point pP(p->X, p->Y);
+    Sea5kgTriangulationPoint pP(p->X, p->Y);
     double curr_len = -1;    
     int iFound = -1;
     for(unsigned int i = 0; i < pPoints.size(); i++)
     {
-        double len = pPoints[i]->length(pP);
+        double len = pPoints[i]->calcLength(pP);
 
         if(len < a)
         {
@@ -790,7 +790,7 @@ void triangulator::step_first_alien()
         // m_pLogger->info("h = " + FloatToStr(h) + " px");
         // m_pLogger->info("r = " + FloatToStr(r) + " px");
         
-        std::vector<triangulation::point *> pPoints;
+        std::vector<Sea5kgTriangulationPoint *> pPoints;
         std::vector<triangulation::triangle_pointer *> pTriangules;
         double nStartX = 0, nEndX = 0;
         double minX,maxX,minY,maxY;
@@ -825,21 +825,21 @@ void triangulator::step_first_alien()
 
             for(double iX = nStartX; iX < nEndX; iX = iX + a)
             {
-                  triangulation::point p1_(iX, iY);
-                triangulation::point p2_(iX + a, iY);
-                triangulation::point p3_;
-                triangulation::point p4_;
-                triangulation::line li_(p1_,p2_);
+                  Sea5kgTriangulationPoint p1_(iX, iY);
+                Sea5kgTriangulationPoint p2_(iX + a, iY);
+                Sea5kgTriangulationPoint p3_;
+                Sea5kgTriangulationPoint p4_;
+                Sea5kgTriangulationLine li_(p1_,p2_);
 
-                triangulation::point *p1 = new triangulation::point(p1_.X, p1_.Y);
-                triangulation::point *p2 = new triangulation::point(p2_.X, p2_.Y);
+                Sea5kgTriangulationPoint *p1 = new Sea5kgTriangulationPoint(p1_.X, p1_.Y);
+                Sea5kgTriangulationPoint *p2 = new Sea5kgTriangulationPoint(p2_.X, p2_.Y);
                 
                 calcPoints(li_,p3_,p4_,h);
                 
-                triangulation::point *p3 = new triangulation::point(p3_.X, p3_.Y);
-                triangulation::point *p4 = new triangulation::point(p4_.X, p4_.Y);
+                Sea5kgTriangulationPoint *p3 = new Sea5kgTriangulationPoint(p3_.X, p3_.Y);
+                Sea5kgTriangulationPoint *p4 = new Sea5kgTriangulationPoint(p4_.X, p4_.Y);
 
-                triangulation::point *pFound;
+                Sea5kgTriangulationPoint *pFound;
 
                 /*
                 pPoints.push_back(p1);
@@ -909,11 +909,11 @@ void triangulator::step_first_alien()
         for(int iT = 0; iT < pTriangules.size(); iT++)
         {
             triangulation::triangle_pointer *tr = pTriangules[iT];
-            triangulation::point p1(tr->p1->X, tr->p1->Y);
-            triangulation::point p2(tr->p2->X, tr->p2->Y);
-            triangulation::point p3(tr->p3->X, tr->p3->Y);
+            Sea5kgTriangulationPoint p1(tr->p1->X, tr->p1->Y);
+            Sea5kgTriangulationPoint p2(tr->p2->X, tr->p2->Y);
+            Sea5kgTriangulationPoint p3(tr->p3->X, tr->p3->Y);
 
-            triangulation::point p_buff;
+            Sea5kgTriangulationPoint p_buff;
 
             if(findNearPointSide(p1, p_buff, a2))
             {
@@ -941,9 +941,9 @@ void triangulator::step_first_alien()
         for(int iT = 0; iT < pTriangules_copy.size(); iT++)
         {
             triangulation::triangle tr = pTriangules_copy[iT]->getTriangle();
-            triangulation::point p12 = triangulation::line(tr.p1, tr.p2).getMiddlePoint();
-            triangulation::point p23 = triangulation::line(tr.p2, tr.p3).getMiddlePoint();
-            triangulation::point p31 = triangulation::line(tr.p3, tr.p1).getMiddlePoint();
+            Sea5kgTriangulationPoint p12 = Sea5kgTriangulationLine(tr.p1, tr.p2).getMiddlePoint();
+            Sea5kgTriangulationPoint p23 = Sea5kgTriangulationLine(tr.p2, tr.p3).getMiddlePoint();
+            Sea5kgTriangulationPoint p31 = Sea5kgTriangulationLine(tr.p3, tr.p1).getMiddlePoint();
 
             if( hasCurrentArea(tr.p1) && 
                 hasCurrentArea(tr.p2) && 
@@ -954,14 +954,14 @@ void triangulator::step_first_alien()
                 {
                     triangulation::triangle_pointer *tr_ =     new triangulation::triangle_pointer();
 
-                    triangulation::point *new_p = new triangulation::point();
-                    triangulation::point p_buff;
+                    Sea5kgTriangulationPoint *new_p = new Sea5kgTriangulationPoint();
+                    Sea5kgTriangulationPoint p_buff;
 
                     if(findNearPointSide(p12, p_buff, a2))
                         p12 = p_buff;
 
-                    //triangulation::point p1_12 = triangulation::line(tr.p1, p1_12).getMiddlePoint();
-                    //triangulation::point p2_12 = triangulation::line(tr.p2, p2_12).getMiddlePoint();
+                    //Sea5kgTriangulationPoint p1_12 = Sea5kgTriangulationLine(tr.p1, p1_12).getMiddlePoint();
+                    //Sea5kgTriangulationPoint p2_12 = Sea5kgTriangulationLine(tr.p2, p2_12).getMiddlePoint();
 
                     if( hasCurrentArea(p12) ) // && hasCurrentArea(p1_12) && hasCurrentArea(p2_12))
                     {
@@ -982,14 +982,14 @@ void triangulator::step_first_alien()
                 {
                     triangulation::triangle_pointer *tr_ =     new triangulation::triangle_pointer();
 
-                    triangulation::point *new_p = new triangulation::point();
-                    triangulation::point p_buff;
+                    Sea5kgTriangulationPoint *new_p = new Sea5kgTriangulationPoint();
+                    Sea5kgTriangulationPoint p_buff;
 
                     if(findNearPointSide(p23, p_buff, a2))
                         p23 = p_buff;
                     
-                    // triangulation::point p2_23 = triangulation::line(tr.p2, p2_23).getMiddlePoint();
-                    // triangulation::point p3_23 = triangulation::line(tr.p3, p3_23).getMiddlePoint();
+                    // Sea5kgTriangulationPoint p2_23 = Sea5kgTriangulationLine(tr.p2, p2_23).getMiddlePoint();
+                    // Sea5kgTriangulationPoint p3_23 = Sea5kgTriangulationLine(tr.p3, p3_23).getMiddlePoint();
 
                     if( hasCurrentArea(p23) ) // && hasCurrentArea(p2_23) && hasCurrentArea(p3_23))
                     {
@@ -1011,14 +1011,14 @@ void triangulator::step_first_alien()
                 {
                     triangulation::triangle_pointer *tr_ =     new triangulation::triangle_pointer();
 
-                    triangulation::point *new_p = new triangulation::point();
-                    triangulation::point p_buff;
+                    Sea5kgTriangulationPoint *new_p = new Sea5kgTriangulationPoint();
+                    Sea5kgTriangulationPoint p_buff;
 
                     if(findNearPointSide(p31, p_buff, a2))
                         p31 = p_buff;
 
-                    // triangulation::point p3_31 = triangulation::line(tr.p3, p3_31).getMiddlePoint();
-                    // triangulation::point p1_31 = triangulation::line(tr.p1, p1_31).getMiddlePoint();
+                    // Sea5kgTriangulationPoint p3_31 = Sea5kgTriangulationLine(tr.p3, p3_31).getMiddlePoint();
+                    // Sea5kgTriangulationPoint p1_31 = Sea5kgTriangulationLine(tr.p1, p1_31).getMiddlePoint();
                                             
                     if( hasCurrentArea(p31) ) // && hasCurrentArea(p3_31) && hasCurrentArea(p1_31))
                     {
@@ -1050,10 +1050,10 @@ void triangulator::step_first_alien()
         for(int iT = 0; iT < pTriangules_copy.size(); iT++)
         {
             triangulation::triangle tr = pTriangules_copy[iT]->getTriangle();
-            triangulation::line L12(tr.p1, tr.p2);
-            triangulation::line L23(tr.p2, tr.p3);
-            triangulation::line L31(tr.p3, tr.p1);
-            triangulation::point p_temp;
+            Sea5kgTriangulationLine L12(tr.p1, tr.p2);
+            Sea5kgTriangulationLine L23(tr.p2, tr.p3);
+            Sea5kgTriangulationLine L31(tr.p3, tr.p1);
+            Sea5kgTriangulationPoint p_temp;
 
             if( L12.getPerpendicularToLine(tr.p3, p_temp) > a10 && 
                 L23.getPerpendicularToLine(tr.p1, p_temp) > a10 && 
@@ -1067,9 +1067,9 @@ void triangulator::step_first_alien()
         for(int iT = 0; iT < pTriangules.size(); iT++)
         {
             triangulation::triangle_pointer *tr = pTriangules[iT];
-            triangulation::point p1(tr->p1->X, tr->p1->Y);
-            triangulation::point p2(tr->p2->X, tr->p2->Y);
-            triangulation::point p3(tr->p3->X, tr->p3->Y);
+            Sea5kgTriangulationPoint p1(tr->p1->X, tr->p1->Y);
+            Sea5kgTriangulationPoint p2(tr->p2->X, tr->p2->Y);
+            Sea5kgTriangulationPoint p3(tr->p3->X, tr->p3->Y);
 
             triangulation::triangle tr1(p1,p2,p3);
             m_triangles.push_back(tr1);            
@@ -1105,8 +1105,8 @@ void triangulator::triangulate()
         for(int i1 = 0; i1 < m_areas[m_nCurrArea].count(); i1++ )
         {                    
             int i2 = (i1+1) % m_areas[m_nCurrArea].count();
-            triangulation::point p1 = m_areas[m_nCurrArea].getPoint(i1);
-            triangulation::point p2 = triangulation::getNextPoint(p1, m_areas[m_nCurrArea].getPoint(i2), a);
+            Sea5kgTriangulationPoint p1 = m_areas[m_nCurrArea].getPoint(i1);
+            Sea5kgTriangulationPoint p2 = triangulation::getNextPoint(p1, m_areas[m_nCurrArea].getPoint(i2), a);
             int nSize = m_triangles.size();
             netting nett(p1, p2, h, a, this);
             nett.processing();
@@ -1130,7 +1130,7 @@ void triangulator::clear_areas()
 }
 //---------------------------------------------------------------------------
 
-bool triangulator::findTriangle(triangulation::point p1, triangulation::point p2, triangulation::point p3)
+bool triangulator::findTriangle(Sea5kgTriangulationPoint p1, Sea5kgTriangulationPoint p2, Sea5kgTriangulationPoint p3)
 {
     triangulation::triangle tr(p1,p2,p3);
     for(int i = 0; i < m_triangles.size(); i++)
@@ -1143,24 +1143,24 @@ bool triangulator::findTriangle(triangulation::point p1, triangulation::point p2
 
 //---------------------------------------------------------------------------
 
-bool triangulator::findNearPoint(triangulation::point p, triangulation::point &result, double r)
+bool triangulator::findNearPoint(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &result, double r)
 {
-    triangulation::point res;
+    Sea5kgTriangulationPoint res;
     double curr_len = -1;
     for(int i = 0; i < m_triangles.size(); i++)
     {
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p_buff;
         if(m_triangles[i].findNearPoint(p, p_buff, r))
         {
             if(curr_len == -1)
             {
                 res = p_buff;
-                curr_len = triangulation::line(p, res).length();
+                curr_len = Sea5kgTriangulationLine(p, res).length();
             }
-            else if(triangulation::line(p, p_buff).length() < curr_len)
+            else if(Sea5kgTriangulationLine(p, p_buff).length() < curr_len)
             {
                 res = p_buff;
-                curr_len = triangulation::line(p, res).length();
+                curr_len = Sea5kgTriangulationLine(p, res).length();
             };
         };
     };
@@ -1173,10 +1173,10 @@ bool triangulator::findNearPoint(triangulation::point p, triangulation::point &r
 
 //---------------------------------------------------------------------------
 
-bool triangulator::findNearPointSide(triangulation::point p, triangulation::point &result, double r)
+bool triangulator::findNearPointSide(Sea5kgTriangulationPoint p, Sea5kgTriangulationPoint &result, double r)
 {
       {
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p_buff;
         if(m_areas[m_nCurrArea].findNearPointSide(p, p_buff, r))
         {
             result = p_buff;
@@ -1185,7 +1185,7 @@ bool triangulator::findNearPointSide(triangulation::point p, triangulation::poin
     }
 
     {
-        triangulation::point p_buff;
+        Sea5kgTriangulationPoint p_buff;
         for(unsigned int i2 = 0; i2 < m_areas.size(); i2++)
         {
             if(i2 != m_nCurrArea && m_areas[i2].findNearPointSide(p, p_buff, r))
@@ -1200,20 +1200,20 @@ bool triangulator::findNearPointSide(triangulation::point p, triangulation::poin
 
 //---------------------------------------------------------------------------
 
-netting::netting(const triangulation::point &p1, const triangulation::point &p2, double h, double a, triangulation::triangulator *tr)
+netting::netting(const Sea5kgTriangulationPoint &p1, const Sea5kgTriangulationPoint &p2, double h, double a, triangulation::triangulator *tr)
 :
     m_h(h), m_a(a), m_tr(tr)
 {
-    triangulation::line l1(p1,p2);
+    Sea5kgTriangulationLine l1(p1,p2);
     if( l1.length() < 1) return;
     m_lines.push_back(l1);
 }
 
 //---------------------------------------------------------------------------
 
-void netting::calcPoints(const triangulation::line &L, triangulation::point &p4, triangulation::point &p5)
+void netting::calcPoints(const Sea5kgTriangulationLine &L, Sea5kgTriangulationPoint &p4, Sea5kgTriangulationPoint &p5)
 {
-    triangulation::point p3 = L.getMiddlePoint();
+    Sea5kgTriangulationPoint p3 = L.getMiddlePoint();
 
      if(L.p1.X == L.p2.X)
      {
@@ -1251,10 +1251,10 @@ void netting::processing()
   // clever add triangle as is
     while(m_lines.size() > 0)
     {
-        triangulation::line L = m_lines[0];
+        Sea5kgTriangulationLine L = m_lines[0];
         m_lines.erase(m_lines.begin());
 
-        triangulation::point p4, p5;
+        Sea5kgTriangulationPoint p4, p5;
         calcPoints(L, p4, p5);
 
 
@@ -1271,17 +1271,17 @@ void netting::processing()
     for(unsigned int i = 0; i < triangles.size(); i++)
     {
         triangulation::triangle tr = triangles[i];
-        m_lines.push_back(triangulation::line(tr.p1,tr.p2));
-        m_lines.push_back(triangulation::line(tr.p2,tr.p3));
-        m_lines.push_back(triangulation::line(tr.p3,tr.p1));
+        m_lines.push_back(Sea5kgTriangulationLine(tr.p1,tr.p2));
+        m_lines.push_back(Sea5kgTriangulationLine(tr.p2,tr.p3));
+        m_lines.push_back(Sea5kgTriangulationLine(tr.p3,tr.p1));
     };
 
     while(m_lines.size() > 0)
     {
-        triangulation::line L = m_lines[0];
+        Sea5kgTriangulationLine L = m_lines[0];
         m_lines.erase(m_lines.begin());
 
-        triangulation::point p4, p5;
+        Sea5kgTriangulationPoint p4, p5;
         calcPoints(L, p4, p5);
 
       bool bAdd4 = m_tr->addTriangle(L.p1,L.p2,p4, m_a, m_lines);
@@ -1291,13 +1291,13 @@ void netting::processing()
 };
 
 /*
-bool recours_netting(triangulation::point &p1, triangulation::point &p2, double h, double a, triangulation::triangulator *tr)
+bool recours_netting(Sea5kgTriangulationPoint &p1, Sea5kgTriangulationPoint &p2, double h, double a, triangulation::triangulator *tr)
 {
-    triangulation::line l1(p1,p2);
+    Sea5kgTriangulationLine l1(p1,p2);
     if( l1.length() < 1) return false;
 
-    triangulation::point p3 = l1.getMiddlePoint();
-    triangulation::point p4, p5;
+    Sea5kgTriangulationPoint p3 = l1.getMiddlePoint();
+    Sea5kgTriangulationPoint p4, p5;
 
     if(p1.X == p2.X)
     {
