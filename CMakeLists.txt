@@ -19,8 +19,8 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/render")
 
 # source files
 list (APPEND WSJCPP_SOURCES "src/main.cpp")
-list (APPEND WSJCPP_SOURCES "src/game/game.h")
-list (APPEND WSJCPP_SOURCES "src/game/game.cpp")
+list (APPEND WSJCPP_SOURCES "src/app_state.h")
+list (APPEND WSJCPP_SOURCES "src/app_state.cpp")
 list (APPEND WSJCPP_SOURCES "src/render/render.h")
 list (APPEND WSJCPP_SOURCES "src/render/render.cpp")
 list (APPEND WSJCPP_SOURCES "src/render/render_window.h")

@@ -57,7 +57,7 @@ void RenderWindow::clear() {
     SDL_RenderClear(renderer);
 }
 
-void RenderWindow::modifyObjects(const GameState& state) {
+void RenderWindow::modifyObjects(const AppState& state) {
     for (auto pObj: m_vObjects) {
         pObj->modify(state);
     }

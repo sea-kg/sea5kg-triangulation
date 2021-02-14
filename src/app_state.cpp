@@ -1,4 +1,4 @@
-#include "game.h"
+#include "app_state.h"
 #include "wsjcpp_core.h"
 
 // ---------------------------------------------------------------------
@@ -46,68 +46,43 @@ CoordXY CoordXY::operator+(const CoordXY& other) const {
 }
 
 // ---------------------------------------------------------------------
-// GameBuilding
+// AppState
 
-GameBuilding::GameBuilding(nlohmann::json &jsonData) {
-    m_sName = jsonData["name"];
-    int nPoints = jsonData["points"];
-    for (int i = 0; i < nPoints; i++) {
-        int nX = jsonData["x" + std::to_string(i)];
-        int nY = jsonData["y" + std::to_string(i)];
-        m_vPoints.push_back(CoordXY(nX,nY));
-    }
-}
-
-const std::string &GameBuilding::getName() {
-    return m_sName;
-}
-
-const std::vector<CoordXY> &GameBuilding::getPoints() {
-    return m_vPoints;
-}
-
-// ---------------------------------------------------------------------
-// GameState
-
-GameState::GameState(int windowWidth, int windowHeight) {
+AppState::AppState(int windowWidth, int windowHeight) {
     m_nStartTime = 0;
     m_nElapsedTime = 0;
     m_nWindowWidth = windowWidth;
     m_nWindowHeight = windowHeight;
 }
 
-void GameState::init() {
+void AppState::init() {
     m_nStartTime = WsjcppCore::getCurrentTimeInMilliseconds();
 }
 
-void GameState::updateElapsedTime() {
+void AppState::updateElapsedTime() {
     m_nElapsedTime = WsjcppCore::getCurrentTimeInMilliseconds() - m_nStartTime;
 }
 
-void GameState::addBuilding(GameBuilding *pBuilding) {
-    m_vBuildings.push_back(pBuilding);
-}
-
-long GameState::getElapsedTime() const {
+long AppState::getElapsedTime() const {
     return m_nElapsedTime;
 }
 
-const CoordXY &GameState::getCoordLeftTop() const {
+const CoordXY &AppState::getCoordLeftTop() const {
     return m_coordLeftTop;
 }
 
-void GameState::incrementCoordLeftTopX(int nX) {
+void AppState::incrementCoordLeftTopX(int nX) {
     m_coordLeftTop += CoordXY(nX, 0);
 }
 
-void GameState::incrementCoordLeftTopY(int nY) {
+void AppState::incrementCoordLeftTopY(int nY) {
     m_coordLeftTop += CoordXY(0, nY);
 }
 
-const int GameState::windowWidth() const {
+const int AppState::windowWidth() const {
     return m_nWindowWidth;
 }
 
-const int GameState::windowHeight() const {
+const int AppState::windowHeight() const {
     return m_nWindowHeight;
 }

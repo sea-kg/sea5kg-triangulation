@@ -14,7 +14,7 @@ int RenderObject::getPositionZ() {
     return m_nPositionZ;
 }
 
-void RenderObject::modify(const GameState& state) {
+void RenderObject::modify(const AppState& state) {
     // nothing modify in base object
 }
 
@@ -33,7 +33,7 @@ RenderLine::RenderLine(const CoordXY &p1, const CoordXY &p2, int nPositionZ)
     m_nA = 255;
 }
 
-void RenderLine::modify(const GameState& state) {
+void RenderLine::modify(const AppState& state) {
     m_coord1 = state.getCoordLeftTop() + m_startCoord1;
     m_coord2 = state.getCoordLeftTop() + m_startCoord2;
 }
@@ -81,7 +81,7 @@ RenderRect::RenderRect(const CoordXY &p1, int w, int h, int nPositionZ)
     m_nH = h;
 }
 
-void RenderRect::modify(const GameState& state) {
+void RenderRect::modify(const AppState& state) {
     // nothing
 }
 
@@ -127,7 +127,7 @@ void RenderTriangle::setColor(int nR, int nG, int nB, int nA) {
     m_nA = nA;
 }
 
-void RenderTriangle::modify(const GameState& state) {
+void RenderTriangle::modify(const AppState& state) {
     m_line1.modify(state);
     m_line2.modify(state);
     m_line3.modify(state);

@@ -11,7 +11,7 @@ class RenderWindow  {
 
         void cleanUp();
         void clear();
-        void modifyObjects(const GameState& state);
+        void modifyObjects(const AppState& state);
         void drawObjects();
         
     private:

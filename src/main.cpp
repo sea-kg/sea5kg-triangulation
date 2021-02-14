@@ -19,12 +19,12 @@ int main(int argc, char* args[]) {
 
     Sea5kgTriangulationTriangulator *pTriangulator = new Sea5kgTriangulationTriangulator();
 
-    GameState stateObjects(nWindowWidth, nWindowHeight);
+    AppState appState(nWindowWidth, nWindowHeight);
 
     RenderWindow window(
-        "Triangulation (v0.0.1)",
-        stateObjects.windowWidth(),
-        stateObjects.windowHeight()
+        "sea5kg-triangulation (v0.0.2)",
+        appState.windowWidth(),
+        appState.windowHeight()
     );
 
     // load map from json
@@ -92,26 +92,26 @@ int main(int argc, char* args[]) {
 
     window.sortObjectsByPositionZ();
 
-    bool gameRunning = true;
+    bool appRunning = true;
 
     SDL_Event event;
 
     long nNumberOfFrames = 0;
     long nStartTime = WsjcppCore::getCurrentTimeInMilliseconds();
     long nElapsed = 0;
-    stateObjects.init();
-    while (gameRunning) {
+    appState.init();
+    while (appRunning) {
 
         // Get our controls and events
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                gameRunning = false;
+                appRunning = false;
             }
         }
 
-        stateObjects.updateElapsedTime();
+        appState.updateElapsedTime();
         window.clear();
-        window.modifyObjects(stateObjects);
+        window.modifyObjects(appState);
         window.drawObjects();
 
         // FPS

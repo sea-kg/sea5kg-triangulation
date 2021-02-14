@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL.h>
-#include "game.h"
+#include "app_state.h"
 #include <vector>
 #include <string>
 
@@ -9,7 +9,7 @@ class RenderObject {
     public:
         RenderObject(int nPositionZ);
         int getPositionZ();
-        virtual void modify(const GameState& state);
+        virtual void modify(const AppState& state);
         virtual void draw(SDL_Renderer* pRenderer) = 0;
 
     private:
@@ -20,7 +20,7 @@ class RenderLine : public RenderObject {
 
     public:
         RenderLine(const CoordXY &p1, const CoordXY &p2, int nPositionZ = 0);
-        virtual void modify(const GameState& state) override;
+        virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
         
         void setColor(int nR, int nG, int nB, int nA);
@@ -46,7 +46,7 @@ class RenderRect : public RenderObject {
 
     public:
         RenderRect(const CoordXY &p1, int w, int h, int nPositionZ = 0);
-        virtual void modify(const GameState& state) override;
+        virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
         
         void setColor(int nR, int nG, int nB, int nA);
@@ -72,7 +72,7 @@ class RenderTriangle : public RenderObject {
             int nPositionZ = 0
         );
         void setColor(int nR, int nG, int nB, int nA);
-        virtual void modify(const GameState& state) override;
+        virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
 
     private:
