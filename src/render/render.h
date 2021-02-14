@@ -4,6 +4,18 @@
 #include <vector>
 #include <string>
 
+class RenderColor {
+    public:
+        RenderColor(int nR, int nG, int nB, int nA);
+        void changeRenderColor(SDL_Renderer* renderer);
+
+    private:
+        int m_nR;
+        int m_nG;
+        int m_nB;
+        int m_nA;
+};
+
 class RenderObject {
 
     public:
@@ -19,11 +31,10 @@ class RenderObject {
 class RenderLine : public RenderObject {
 
     public:
-        RenderLine(const CoordXY &p1, const CoordXY &p2, int nPositionZ = 0);
+        RenderLine(const CoordXY &p1, const CoordXY &p2, const RenderColor &color, int nPositionZ = 0);
         virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
         
-        void setColor(int nR, int nG, int nB, int nA);
         const CoordXY &getAbsoluteCoord1();
         const CoordXY &getAbsoluteCoord2();
         const CoordXY &getCoord1();
@@ -31,15 +42,11 @@ class RenderLine : public RenderObject {
         void updateAbsoluteCoords(const CoordXY &p1, const CoordXY &p2);
 
     private:
+        RenderColor m_color;
         CoordXY m_startCoord1;
         CoordXY m_startCoord2;
         CoordXY m_coord1;
         CoordXY m_coord2;
-
-        int m_nR;
-        int m_nG;
-        int m_nB;
-        int m_nA;
 };
 
 class RenderRect : public RenderObject {
@@ -69,9 +76,30 @@ class RenderTriangle : public RenderObject {
             const CoordXY &p1,
             const CoordXY &p2,
             const CoordXY &p3,
+            const RenderColor &color = RenderColor(255,255,255,255),
             int nPositionZ = 0
         );
-        void setColor(int nR, int nG, int nB, int nA);
+        virtual void modify(const AppState& state) override;
+        virtual void draw(SDL_Renderer* renderer) override;
+
+    private:
+        RenderLine m_line1;
+        RenderLine m_line2;
+        RenderLine m_line3;
+        RenderColor m_color;
+        CoordXY m_middlePoint;
+};
+
+class RenderBotton : public RenderObject {
+
+    public:
+        RenderBotton(
+            const CoordXY &p1,
+            const CoordXY &p2,
+            const CoordXY &p3,
+            const RenderColor &color = RenderColor(255,255,255,255),
+            int nPositionZ = 0
+        );
         virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
 
@@ -80,9 +108,5 @@ class RenderTriangle : public RenderObject {
         RenderLine m_line2;
         RenderLine m_line3;
         CoordXY m_middlePoint;
-
-        int m_nR;
-        int m_nG;
-        int m_nB;
-        int m_nA;
+        RenderColor m_color;
 };

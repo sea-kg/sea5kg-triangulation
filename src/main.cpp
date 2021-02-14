@@ -51,6 +51,8 @@ int main(int argc, char* args[]) {
 
 
     // add to renderer
+    RenderColor areaColor(255,255,255,255);
+
     const std::vector<Sea5kgTriangulationArea> &vAreas = pTriangulator->getAreas();
     for (int i = 0; i < vAreas.size(); i++) {
         Sea5kgTriangulationArea ar = vAreas[i];
@@ -63,8 +65,7 @@ int main(int argc, char* args[]) {
                 prev = next;
                 first = next;
             } else {
-                RenderLine *pLine = new RenderLine(prev, next);
-                pLine->setColor(255,255,255,255);
+                RenderLine *pLine = new RenderLine(prev, next, areaColor);
                 window.addObject(pLine);
                 prev = next;
             }
@@ -72,10 +73,11 @@ int main(int argc, char* args[]) {
             pRect->setColor(255,255,255,255);
             window.addObject(pRect);
         }
-        RenderLine *pLine = new RenderLine(prev, first);
-        pLine->setColor(255,255,255,255);
+        RenderLine *pLine = new RenderLine(prev, first, areaColor);
         window.addObject(pLine);
     }
+
+    RenderColor triangleColor(0,255,255,190);
 
     const std::vector<Sea5kgTriangulationTriangle> &vTriangles = pTriangulator->getTriangles();
     for (int i = 0; i < vTriangles.size(); i++) {
@@ -83,10 +85,9 @@ int main(int argc, char* args[]) {
         auto *pTriangle = new RenderTriangle(
             CoordXY(tr.p1.getX(), tr.p1.getY()),
             CoordXY(tr.p2.getX(), tr.p2.getY()),
-            CoordXY(tr.p3.getX(), tr.p3.getY())
+            CoordXY(tr.p3.getX(), tr.p3.getY()),
+            triangleColor
         );
-        pTriangle->setColor(0,255,255,190);
-
         window.addObject(pTriangle);
     }
 
