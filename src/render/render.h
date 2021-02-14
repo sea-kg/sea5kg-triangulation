@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include "app_state.h"
 #include <vector>
 #include <string>
@@ -90,23 +91,44 @@ class RenderTriangle : public RenderObject {
         CoordXY m_middlePoint;
 };
 
-class RenderBotton : public RenderObject {
+class RenderAbsoluteTextBlock : public RenderObject {
 
     public:
-        RenderBotton(
-            const CoordXY &p1,
-            const CoordXY &p2,
-            const CoordXY &p3,
-            const RenderColor &color = RenderColor(255,255,255,255),
+        RenderAbsoluteTextBlock(
+            const CoordXY &p0,
+            const std::string &sText,
             int nPositionZ = 0
+        );
+        virtual void modify(const AppState& state) override;
+        virtual void draw(SDL_Renderer* renderer) override;
+        void updateText(const std::string &sNewText);
+
+    private:
+        CoordXY m_coordCenter;
+        std::string m_sText;
+        std::string m_sUpdateText;
+        TTF_Font* m_pFont;
+        SDL_Color m_color;
+
+        SDL_Rect currentFrame;
+};
+
+
+class RenderButton : public RenderObject {
+
+    public:
+        RenderButton(
+            const CoordXY &p1,
+            const std::string &sText,
+            const RenderColor &color = RenderColor(255,255,255,255),
+            int nPositionZ = 1000
         );
         virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
 
     private:
-        RenderLine m_line1;
-        RenderLine m_line2;
-        RenderLine m_line3;
-        CoordXY m_middlePoint;
+        std::string m_sText;
+        CoordXY m_point;
+        // RenderRect m_rect;
         RenderColor m_color;
 };

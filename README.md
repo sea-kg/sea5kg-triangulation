@@ -11,6 +11,7 @@ Ubuntu requirements
 ```
 $ sudo apt install cmake g++
 $ sudo apt install libsdl2-dev
+$ sudo apt install libsdl2-ttf
 ```
 
 MacOS 
@@ -18,6 +19,7 @@ MacOS
 ```
 % brew install cmake
 % brew install sdl2
+% brew install sdl2_ttf
 ```
 
 ## Build

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.7)
 
 project(sea5kg-triangulation)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
 #### BEGIN_WSJCPP_APPEND
@@ -35,6 +37,16 @@ if ( SDL2_FOUND )
     list (APPEND WSJCPP_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS})
     list (APPEND WSJCPP_LIBRARIES ${SDL2_LIBRARIES})
 endif( SDL2_FOUND )
+############################
+
+
+############################
+# SDL2_ttf
+find_package(SDL2TTF REQUIRED)
+if ( SDL2TTF_FOUND )
+    list (APPEND WSJCPP_INCLUDE_DIRS ${SDL2TTF_INCLUDE_DIRS})
+    list (APPEND WSJCPP_LIBRARIES ${SDL2TTF_LIBRARY})
+endif( SDL2TTF_FOUND )
 ############################
 
 include_directories(${WSJCPP_INCLUDE_DIRS})

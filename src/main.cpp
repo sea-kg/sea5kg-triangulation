@@ -14,6 +14,11 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
+    if (TTF_Init() == -1) {
+        printf("TTF_Init: %s\n", TTF_GetError());
+        return -1;
+    }
+
     int nWindowWidth = 1280;
     int nWindowHeight = 720;
 
@@ -91,6 +96,9 @@ int main(int argc, char* args[]) {
         window.addObject(pTriangle);
     }
 
+    RenderAbsoluteTextBlock *pFpsText = new RenderAbsoluteTextBlock(CoordXY(50,20), "FPS: ----", 1000);
+    window.addObject(pFpsText);
+
     window.sortObjectsByPositionZ();
 
     bool appRunning = true;
@@ -101,12 +109,25 @@ int main(int argc, char* args[]) {
     long nStartTime = WsjcppCore::getCurrentTimeInMilliseconds();
     long nElapsed = 0;
     appState.init();
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     while (appRunning) {
 
         // Get our controls and events
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                appRunning = false;
+            switch(event.type) {
+                case SDL_QUIT:
+                    appRunning = false;
+                    break;
+                case SDL_MOUSEMOTION:
+                    std::cout << "moving" << std::endl;
+                    std::cout << "moving " << std::endl
+                        << "    x=" << event.motion.x << std::endl
+                        << "    y=" << event.motion.y << std::endl
+                        << std::endl
+                    ;
+                    break;
+                default:
+                    break; // nothing
             }
         }
 
@@ -125,6 +146,7 @@ int main(int argc, char* args[]) {
             std::cout << "FPS: " << nFPS << std::endl;
             nStartTime = WsjcppCore::getCurrentTimeInMilliseconds();
             nNumberOfFrames = 0;
+            pFpsText->updateText("FPS: " + std::to_string(int(nFPS)));
         }
     }
 
