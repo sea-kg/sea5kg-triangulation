@@ -14,6 +14,9 @@ class Sea5kgTriangulationPoint {
 
         const double &getX() const;
         const double &getY() const;
+        int getXint() const;
+        int getYint() const;
+
         double calcLength(const Sea5kgTriangulationPoint &p) const;
 
         void operator += (const Sea5kgTriangulationPoint &p);

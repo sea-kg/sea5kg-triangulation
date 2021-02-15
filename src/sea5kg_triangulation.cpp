@@ -35,6 +35,14 @@ const double &Sea5kgTriangulationPoint::getY() const {
     return Y;
 }
 
+int Sea5kgTriangulationPoint::getXint() const {
+    return int(X);
+}
+
+int Sea5kgTriangulationPoint::getYint() const {
+    return int(Y);
+}
+
 void Sea5kgTriangulationPoint::operator+=(const Sea5kgTriangulationPoint &p) {
     X += p.X;
     Y += p.Y;

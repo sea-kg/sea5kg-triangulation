@@ -26,7 +26,7 @@ dependencies:
     installation-datetime: "Mon, 28 Dec 2020 04:03:07 GMT"
 unit-tests:
   cases:
-    - name: "CoordXY"
+    - name: "Sea5kgTriangulationPoint"
       description: ""
 distribution:
   - source-file: "src/sea5kg_triangulation.cpp"
