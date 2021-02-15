@@ -55,7 +55,7 @@ class RenderRect : public RenderObject {
         virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
         bool hasPoint(const CoordXY &p0);
-
+        void updateCoord(const CoordXY &p0, int w, int h);
     private:
         CoordXY m_coord1;
         int m_nW;
@@ -83,6 +83,28 @@ class RenderTriangle : public RenderObject {
         RenderLine m_line3;
         RenderColor m_color;
         CoordXY m_middlePoint;
+};
+
+class RenderArea : public RenderObject {
+
+    public:
+        RenderArea(
+            const std::vector<CoordXY> &vPoints,
+            const RenderColor &color = RenderColor(255,255,255,255),
+            int nPositionZ = 0
+        );
+        virtual void modify(const AppState& state) override;
+        virtual void draw(SDL_Renderer* renderer) override;
+
+        bool hasMoveblePoint(const CoordXY &p0, RenderRect *&pRect);
+        void updatePointCoord(RenderRect *pRect, const CoordXY &newCoord);
+        
+    private:
+        std::vector<CoordXY> m_vPoints;
+        std::vector<RenderLine *> m_vLines;
+        std::vector<RenderRect *> m_vRects;
+        RenderColor m_color;
+        int m_nRectBorderSize;
 };
 
 class RenderMouse : public RenderObject {

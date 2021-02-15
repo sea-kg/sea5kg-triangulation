@@ -104,6 +104,12 @@ bool RenderRect::hasPoint(const CoordXY &p0) {
         && p0.y() >= m_coord1.y() && p0.y() <= m_coord1.y() + m_nH;
 }
 
+void RenderRect::updateCoord(const CoordXY &p0, int w, int h) {
+    m_coord1 = p0;
+    m_nW = w;
+    m_nW = h;
+}
+
 // ---------------------------------------------------------------------
 // RenderTriangle
 
@@ -142,6 +148,83 @@ void RenderTriangle::draw(SDL_Renderer* renderer) {
     srcrect.w = 4;
     srcrect.h = 4;
     SDL_RenderFillRect(renderer, &srcrect);
+}
+
+
+// ---------------------------------------------------------------------
+// RenderArea
+
+RenderArea::RenderArea(
+    const std::vector<CoordXY> &vPoints,
+    const RenderColor &color,
+    int nPositionZ
+) : RenderObject(nPositionZ),
+    m_vPoints(vPoints),
+    m_color(color)
+{
+    m_nRectBorderSize = 8;
+    int nSize = m_vPoints.size();
+    for (int i = 0; i < nSize; i++) {
+        int x0 = i;
+        int x1 = (i+1) % nSize;
+        CoordXY p0(m_vPoints[x0]);
+        RenderLine *pLine = new RenderLine(m_vPoints[x0], m_vPoints[x1], m_color);
+        m_vLines.push_back(pLine);
+        RenderRect *pRect = new RenderRect(
+            CoordXY(p0.x() - m_nRectBorderSize/2, p0.y() - m_nRectBorderSize/2), 
+            m_nRectBorderSize, m_nRectBorderSize, m_color
+        );
+        m_vRects.push_back(pRect);
+    }
+}
+
+void RenderArea::modify(const AppState& state) {
+    for (int i = 0; i < m_vLines.size(); i++) {
+        m_vLines[i]->modify(state);
+    }
+}
+
+void RenderArea::draw(SDL_Renderer* renderer) {
+    m_color.changeRenderColor(renderer);
+    for (int i = 0; i < m_vLines.size(); i++) {
+        m_vLines[i]->draw(renderer);
+    }
+
+    for (int i = 0; i < m_vRects.size(); i++) {
+        m_vRects[i]->draw(renderer);
+    }
+}
+
+bool RenderArea::hasMoveblePoint(const CoordXY &p0, RenderRect *&pRect) {
+    for (int i = 0; i < m_vRects.size(); i++) {
+        if (m_vRects[i]->hasPoint(p0)) {
+            pRect = m_vRects[i];
+            return true;
+        }
+    }
+    return false;
+}
+
+void RenderArea::updatePointCoord(RenderRect *pRect, const CoordXY &newCoord) {
+    bool bContains = false;
+    for (int i = 0; i < m_vRects.size(); i++) {
+        if (m_vRects[i] == pRect) {
+            m_vPoints[i] = newCoord;
+            bContains = true;
+        }
+    }
+
+    if (bContains) {
+        int nSize = m_vPoints.size();
+        for (int i = 0; i < nSize; i++) {
+            int x0 = i;
+            int x1 = (i+1) % nSize;
+            CoordXY p0(m_vPoints[x0]);
+            m_vLines[i]->updateAbsoluteCoords(m_vPoints[x0], m_vPoints[x1]);
+            m_vRects[i]->updateCoord(CoordXY(p0.x() - m_nRectBorderSize/2, p0.y() - m_nRectBorderSize/2), 
+            m_nRectBorderSize, m_nRectBorderSize);
+        }
+    }
 }
 
 // ---------------------------------------------------------------------

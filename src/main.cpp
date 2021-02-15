@@ -53,32 +53,23 @@ int main(int argc, char* args[]) {
 
     pTriangulator->triangulate();
 
-    std::vector<RenderRect *> m_pMoveblePoints;
+    // std::vector<RenderRect *> vMoveblePoints;
+    std::vector<RenderArea *> vRenderingAreas;
+    RenderRect *pMoveRect = nullptr;
     // add to renderer
     RenderColor areaColor(255,255,255,255);
 
     const std::vector<Sea5kgTriangulationArea> &vAreas = pTriangulator->getAreas();
     for (int i = 0; i < vAreas.size(); i++) {
         Sea5kgTriangulationArea ar = vAreas[i];
-        int nSize = ar.count();
-        CoordXY prev;
-        CoordXY first;
+        std::vector<CoordXY> vPoints;
         for (int x = 0; x < ar.count(); x++) {
-            CoordXY next(ar.getPoint(x).getX(),ar.getPoint(x).getY());
-            if (x == 0) {
-                prev = next;
-                first = next;
-            } else {
-                RenderLine *pLine = new RenderLine(prev, next, areaColor);
-                window.addObject(pLine);
-                prev = next;
-            }
-            RenderRect *pRect = new RenderRect(CoordXY(next.x() - 4, next.y() - 4), 8, 8, areaColor);
-            m_pMoveblePoints.push_back(pRect);
-            window.addObject(pRect);
+            CoordXY p0(ar.getPoint(x).getX(),ar.getPoint(x).getY());
+            vPoints.push_back(p0);
         }
-        RenderLine *pLine = new RenderLine(prev, first, areaColor);
-        window.addObject(pLine);
+        RenderArea *pArea = new RenderArea(vPoints, areaColor);
+        vRenderingAreas.push_back(pArea);
+        window.addObject(pArea);
     }
 
     RenderColor triangleColor(0,255,255,190);
@@ -123,22 +114,48 @@ int main(int argc, char* args[]) {
                     if (appState.isMouseCaptured()) {
                         CoordXY p0(event.motion.x, event.motion.y);
                         pMouse->updateCoord(p0);
-                        bool bArrow = true;
-                        for (int i = 0; i < m_pMoveblePoints.size(); i++) {
-                            if (m_pMoveblePoints[i]->hasPoint(p0)) {
-                                pMouse->changeCursorToMoveble();
-                                bArrow = false;
+                        if (pMoveRect != nullptr) {
+                            for (int i = 0; i < vRenderingAreas.size(); i++) {
+                                vRenderingAreas[i]->updatePointCoord(pMoveRect, p0);
                             }
-                        }
-                        if (bArrow) {
-                            pMouse->changeCursorToArrow();
+                        } else {
+                            bool bArrow = true;
+                            for (int i = 0; i < vRenderingAreas.size(); i++) {
+                                RenderRect *pFoundRect = nullptr;
+                                if (vRenderingAreas[i]->hasMoveblePoint(p0, pFoundRect)) {
+                                    pMouse->changeCursorToMoveble();
+                                    bArrow = false;
+                                }
+                            }
+                            if (bArrow) {
+                                pMouse->changeCursorToArrow();
+                            }
                         }
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     if (!appState.isMouseCaptured()) {
                         appState.setMouseCaptured(true);
+                    } else {
+                        bool bMove = false;
+                        CoordXY p0(event.motion.x, event.motion.y);
+                        for (int i = 0; i < vRenderingAreas.size(); i++) {
+                            RenderRect *pFoundRect = nullptr;
+                            if (vRenderingAreas[i]->hasMoveblePoint(p0, pFoundRect)) {
+                                pMoveRect = pFoundRect;
+                                bMove = true;
+                            }
+                        }
+                        if (!bMove) {
+                            pMoveRect = nullptr;
+                        }
                     }
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    if (pMoveRect != nullptr) {
+                        pMoveRect = nullptr;
+                    }
+                    break;
                 case SDL_KEYDOWN:
                     switch(event.key.keysym.sym) {
                         case SDLK_ESCAPE: 
