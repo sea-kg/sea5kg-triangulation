@@ -33,6 +33,8 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 
 # sea5kg-triangulation:v0.0.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
+list (APPEND WSJCPP_SOURCES "../src/sea5kg_triangulation.cpp")
+list (APPEND WSJCPP_SOURCES "../src/sea5kg_triangulation.h")
 
 # unit-tests
 list (APPEND WSJCPP_INCLUDE_DIRS "src")

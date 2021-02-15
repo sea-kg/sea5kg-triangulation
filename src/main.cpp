@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <iomanip>
 
 #include "render_window.h"
 #include "wsjcpp_core.h"
@@ -17,14 +18,31 @@ void trinagulateAndUpdate(
     }
     vRenderingTriangles.clear();
 
+    nlohmann::json jsonAreas = nlohmann::json::array();
+
     std::vector<Sea5kgTriangulationArea> &vAreas = pTriangulator->getAreas();
     for (int i = 0; i < vRenderingAreas.size(); i++) {
+        nlohmann::json jsonArea;
+        jsonArea["id"] = vAreas[i].getId();
+        jsonArea["number-of-triangels"] = vAreas[i].getCountTriangles();
         vAreas[i].clear();
+        nlohmann::json jsonPoints = nlohmann::json::array();
         std::vector<CoordXY> vPoints = vRenderingAreas[i]->getPoints();
         for (int x = 0; x < vPoints.size(); x++) {
            vAreas[i].addPoint(vPoints[x].x(), vPoints[x].y());
+           nlohmann::json jsonPoint;
+           jsonPoint["x"] = vPoints[x].x();
+           jsonPoint["y"] = vPoints[x].y();
+           jsonPoints.push_back(jsonPoint);
         }
+        jsonArea["points"] = jsonPoints;
+        jsonAreas.push_back(jsonArea);
     }
+    nlohmann::json jsonInput;
+    jsonInput["areas"] = jsonAreas;
+
+    std::ofstream file("./input.json");
+    file << std::setw(4) << jsonInput;
 
     pTriangulator->triangulate();
     

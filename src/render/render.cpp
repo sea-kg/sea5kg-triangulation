@@ -359,22 +359,3 @@ void RenderAbsoluteTextBlock::draw(SDL_Renderer* renderer) {
 void RenderAbsoluteTextBlock::updateText(const std::string &sNewText) {
     m_sUpdateText = sNewText;
 }
-
-// ---------------------------------------------------------------------
-// RenderButton
-
-RenderButton::RenderButton(
-    const CoordXY &p1,
-    const std::string &sText,
-    const RenderColor &color,
-    int nPositionZ
-) : RenderObject(nPositionZ), m_color(color), m_point(p1) {
-    m_sText = sText;
-}
-
-void RenderButton::modify(const AppState& state) {
-    
-}
-void RenderButton::draw(SDL_Renderer* renderer) {
-
-}

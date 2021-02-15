@@ -505,6 +505,10 @@ Sea5kgTriangulationArea::Sea5kgTriangulationArea(std::string sAreaId) {
     m_sAreaId = sAreaId;
 }
 
+std::string Sea5kgTriangulationArea::getId() {
+    return m_sAreaId;
+}
+
 bool _sort_here_area (double x1, double x2) {
     return (x1 < x2);
 };

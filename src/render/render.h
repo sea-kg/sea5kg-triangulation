@@ -161,23 +161,3 @@ class RenderAbsoluteTextBlock : public RenderObject {
 
         SDL_Rect currentFrame;
 };
-
-
-class RenderButton : public RenderObject {
-
-    public:
-        RenderButton(
-            const CoordXY &p1,
-            const std::string &sText,
-            const RenderColor &color = RenderColor(255,255,255,255),
-            int nPositionZ = 1000
-        );
-        virtual void modify(const AppState& state) override;
-        virtual void draw(SDL_Renderer* renderer) override;
-
-    private:
-        std::string m_sText;
-        CoordXY m_point;
-        // RenderRect m_rect;
-        RenderColor m_color;
-};

@@ -90,6 +90,7 @@ class Sea5kgTriangulationTrianglePointer {
 class Sea5kgTriangulationArea {
     public:
         Sea5kgTriangulationArea(std::string sAreaId);
+        std::string getId();
         void addPoint(int X, int Y) { m_vPoints.push_back(Sea5kgTriangulationPoint(X,Y)); };
         void clear() { m_vPoints.clear(); };
         int count() const { return m_vPoints.size(); };

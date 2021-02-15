@@ -28,3 +28,10 @@ unit-tests:
   cases:
     - name: "CoordXY"
       description: ""
+distribution:
+  - source-file: "src/sea5kg_triangulation.cpp"
+    target-file: "sea5kg_triangulation.cpp"
+    type: "source-code"
+  - source-file: "src/sea5kg_triangulation.h"
+    target-file: "sea5kg_triangulation.h"
+    type: "source-code"
