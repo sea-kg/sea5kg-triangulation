@@ -1888,7 +1888,7 @@ void Sea5kgTriangulationTriangulator::clear_triangles()
 };
 //---------------------------------------------------------------------------
 
-void Sea5kgTriangulationTriangulator::clear_areas()
+void Sea5kgTriangulationTriangulator::clearAreas()
 {
     m_areas.clear();
 }

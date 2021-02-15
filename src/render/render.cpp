@@ -150,7 +150,6 @@ void RenderTriangle::draw(SDL_Renderer* renderer) {
     SDL_RenderFillRect(renderer, &srcrect);
 }
 
-
 // ---------------------------------------------------------------------
 // RenderArea
 
@@ -225,6 +224,10 @@ void RenderArea::updatePointCoord(RenderRect *pRect, const CoordXY &newCoord) {
             m_nRectBorderSize, m_nRectBorderSize);
         }
     }
+}
+
+const std::vector<CoordXY> &RenderArea::getPoints() {
+    return m_vPoints;
 }
 
 // ---------------------------------------------------------------------

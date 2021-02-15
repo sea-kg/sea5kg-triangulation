@@ -98,7 +98,8 @@ class RenderArea : public RenderObject {
 
         bool hasMoveblePoint(const CoordXY &p0, RenderRect *&pRect);
         void updatePointCoord(RenderRect *pRect, const CoordXY &newCoord);
-        
+        const std::vector<CoordXY> &getPoints();
+
     private:
         std::vector<CoordXY> m_vPoints;
         std::vector<RenderLine *> m_vLines;

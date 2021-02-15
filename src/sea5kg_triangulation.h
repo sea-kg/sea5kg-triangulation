@@ -142,7 +142,7 @@ class Sea5kgTriangulationTriangulator {
         void triangulate_remove_triangles();
 
         void clear_triangles();
-        void clear_areas();
+        void clearAreas();
 
     private:
         

@@ -6,6 +6,43 @@
 #include "wsjcpp_core.h"
 #include "sea5kg_triangulation.h"
 
+void trinagulateAndUpdate(
+    std::vector<RenderTriangle *> &vRenderingTriangles,
+    std::vector<RenderArea *> &vRenderingAreas,
+    Sea5kgTriangulationTriangulator *pTriangulator,
+    RenderWindow &window
+) {
+    for (int i = 0; i < vRenderingTriangles.size(); i++) {
+        window.removeObject(vRenderingTriangles[i]);
+    }
+    vRenderingTriangles.clear();
+
+    std::vector<Sea5kgTriangulationArea> &vAreas = pTriangulator->getAreas();
+    for (int i = 0; i < vRenderingAreas.size(); i++) {
+        vAreas[i].clear();
+        std::vector<CoordXY> vPoints = vRenderingAreas[i]->getPoints();
+        for (int x = 0; x < vPoints.size(); x++) {
+           vAreas[i].addPoint(vPoints[x].x(), vPoints[x].y());
+        }
+    }
+
+    pTriangulator->triangulate();
+    
+    RenderColor triangleColor(0,255,255,190);
+    const std::vector<Sea5kgTriangulationTriangle> &vTriangles = pTriangulator->getTriangles();
+    for (int i = 0; i < vTriangles.size(); i++) {
+        Sea5kgTriangulationTriangle tr = vTriangles[i];
+        auto *pTriangle = new RenderTriangle(
+            CoordXY(tr.p1.getX(), tr.p1.getY()),
+            CoordXY(tr.p2.getX(), tr.p2.getY()),
+            CoordXY(tr.p3.getX(), tr.p3.getY()),
+            triangleColor
+        );
+        vRenderingTriangles.push_back(pTriangle);
+        window.addObject(pTriangle);
+    }
+}
+
 int main(int argc, char* args[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) > 0) {
@@ -51,9 +88,6 @@ int main(int argc, char* args[]) {
         pTriangulator->addArea(ar);
     }
 
-    pTriangulator->triangulate();
-
-    // std::vector<RenderRect *> vMoveblePoints;
     std::vector<RenderArea *> vRenderingAreas;
     RenderRect *pMoveRect = nullptr;
     // add to renderer
@@ -72,19 +106,11 @@ int main(int argc, char* args[]) {
         window.addObject(pArea);
     }
 
-    RenderColor triangleColor(0,255,255,190);
+    // pTriangulator->triangulate();
+    
+    std::vector<RenderTriangle *> vRenderingTriangles;
 
-    const std::vector<Sea5kgTriangulationTriangle> &vTriangles = pTriangulator->getTriangles();
-    for (int i = 0; i < vTriangles.size(); i++) {
-        Sea5kgTriangulationTriangle tr = vTriangles[i];
-        auto *pTriangle = new RenderTriangle(
-            CoordXY(tr.p1.getX(), tr.p1.getY()),
-            CoordXY(tr.p2.getX(), tr.p2.getY()),
-            CoordXY(tr.p3.getX(), tr.p3.getY()),
-            triangleColor
-        );
-        window.addObject(pTriangle);
-    }
+    trinagulateAndUpdate(vRenderingTriangles, vRenderingAreas, pTriangulator, window);
 
     RenderAbsoluteTextBlock *pFpsText = new RenderAbsoluteTextBlock(CoordXY(50,20), "FPS: ----", 1000);
     window.addObject(pFpsText);
@@ -154,6 +180,7 @@ int main(int argc, char* args[]) {
                 case SDL_MOUSEBUTTONUP:
                     if (pMoveRect != nullptr) {
                         pMoveRect = nullptr;
+                        trinagulateAndUpdate(vRenderingTriangles, vRenderingAreas, pTriangulator, window);
                     }
                     break;
                 case SDL_KEYDOWN:

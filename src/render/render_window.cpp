@@ -26,6 +26,13 @@ void RenderWindow::addObject(RenderObject *pObject) {
     m_vObjects.push_back(pObject);
 }
 
+void RenderWindow::removeObject(RenderObject *pObject) {
+    auto it = std::find(m_vObjects.begin(), m_vObjects.end(), pObject);
+    if (it != m_vObjects.end()) {
+        m_vObjects.erase(it);
+    }
+}
+
 void RenderWindow::sortObjectsByPositionZ() {
     int nSize = m_vObjects.size();
     if (nSize < 2) {
