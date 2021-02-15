@@ -102,8 +102,12 @@ class RenderMouse : public RenderObject {
         void updateCoord(int nX, int nY);
     private:
         CoordXY m_p1;
-        CoordXY m_pDiff;
+        CoordXY m_pDiff2;
+        CoordXY m_pDiff3;
+        CoordXY m_pDiff4;
         RenderLine *m_pLine1;
+        RenderLine *m_pLine2;
+        RenderLine *m_pLine3;
         RenderColor m_color;
         CoordXY m_middlePoint;
 };

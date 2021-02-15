@@ -156,41 +156,37 @@ RenderMouse::RenderMouse(
     m_p1(p1),
     m_color(color)
 {
-    CoordXY p2 = p1;
-    m_pDiff = CoordXY(10,10);
-    p2 += m_pDiff;
-    m_pLine1 = new RenderLine(p1, p2, color);
-    // int nMiddleX = (p1.x() + p2.x() + p3.x())/3;
-    // int nMiddleY = (p1.y() + p2.y() + p3.y())/3;
-    // m_middlePoint = CoordXY(nMiddleX, nMiddleY);
+    m_pDiff2 = CoordXY(10,10);
+    m_pDiff3 = CoordXY(7,3);
+    m_pDiff4 = CoordXY(3,7);
+
+    m_pLine1 = new RenderLine(p1, p1, color);
+    m_pLine2 = new RenderLine(p1, p1, color);
+    m_pLine3 = new RenderLine(p1, p1, color);
+    this->updateCoord(p1.x(), p1.y());
 }
 
 void RenderMouse::modify(const AppState& state) {
     m_pLine1->modify(state);
-    // m_line2.modify(state);
-    // m_line3.modify(state);
+    m_pLine2->modify(state);
+    m_pLine3->modify(state);
 }
 
 void RenderMouse::draw(SDL_Renderer* renderer) {
-    // m_color.changeRenderColor(renderer);
     m_pLine1->draw(renderer);
-    // m_line2.draw(renderer);
-    // m_line3.draw(renderer);
-    
-
-    // SDL_Rect srcrect;
-    // srcrect.x = m_middlePoint.x()-2;
-    // srcrect.y = m_middlePoint.y()-2;
-    // srcrect.w = 4;
-    // srcrect.h = 4;
-    // SDL_RenderFillRect(renderer, &srcrect);
+    m_pLine2->draw(renderer);
+    m_pLine3->draw(renderer);
 }
 
 void RenderMouse::updateCoord(int nX, int nY) {
     CoordXY p1(nX,nY);
-    CoordXY p2 = p1;
-    p2 += m_pDiff;
+    CoordXY p2 = p1 + m_pDiff2;
+    CoordXY p3 = p1 + m_pDiff3;
+    CoordXY p4 = p1 + m_pDiff4;
+    
     m_pLine1->updateAbsoluteCoords(p1,p2);
+    m_pLine2->updateAbsoluteCoords(p1,p3);
+    m_pLine3->updateAbsoluteCoords(p1,p4);
 }
 
 // ---------------------------------------------------------------------
@@ -207,8 +203,6 @@ RenderAbsoluteTextBlock::RenderAbsoluteTextBlock(const CoordXY &p0, const std::s
         printf("TTF_OpenFont: %s\n", TTF_GetError());
         // handle error
     }
-
-    // SDL_Rect currentFrame;
 }
 
 void RenderAbsoluteTextBlock::modify(const AppState& state) {
