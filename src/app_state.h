@@ -1,4 +1,6 @@
 #pragma once
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include <vector>
 #include "json.hpp"
 
@@ -31,7 +33,11 @@ class AppState {
         const int windowWidth() const;
         const int windowHeight() const;
 
+        void setMouseCaptured(bool bMouseCaptured);
+        bool isMouseCaptured() const;
+
     private:
+        bool m_bMouseCaptured;
         long m_nElapsedTime;
         long m_nStartTime;
         CoordXY m_coordLeftTop;

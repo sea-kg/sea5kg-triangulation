@@ -6,7 +6,6 @@
 #include "wsjcpp_core.h"
 #include "sea5kg_triangulation.h"
 
-
 int main(int argc, char* args[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) > 0) {
@@ -21,7 +20,7 @@ int main(int argc, char* args[]) {
 
     int nWindowWidth = 1280;
     int nWindowHeight = 720;
-
+    CoordXY centerPoint(nWindowWidth/2, nWindowHeight/2);
     Sea5kgTriangulationTriangulator *pTriangulator = new Sea5kgTriangulationTriangulator();
 
     AppState appState(nWindowWidth, nWindowHeight);
@@ -99,6 +98,9 @@ int main(int argc, char* args[]) {
     RenderAbsoluteTextBlock *pFpsText = new RenderAbsoluteTextBlock(CoordXY(50,20), "FPS: ----", 1000);
     window.addObject(pFpsText);
 
+    RenderMouse *pMouse = new RenderMouse(centerPoint, areaColor, 2000);
+    window.addObject(pMouse);
+
     window.sortObjectsByPositionZ();
 
     bool appRunning = true;
@@ -109,9 +111,7 @@ int main(int argc, char* args[]) {
     long nStartTime = WsjcppCore::getCurrentTimeInMilliseconds();
     long nElapsed = 0;
     appState.init();
-    SDL_SetRelativeMouseMode(SDL_TRUE);
     while (appRunning) {
-
         // Get our controls and events
         while (SDL_PollEvent(&event)) {
             switch(event.type) {
@@ -119,12 +119,22 @@ int main(int argc, char* args[]) {
                     appRunning = false;
                     break;
                 case SDL_MOUSEMOTION:
-                    std::cout << "moving" << std::endl;
-                    std::cout << "moving " << std::endl
-                        << "    x=" << event.motion.x << std::endl
-                        << "    y=" << event.motion.y << std::endl
-                        << std::endl
-                    ;
+                    if (appState.isMouseCaptured()) {
+                        pMouse->updateCoord(event.motion.x, event.motion.y);
+                    }
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    if (!appState.isMouseCaptured()) {
+                        appState.setMouseCaptured(true);
+                    }
+                case SDL_KEYDOWN:
+                    switch(event.key.keysym.sym) {
+                        case SDLK_ESCAPE: 
+                            if (appState.isMouseCaptured()) {
+                                appState.setMouseCaptured(false);
+                            }
+                            break;
+                    }
                     break;
                 default:
                     break; // nothing

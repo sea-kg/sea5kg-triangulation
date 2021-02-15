@@ -53,6 +53,7 @@ AppState::AppState(int windowWidth, int windowHeight) {
     m_nElapsedTime = 0;
     m_nWindowWidth = windowWidth;
     m_nWindowHeight = windowHeight;
+    m_bMouseCaptured = false;
 }
 
 void AppState::init() {
@@ -85,4 +86,13 @@ const int AppState::windowWidth() const {
 
 const int AppState::windowHeight() const {
     return m_nWindowHeight;
+}
+
+void AppState::setMouseCaptured(bool bMouseCaptured) {
+    m_bMouseCaptured = bMouseCaptured;
+    SDL_SetRelativeMouseMode(m_bMouseCaptured ? SDL_TRUE : SDL_FALSE);
+}
+
+bool AppState::isMouseCaptured() const {
+    return m_bMouseCaptured;
 }

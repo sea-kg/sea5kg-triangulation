@@ -1,6 +1,4 @@
 #pragma once
-#include <SDL.h>
-#include <SDL_ttf.h>
 #include "app_state.h"
 #include <vector>
 #include <string>
@@ -87,6 +85,25 @@ class RenderTriangle : public RenderObject {
         RenderLine m_line1;
         RenderLine m_line2;
         RenderLine m_line3;
+        RenderColor m_color;
+        CoordXY m_middlePoint;
+};
+
+class RenderMouse : public RenderObject {
+
+    public:
+        RenderMouse(
+            const CoordXY &p1,
+            const RenderColor &color = RenderColor(255,255,255,255),
+            int nPositionZ = 0
+        );
+        virtual void modify(const AppState& state) override;
+        virtual void draw(SDL_Renderer* renderer) override;
+        void updateCoord(int nX, int nY);
+    private:
+        CoordXY m_p1;
+        CoordXY m_pDiff;
+        RenderLine *m_pLine1;
         RenderColor m_color;
         CoordXY m_middlePoint;
 };
