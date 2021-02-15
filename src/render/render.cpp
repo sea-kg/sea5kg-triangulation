@@ -77,8 +77,8 @@ void RenderLine::updateAbsoluteCoords(const CoordXY &p1, const CoordXY &p2) {
 // ---------------------------------------------------------------------
 // RenderRect
 
-RenderRect::RenderRect(const CoordXY &p1, int w, int h, int nPositionZ)
-: RenderObject(nPositionZ) {
+RenderRect::RenderRect(const CoordXY &p1, int w, int h, const RenderColor &color, int nPositionZ)
+: RenderObject(nPositionZ), m_color(color) {
     m_coord1 = p1;
     m_nW = w;
     m_nH = h;
@@ -94,15 +94,14 @@ void RenderRect::draw(SDL_Renderer* renderer) {
     srcrect.y = m_coord1.y();
     srcrect.w = m_nW;
     srcrect.h = m_nH;
-    SDL_SetRenderDrawColor(renderer, m_nR, m_nG, m_nB, m_nA);
+    m_color.changeRenderColor(renderer);
     SDL_RenderFillRect(renderer, &srcrect);
 }
-        
-void RenderRect::setColor(int nR, int nG, int nB, int nA) {
-    m_nR = nR;
-    m_nG = nG;
-    m_nB = nB;
-    m_nA = nA;
+
+bool RenderRect::hasPoint(const CoordXY &p0) {
+    return
+        p0.x() >= m_coord1.x() && p0.x() <= m_coord1.x() + m_nW
+        && p0.y() >= m_coord1.y() && p0.y() <= m_coord1.y() + m_nH;
 }
 
 // ---------------------------------------------------------------------
@@ -154,7 +153,8 @@ RenderMouse::RenderMouse(
     int nPositionZ
 ) : RenderObject(nPositionZ),
     m_p1(p1),
-    m_color(color)
+    m_color(color),
+    m_nCursorType(0)
 {
     m_pDiff2 = CoordXY(10,10);
     m_pDiff3 = CoordXY(7,3);
@@ -163,23 +163,35 @@ RenderMouse::RenderMouse(
     m_pLine1 = new RenderLine(p1, p1, color);
     m_pLine2 = new RenderLine(p1, p1, color);
     m_pLine3 = new RenderLine(p1, p1, color);
-    this->updateCoord(p1.x(), p1.y());
+
+    m_pLineMoveble1 = new RenderLine(p1, p1, color);
+    m_pLineMoveble2 = new RenderLine(p1, p1, color);
+
+    this->updateCoord(p1);
 }
 
 void RenderMouse::modify(const AppState& state) {
     m_pLine1->modify(state);
     m_pLine2->modify(state);
     m_pLine3->modify(state);
+    m_pLineMoveble1->modify(state);
+    m_pLineMoveble2->modify(state);
 }
 
 void RenderMouse::draw(SDL_Renderer* renderer) {
-    m_pLine1->draw(renderer);
-    m_pLine2->draw(renderer);
-    m_pLine3->draw(renderer);
+    if (m_nCursorType == 0) {
+        m_pLine1->draw(renderer);
+        m_pLine2->draw(renderer);
+        m_pLine3->draw(renderer);
+    } else if (m_nCursorType == 1) {
+        m_pLineMoveble1->draw(renderer);
+        m_pLineMoveble2->draw(renderer);
+    }
 }
 
-void RenderMouse::updateCoord(int nX, int nY) {
-    CoordXY p1(nX,nY);
+void RenderMouse::updateCoord(const CoordXY &p0) {
+    // arrow
+    CoordXY p1 = p0;
     CoordXY p2 = p1 + m_pDiff2;
     CoordXY p3 = p1 + m_pDiff3;
     CoordXY p4 = p1 + m_pDiff4;
@@ -187,6 +199,22 @@ void RenderMouse::updateCoord(int nX, int nY) {
     m_pLine1->updateAbsoluteCoords(p1,p2);
     m_pLine2->updateAbsoluteCoords(p1,p3);
     m_pLine3->updateAbsoluteCoords(p1,p4);
+
+    // moveble
+    CoordXY p5 = p1 - CoordXY(0,5);
+    CoordXY p6 = p1 + CoordXY(0,5);
+    CoordXY p7 = p1 - CoordXY(5,0);
+    CoordXY p8 = p1 + CoordXY(5,0);
+    m_pLineMoveble1->updateAbsoluteCoords(p5,p6);
+    m_pLineMoveble2->updateAbsoluteCoords(p7,p8);
+}
+
+void RenderMouse::changeCursorToArrow() {
+    m_nCursorType = 0;
+}
+
+void RenderMouse::changeCursorToMoveble() {
+    m_nCursorType = 1;
 }
 
 // ---------------------------------------------------------------------

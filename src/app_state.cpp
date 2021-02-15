@@ -45,6 +45,12 @@ CoordXY CoordXY::operator+(const CoordXY& other) const {
     return c;
 }
 
+CoordXY CoordXY::operator-(const CoordXY& other) const {
+    CoordXY c(m_nX, m_nY);
+    c -= other;
+    return c;
+}
+
 // ---------------------------------------------------------------------
 // AppState
 

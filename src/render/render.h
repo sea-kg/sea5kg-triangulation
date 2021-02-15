@@ -51,21 +51,17 @@ class RenderLine : public RenderObject {
 class RenderRect : public RenderObject {
 
     public:
-        RenderRect(const CoordXY &p1, int w, int h, int nPositionZ = 0);
+        RenderRect(const CoordXY &p1, int w, int h, const RenderColor &color = RenderColor(255,255,255,255), int nPositionZ = 0);
         virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
-        
-        void setColor(int nR, int nG, int nB, int nA);
+        bool hasPoint(const CoordXY &p0);
 
     private:
         CoordXY m_coord1;
         int m_nW;
         int m_nH;
 
-        int m_nR;
-        int m_nG;
-        int m_nB;
-        int m_nA;
+        RenderColor m_color;
 };
 
 class RenderTriangle : public RenderObject {
@@ -99,8 +95,13 @@ class RenderMouse : public RenderObject {
         );
         virtual void modify(const AppState& state) override;
         virtual void draw(SDL_Renderer* renderer) override;
-        void updateCoord(int nX, int nY);
+        void updateCoord(const CoordXY &p0);
+        void changeCursorToArrow();
+        void changeCursorToMoveble();
+        
+
     private:
+        int m_nCursorType;
         CoordXY m_p1;
         CoordXY m_pDiff2;
         CoordXY m_pDiff3;
@@ -108,6 +109,10 @@ class RenderMouse : public RenderObject {
         RenderLine *m_pLine1;
         RenderLine *m_pLine2;
         RenderLine *m_pLine3;
+
+        RenderLine *m_pLineMoveble1;
+        RenderLine *m_pLineMoveble2;
+
         RenderColor m_color;
         CoordXY m_middlePoint;
 };

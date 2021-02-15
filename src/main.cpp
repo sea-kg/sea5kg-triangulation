@@ -53,7 +53,7 @@ int main(int argc, char* args[]) {
 
     pTriangulator->triangulate();
 
-
+    std::vector<RenderRect *> m_pMoveblePoints;
     // add to renderer
     RenderColor areaColor(255,255,255,255);
 
@@ -73,8 +73,8 @@ int main(int argc, char* args[]) {
                 window.addObject(pLine);
                 prev = next;
             }
-            RenderRect *pRect = new RenderRect(CoordXY(next.x() - 4, next.y() - 4), 8, 8);
-            pRect->setColor(255,255,255,255);
+            RenderRect *pRect = new RenderRect(CoordXY(next.x() - 4, next.y() - 4), 8, 8, areaColor);
+            m_pMoveblePoints.push_back(pRect);
             window.addObject(pRect);
         }
         RenderLine *pLine = new RenderLine(prev, first, areaColor);
@@ -98,7 +98,8 @@ int main(int argc, char* args[]) {
     RenderAbsoluteTextBlock *pFpsText = new RenderAbsoluteTextBlock(CoordXY(50,20), "FPS: ----", 1000);
     window.addObject(pFpsText);
 
-    RenderMouse *pMouse = new RenderMouse(centerPoint, areaColor, 2000);
+    RenderColor cursorPointer(255,0,0,190);
+    RenderMouse *pMouse = new RenderMouse(centerPoint, cursorPointer, 2000);
     window.addObject(pMouse);
 
     window.sortObjectsByPositionZ();
@@ -120,7 +121,18 @@ int main(int argc, char* args[]) {
                     break;
                 case SDL_MOUSEMOTION:
                     if (appState.isMouseCaptured()) {
-                        pMouse->updateCoord(event.motion.x, event.motion.y);
+                        CoordXY p0(event.motion.x, event.motion.y);
+                        pMouse->updateCoord(p0);
+                        bool bArrow = true;
+                        for (int i = 0; i < m_pMoveblePoints.size(); i++) {
+                            if (m_pMoveblePoints[i]->hasPoint(p0)) {
+                                pMouse->changeCursorToMoveble();
+                                bArrow = false;
+                            }
+                        }
+                        if (bArrow) {
+                            pMouse->changeCursorToArrow();
+                        }
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:

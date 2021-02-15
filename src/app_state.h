@@ -15,6 +15,7 @@ class CoordXY {
         CoordXY& operator+=(const CoordXY& other);
         CoordXY& operator-=(const CoordXY& other);
         CoordXY operator+(const CoordXY& other) const;
+        CoordXY operator-(const CoordXY& other) const;
     private:
         int m_nX, m_nY;
 };
